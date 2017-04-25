@@ -440,7 +440,7 @@ declare -fr meta_processCommandlineArguments
 ## Print single segment of commandline option help
 meta_util_printSingleCommandlineOptionHelp(){
 	if [ "${#}" -ne 3 ] && [ "${#}" -ne 4 ]; then
-		printf "ERROR: %s: Wrong parameter quantity!\n" 1>&2
+		printf "ERROR: %s: Wrong parameter quantity!\n" "${FUNCNAME[0]}" >&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
