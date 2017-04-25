@@ -336,7 +336,8 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_SCRIPT_DIRECTORY}/${SOFTWARE_INSTALLATION_PREFIX_DIR:-.}")" # By default we expect that the software installation directory prefix is same directory as script
 		readonly SHC_PREFIX_DIR
 
-		## Scope of external project
+		## Read external software directory configuration(S.D.C.)
+		### Scope of external project
 		#shellcheck disable=SC1091
 		source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source" || true
 		if [ -z "${SDC_EXECUTABLES_DIR}" ]; then
