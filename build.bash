@@ -57,6 +57,14 @@ readonly -f determine_package_revision
 
 ## init function: program entrypoint
 init(){
+	for commandline_argument in "${@}"; do
+		if [ "${commandline_argument}" == "--help" ] || [ "${commandline_argument}" == "-h" ]; then
+			printf "This program doesn't have any command line arguments.\n"
+			printf "\n"
+			exit 0
+		fi
+	done
+
 	# Software installation directory prefix, should be overridable by configure/install script
 	# Scope of external project
 	#shellcheck disable=SC1090,SC1091
