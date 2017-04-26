@@ -37,17 +37,19 @@ done
 determine_package_revision(){
 	if [ ! -d "${RUNTIME_SCRIPT_DIRECTORY}/.git" ]; then
 		# FIXME: This is a source tarball without git repository, currently we don't know how to deal with this case(may requires smudge filter)
-		printf "unknown"
+		printf "unknown-%s" "$(basename "${RUNTIME_SCRIPT_DIRECTORY}")"
 		return 0
 	fi
 
-	if [ -n "$(git tag --contains HEAD)" ]; then
-		# HEAD is a tag, this is a released version)
-		printf "%s" "$(git tag --contains HEAD)"
+	if ! git rev-parse --verify HEAD &>/dev/null; then
+		# git repository is newly initialized
+		printf "not-version-controlled"
 		return 0
 	else
-		# HEAD is not a tag, this is a developing version)
-		printf "%s" "$(git describe --tags)"
+		# Best effort to describe the revision
+		# version control - How do you achieve a numeric versioning scheme with Git? - Software Engineering Stack Exchange
+ 		# https://softwareengineering.stackexchange.com/questions/141973/how-do-you-achieve-a-numeric-versioning-scheme-with-git
+		printf "%s" "$(git describe --tags --dirty --always)"
 		return 0
 	fi
 }
