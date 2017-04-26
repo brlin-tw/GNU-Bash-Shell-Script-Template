@@ -295,22 +295,22 @@ fi
 ## Software Directories Configuration(S.D.C.)
 ## This section defines and determines the directories used by the software
 ### Directory to find executables(default: autodetermined, unset if not available)
-declare SDC_EXECUTABLES_DIR
+declare SDC_EXECUTABLES_DIR=""
 
 ### Directory to find libraries(default: autodetermined, unset if not available)
-declare SDC_LIBRARIES_DIR
+declare SDC_LIBRARIES_DIR=""
 
 ### Directory contain shared resources(default: autodetermined, unset if not available)
-declare SDC_SHARED_RES_DIR
+declare SDC_SHARED_RES_DIR=""
 
 ### Directory contain internationalization(I18N) data(default: autodetermined, unset if not available)
-declare SDC_I18N_DATA_DIR
+declare SDC_I18N_DATA_DIR=""
 
 ### Directory contain software settings(default: autodetermined, unset if not available)
-declare SDC_SETTINGS_DIR
+declare SDC_SETTINGS_DIR=""
 
 ### Directory contain temporory files created by program(default: autodetermined, unset if not available)
-declare SDC_TEMP_DIR
+declare SDC_TEMP_DIR=""
 
 case "${META_SOFTWARE_INSTALL_STYLE}" in
 	FHS)
@@ -320,7 +320,7 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 		declare -r FHS_PREFIX_DIR="/usr/local"
 
 		readonly SDC_EXECUTABLES_DIR="${FHS_PREFIX_DIR}/bin"
-		readonly SDC_LIBRARY_DIR="${FHS_PREFIX_DIR}/lib"
+		readonly SDC_LIBRARIES_DIR="${FHS_PREFIX_DIR}/lib"
 		readonly SDC_SHARED_RES_DIR="${FHS_PREFIX_DIR}/share/${META_APPLICATION_IDENTIFIER}"
 		readonly SDC_I18N_DATA_DIR="${FHS_PREFIX_DIR}/share/locale"
 		readonly SDC_SETTINGS_DIR="/etc/${META_APPLICATION_IDENTIFIER}"
@@ -343,8 +343,8 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 		if [ -z "${SDC_EXECUTABLES_DIR}" ]; then
 			unset SDC_EXECUTABLES_DIR
 		fi
-		if [ -z "${SDC_LIBRARY_DIR}" ]; then
-			unset SDC_LIBRARY_DIR
+		if [ -z "${SDC_LIBRARIES_DIR}" ]; then
+			unset SDC_LIBRARIES_DIR
 		fi
 		if [ -z "${SDC_SHARED_RES_DIR}" ]; then
 			unset SDC_SHARED_RES_DIR
@@ -362,10 +362,10 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 	STANDALONE)
 		# Standalone Configuration
 		# This program don't rely on any directories, make no attempt defining them
-		unset SDC_EXECUTABLES_DIR SDC_LIBRARY_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
+		unset SDC_EXECUTABLES_DIR SDC_LIBRARIES_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
 		;;
 	*)
-		unset SDC_EXECUTABLES_DIR SDC_LIBRARY_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
+		unset SDC_EXECUTABLES_DIR SDC_LIBRARIES_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
 		printf "Error: Unknown software directories configuration, program can not continue.\n" 1>&2
 		exit 1
 		;;
