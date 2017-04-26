@@ -71,7 +71,7 @@ init(){
 	if [ ! -d "${SDC_RELEASE_DIR}" ]; then
 		mkdir --parents "${SDC_RELEASE_DIR}"
 	fi
-	tar --create --verbose --bzip2 --directory "${SHC_PREFIX_DIR}" --file "${SDC_RELEASE_DIR}/${APPLICATION_IDENTIFIER}-$(determine_package_revision).tar.bz2" -- *.source "install.bash" "README.markdown" "Source Code" "Template Setup for KDE"
+	tar --create --verbose --bzip2 --directory "${SHC_PREFIX_DIR}" --file "${SDC_RELEASE_DIR}/${APPLICATION_IDENTIFIER}-$(determine_package_revision).tar.bz2" -- *.source "install.bash" "README.markdown" "Source Code" "Template Setup for KDE" "Pictures"
 
 	exit 0
 }
