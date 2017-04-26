@@ -331,14 +331,14 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 		# This is the convention when F.H.S. is not possible(not a F.H.S. compliant UNIX-like system) or not desired, everything is put under package's DIR(and for runtime-generated files, in user's directory) instead.
 		## Software installation directory prefix, should be overridable by configure/install script
 		### Scope of external project
-		#shellcheck disable=SC1091
+		#shellcheck disable=SC1090,SC1091
 		source "${RUNTIME_SCRIPT_DIRECTORY}/SOFTWARE_INSTALLATION_PREFIX_DIR.source" || true
 		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_SCRIPT_DIRECTORY}/${SOFTWARE_INSTALLATION_PREFIX_DIR:-.}")" # By default we expect that the software installation directory prefix is same directory as script
 		readonly SHC_PREFIX_DIR
 
 		## Read external software directory configuration(S.D.C.)
 		### Scope of external project
-		#shellcheck disable=SC1091
+		#shellcheck disable=SC1090,SC1091
 		source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source" || true
 		if [ -z "${SDC_EXECUTABLES_DIR}" ]; then
 			unset SDC_EXECUTABLES_DIR
