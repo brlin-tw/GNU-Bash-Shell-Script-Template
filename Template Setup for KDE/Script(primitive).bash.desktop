@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Shell Script(GNU Bash)(primitive)
+Name[zh_TW]=Shell Script(GNU Bash)（簡化版）
+Type=Link
+Icon=text-x-script
+URL=Script(primitive).bash
+# Comment=
