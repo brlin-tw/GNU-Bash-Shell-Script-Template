@@ -115,49 +115,12 @@ declare -r TRAP_ERREXIT_ARG='meta_trap_errexit ${LINENO} "${BASH_COMMAND}" ${?}'
 trap "${TRAP_ERREXIT_ARG}" ERR
 
 ### Trap - Introduce itself everytime
-meta_printApplicationInfoBeforeNormalExit(){
-	# No need to debug this area, keep output simple
-	set +o xtrace
-
-	# Only print the line if:
-	#
-	# * There's info to be print
-	# * Pausing program is desired(META_PROGRAM_PAUSE_BEFORE_EXIT=1)
-	#
-	# ...cause it's kinda stupid for a trailing line at end-of-program-output
-	if [ -n "${META_APPLICATION_NAME}" ] || [ -n "${META_APPLICATION_DEVELOPER_NAME}" ] || [ -n "${META_APPLICATION_SITE_URL}" ] || [ -n "${META_PROGRAM_LICENSE}" ] || [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
-		printf -- "------------------------------------\n"
-	fi
-	if [ -n "${META_APPLICATION_NAME}" ]; then
-		printf "%s\n" "${META_APPLICATION_NAME}"
-	fi
-	if [ -n "${META_APPLICATION_DEVELOPER_NAME}" ]; then
-		printf "%s et. al." "${META_APPLICATION_DEVELOPER_NAME}"
-		if [ -n "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}" ]; then
-			printf " " # Separator with ${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}
-		else
-			printf "\n"
-		fi
-	fi
-	if [ -n "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}" ]; then
-		printf "© %s\n" "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}"
-	fi
-	if [ -n "${META_APPLICATION_SITE_URL}" ]; then
-		printf "Official Website: %s\n" "${META_APPLICATION_SITE_URL}"
-	fi
-	if [ -n "${META_PROGRAM_LICENSE}" ]; then
-		printf "Intellectual Property License: %s\n" "${META_PROGRAM_LICENSE}"
-	fi
-	if [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
-		local enter_holder
-
-		printf "Press ENTER to quit the program.\n"
-		read -r enter_holder
-	fi
+meta_cleanUpBeforeNormalExit(){
+	rm -rf "${global_temp_directory}"
 	return "${COMMON_RESULT_SUCCESS}"
 }
-declare -fr meta_printApplicationInfoBeforeNormalExit
-trap 'meta_printApplicationInfoBeforeNormalExit' EXIT
+declare -fr meta_cleanUpBeforeNormalExit
+trap 'meta_cleanUpBeforeNormalExit' EXIT
 
 ## Workarounds
 ### Temporarily disable errexit
@@ -382,6 +345,7 @@ declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION="Enable debug mode"
 ## Program Configuration Variables
 declare -i global_just_show_help="${COMMON_BOOLEAN_FALSE}"
 declare -i global_enable_debugging="${COMMON_BOOLEAN_FALSE}"
+declare global_temp_directory
 
 ## Drop first element from array and shift remaining elements 1 element backward
 meta_util_array_shift(){
@@ -494,6 +458,14 @@ meta_printHelpMessage(){
 }
 declare -fr meta_printHelpMessage
 
+create_temp_directory(){
+	if ! global_temp_directory="$(mktemp --directory --tmpdir "${META_APPLICATION_NAME}".XXXXXX.tmpdir)"; then
+		return "${COMMON_RESULT_FAILURE}"
+	fi
+	return "${COMMON_RESULT_SUCCESS}"
+}
+readonly -f create_temp_directory
+
 ## Defensive Bash Programming - init function, program's entry point
 ## http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/
 init() {
@@ -516,30 +488,37 @@ init() {
 		exit "${COMMON_RESULT_SUCCESS}"
 	fi
 
-	declare temp_staging_dir
-	readonly temp_staging_dir="$(mktemp --directory --tmpdir "${META_APPLICATION_NAME}".XXXXXX.tmpdir)"
-
-	declare -i result="0";
+	create_temp_directory
+	if [ "${?}" -ne "${COMMON_RESULT_SUCCESS}" ]; then
+		printf "Error: Unable to create temporary directory.\n" 1>&2
+		exit "${COMMON_RESULT_FAILURE}"
+	fi
 
 	# Checkout all scripts from staging area to temp folder
 	git diff -z --cached --name-only --diff-filter=ACM "*.bash"\
-		| git checkout-index --stdin -z --prefix="${temp_staging_dir}/"
+		| git checkout-index --stdin -z --prefix="${global_temp_directory}/"
 
 	# Run ShellCheck on all scripts
-	cd "${temp_staging_dir}" # get cleaner output from find
-	find "${temp_staging_dir}" -name "*.bash" -print0\
-		| xargs --null --max-args=1 --verbose shellcheck\
-		|| result="${?}"
+	declare -i check_result="0";
 
-	rm -rf "${temp_staging_dir}"
+	# Change to staging dir so that we can only show relative path to the script instead of long ugly path including tmpdir path
+	pushd "${global_temp_directory}" >/dev/null
 
-	if [ "${result}" -ne 0 ]; then
-		printf "%s: ERROR: ShellCheck failed, please check your script.\n" "${META_PROGRAM_NAME_OVERRIDE}" 1>&2
-		exit "${COMMON_RESULT_FAILURE}"
-	else
-		printf "%s: ShellCheck succeeded.\n" "${META_PROGRAM_NAME_OVERRIDE}"
-		exit "${COMMON_RESULT_SUCCESS}"
-	fi
+	# delimiter - bash "for in" looping on null delimited string variable - Stack Overflow
+	# http://stackoverflow.com/questions/8677546/bash-for-in-looping-on-null-delimited-string-variable
+	while IFS="" read -r -d '' file; do
+		printf "Checking %s...\n" "${file}"
+		shellcheck "${file}" || check_result="${?}"
+		if [ "${check_result}" -ne 0 ]; then
+			printf "%s: ERROR: ShellCheck failed, please check your script.\n" "${META_PROGRAM_NAME_OVERRIDE}" 1>&2
+			exit "${COMMON_RESULT_FAILURE}"
+		fi
+	done < <(find . -name "*.bash" -print0) # this is a process substitution
+
+	popd >/dev/null
+
+	printf "%s: ShellCheck succeeded.\n" "${META_PROGRAM_NAME_OVERRIDE}"
+	exit "${COMMON_RESULT_SUCCESS}"
 }
 declare -fr init
 init
