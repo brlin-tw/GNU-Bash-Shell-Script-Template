@@ -1,0 +1,3 @@
+# Ignore everything instead of README in release folder
+Software Release/*
+!Software Release/README.markdown
