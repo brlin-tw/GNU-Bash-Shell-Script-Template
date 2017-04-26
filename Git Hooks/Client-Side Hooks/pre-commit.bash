@@ -258,14 +258,10 @@ else
 	# http://mywiki.wooledge.org/BashFAQ/028
 	RUNTIME_SCRIPT_FILENAME="$(basename "${BASH_SOURCE[0]}")"
 	readonly RUNTIME_SCRIPT_FILENAME
-	# FIXME: Currently we can't acquire the correct path if the script is located in a symlinked directory and we run the script using relative path, we can only acquire the resolved path(--no-symlinks won't fix this)
-	# This is due to ${BASH_SOURCE[0]} only gets relative path when running relatively, and relative path is already resolved.
-	RUNTIME_SCRIPT_DIRECTORY="$(dirname "$(realpath --strip "${BASH_SOURCE[0]}")")"
+	RUNTIME_SCRIPT_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
 	readonly RUNTIME_SCRIPT_DIRECTORY
-	RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
-	readonly RUNTIME_SCRIPT_PATH_ABSOLUTE
-	RUNTIME_SCRIPT_PATH_RELATIVE="$(realpath --relative-to="${PWD}" --strip "${RUNTIME_SCRIPT_PATH_ABSOLUTE}")"
-	readonly RUNTIME_SCRIPT_PATH_RELATIVE
+	readonly RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
+	readonly RUNTIME_SCRIPT_PATH_RELATIVE="${0}"
 
 	declare pathdir
 	for pathdir in "${RUNTIME_PATH_DIRECTORIES[@]}"; do
