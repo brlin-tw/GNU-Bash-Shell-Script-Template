@@ -9,8 +9,8 @@ install:
 - sudo cabal install --global ShellCheck
 - sudo apt-get install realpath || true
 script:
-- "./setup-development-environment.bash"
-- "./.git/hooks/pre-commit"
+- ./setup-development-environment.bash
+- ./.git/hooks/pre-commit
 - ./build.bash
 deploy:
   provider: releases
