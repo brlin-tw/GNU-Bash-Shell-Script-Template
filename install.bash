@@ -405,6 +405,7 @@ declare -r COMMANDLINE_OPTION_jUST_UNINSTALL_DESCRIPTION="Uninstall the software
 declare -i global_just_show_help="${COMMON_BOOLEAN_FALSE}"
 declare -i global_enable_debugging="${COMMON_BOOLEAN_FALSE}"
 declare -i global_just_uninstall="${COMMON_BOOLEAN_FALSE}"
+declare global_install_directory
 
 ## Drop first element from array and shift remaining elements 1 element backward
 meta_util_array_shift(){
@@ -535,6 +536,29 @@ remove_old_installation(){
 }
 readonly -f remove_old_installation
 
+determine_install_directory(){
+	# For $XDG_TEMPLATES_DIR
+	if [ -f "${HOME}"/.config/user-dirs.dirs ];then
+		# external file, disable check
+		#shellcheck disable=SC1090
+		source "${HOME}"/.config/user-dirs.dirs
+
+		if [ -v XDG_TEMPLATES_DIR ]; then
+			global_install_directory="${XDG_TEMPLATES_DIR}"
+			return "${COMMON_RESULT_SUCCESS}"
+		fi
+	fi
+
+	printf "%s - 警告 - 安裝程式找不到 user-dirs 設定，汰退到預設目錄\n" "${FUNCNAME[0]}"
+
+	if [ ! -d "${HOME}"/Templates ]; then
+		return "${COMMON_RESULT_FAILURE}"
+	else
+		global_install_directory="${HOME}"/Templates
+	fi
+
+}; readonly -f determine_install_directory
+
 ## Defensive Bash Programming - init function, program's entry point
 ## http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/
 init() {
@@ -557,10 +581,13 @@ init() {
 		exit "${COMMON_RESULT_SUCCESS}"
 	fi
 
-	# For $XDG_TEMPLATES_DIR
-	# external file, disable check
-	#shellcheck disable=SC1090
-	source "${HOME}"/.config/user-dirs.dirs
+	if ! determine_install_directory; then
+		printf "錯誤：無法判斷安裝目錄。安裝程式無法繼續運行\n" 1>&2
+		exit "${COMMON_RESULT_FAILURE}"
+	else
+		printf "將會安裝到：%s\n" "${global_install_directory}"
+		printf "\n"
+	fi
 
 	remove_old_installation
 	if [ "${global_just_uninstall}" -eq "${COMMON_BOOLEAN_TRUE}" ]; then
