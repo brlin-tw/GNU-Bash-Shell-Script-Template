@@ -569,7 +569,8 @@ init() {
 	fi
 
 	printf "正在安裝範本檔案……\n"
-	cp --force "${SDC_SOURCE_CODE_DIR}"/*.bash "${XDG_TEMPLATES_DIR}"
+	cp --force --verbose "${SDC_SOURCE_CODE_DIR}"/*.bash "${XDG_TEMPLATES_DIR}"
+	printf "\n" # Seperate output from different operations
 
 	while :; do
 		printf "請問是否安裝 KDE 所需的範本設定（警告：會造成 GNOME Files 等應用軟體中出現非預期的範本項目）(y/N)？"
@@ -589,7 +590,7 @@ init() {
 				break
 			else
 				printf "正在設定適用於 KDE 的範本……\n"
-				cp --force "${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${XDG_TEMPLATES_DIR}"
+				cp --force --verbose "${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${XDG_TEMPLATES_DIR}"
 				break
 			fi
 		fi
