@@ -10,10 +10,10 @@ declare -r META_PROGRAM_NAME_OVERRIDE="提交版本前掛勾程式"
 declare -r META_PROGRAM_IDENTIFIER="pre-commit"
 
 ### Program's description, default(optional)
-declare -r META_PROGRAM_DESCRIPTION=""
+declare -r META_PROGRAM_DESCRIPTION="pre-commit script to check for potential issues"
 
 ### Intellectual property license applied to this program(optional)
-declare -r META_PROGRAM_LICENSE=""
+declare -r META_PROGRAM_LICENSE="GPLv3"
 
 ### Whether program should pause and expect user pressing enter when program ended, which is useful when executing scripts in GUI, or in an environment where terminal won't pause when script is ended
 ### 0: Don't pause(default)
@@ -22,22 +22,22 @@ declare -r META_PROGRAM_LICENSE=""
 declare -i META_PROGRAM_PAUSE_BEFORE_EXIT="0"
 
 ### Years since any fraction of copyright material is activated, indicates the year when copyright protection will be outdated(optional)
-declare -r META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=""
+declare -r META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE="2017"
 
 ### Human-readable name of application(optional)
-declare -r META_APPLICATION_NAME=""
+declare -r META_APPLICATION_NAME="GNU Bash Shell Script Template"
 
 ### Application's identifier, application's name with limitation posed by other software, default(not implemented): unnamed-application
-declare -r META_APPLICATION_IDENTIFIER=""
+declare -r META_APPLICATION_IDENTIFIER="gnu-bash-shell-script-template"
 
 ### Developers' name of application(optional)
-declare -r META_APPLICATION_DEVELOPER_NAME=""
+declare -r META_APPLICATION_DEVELOPER_NAME="林博仁"
 
 ### Application's official site URL(optional)
-declare -r META_APPLICATION_SITE_URL=""
+declare -r META_APPLICATION_SITE_URL="https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template"
 
 ### Application's issue tracker, if there's any(optional)
-declare -r META_APPLICATION_ISSUE_TRACKER_URL=""
+declare -r META_APPLICATION_ISSUE_TRACKER_URL="https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template/issues"
 
 ### An action to let user get help from developer or other sources when error occurred
 declare -r META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
