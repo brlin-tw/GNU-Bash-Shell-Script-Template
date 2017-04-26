@@ -53,7 +53,10 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 )
 
 ### These are the dependencies that are used later and also checked later
-declare -Ar META_RUNTIME_DEPENDENCIES=()
+declare -Ar META_RUNTIME_DEPENDENCIES=(
+	["cp"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
+	["tr"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
+)
 
 ## Common constant definitions
 declare -ir COMMON_RESULT_SUCCESS=0
@@ -110,6 +113,20 @@ declare -r TRAP_ERREXIT_ARG='meta_trap_errexit ${LINENO} "${BASH_COMMAND}" ${?}'
 # We separate the arguments to TRAP_ERREXIT_ARG, so it should be expand here
 #shellcheck disable=SC2064
 trap "${TRAP_ERREXIT_ARG}" ERR
+
+### Trigger trap if user hit interrupt keystroke
+meta_trap_interrupt(){
+	# No need to debug abort script
+	set +o xtrace
+
+	# Separate from output messages
+	printf "\n\n" 1>&2
+
+	printf "中斷程式運行\n" 1>&2
+	exit "${COMMON_RESULT_SUCCESS}"
+}
+readonly -f meta_trap_errexit
+trap meta_trap_interrupt INT
 
 ### Trap - Introduce itself everytime
 meta_printApplicationInfoBeforeNormalExit(){
@@ -518,10 +535,37 @@ init() {
 	fi
 
 	# For $XDG_TEMPLATES_DIR
+	# external file, disable check
+	#shellcheck disable=SC1090
 	source "${HOME}"/.config/user-dirs.dirs
 
+	printf "正在安裝範本檔案……\n"
 	cp --force "${SDC_SOURCE_CODE_DIR}"/*.bash "${XDG_TEMPLATES_DIR}"
-	cp --force "${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${XDG_TEMPLATES_DIR}"
+
+	while :; do
+		printf "請問是否安裝 KDE 所需的範本設定（警告：會造成 GNOME Files 等應用軟體中出現非預期的範本項目）(y/N)？"
+		declare answer
+		read -r answer
+
+		if [ -z "${answer}" ]; then
+			break
+		else
+			# lowercasewize
+			answer="$(printf "%s" "${answer}" | tr '[:upper:]' '[:lower:]')"
+
+			if [ "${answer}" != "n" ] && [ "${answer}" != "y" ]; then
+				# wrong format, re-ask
+				continue
+			elif [ "${answer}" == "n" ]; then
+				break
+			else
+				printf "正在設定適用於 KDE 的範本……\n"
+				cp --force "${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${XDG_TEMPLATES_DIR}"
+				break
+			fi
+		fi
+	done
+	unset answer
 
 	printf "已完成安裝。\n"
 
