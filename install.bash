@@ -330,12 +330,15 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 		# Self-contained Hierarchy Configuration(S.H.C.) paths
 		# This is the convention when F.H.S. is not possible(not a F.H.S. compliant UNIX-like system) or not desired, everything is put under package's DIR(and for runtime-generated files, in user's directory) instead.
 		## Software installation directory prefix, should be overridable by configure/install script
-		#shellcheck source=SOFTWARE_INSTALLATION_PREFIX_DIR.sources
+		### Scope of external project
+		#shellcheck disable=SC1090,SC1091
 		source "${RUNTIME_SCRIPT_DIRECTORY}/SOFTWARE_INSTALLATION_PREFIX_DIR.source" || true
 		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_SCRIPT_DIRECTORY}/${SOFTWARE_INSTALLATION_PREFIX_DIR:-.}")" # By default we expect that the software installation directory prefix is same directory as script
 		readonly SHC_PREFIX_DIR
 
-		#shellcheck source=SOFTWARE_DIRECTORY_CONFIGURATION.source
+		## Read external software directory configuration(S.D.C.)
+		### Scope of external project
+		#shellcheck disable=SC1090,SC1091
 		source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source" || true
 		if [ -z "${SDC_EXECUTABLES_DIR}" ]; then
 			unset SDC_EXECUTABLES_DIR
@@ -440,7 +443,7 @@ declare -fr meta_processCommandlineArguments
 ## Print single segment of commandline option help
 meta_util_printSingleCommandlineOptionHelp(){
 	if [ "${#}" -ne 3 ] && [ "${#}" -ne 4 ]; then
-		printf "ERROR: %s: Wrong parameter quantity!\n" 1>&2
+		printf "ERROR: %s: Wrong parameter quantity!\n" "${FUNCNAME[0]}" >&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
