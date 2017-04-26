@@ -19,7 +19,7 @@ declare -r META_PROGRAM_LICENSE="GPLv3+"
 ### 0: Don't pause(default)
 ### 1: Pause
 ### This parameter is overridable, in case of command-line options like --interactive and --no-interactive
-declare -i META_PROGRAM_PAUSE_BEFORE_EXIT="1"
+declare -i META_PROGRAM_PAUSE_BEFORE_EXIT="0"
 
 ### Years since any fraction of copyright material is activated, indicates the year when copyright protection will be outdated(optional)
 declare -r META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE="2017"
