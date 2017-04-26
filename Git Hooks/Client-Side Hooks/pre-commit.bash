@@ -55,6 +55,7 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 ### These are the dependencies that are used later and also checked later
 declare -Ar META_RUNTIME_DEPENDENCIES=(
 	["shellcheck"]="ShellCheck"
+	["mktemp"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
 )
 
 ## Common constant definitions
@@ -515,10 +516,18 @@ init() {
 		exit "${COMMON_RESULT_SUCCESS}"
 	fi
 
+	declare temp_staging_dir
+	readonly temp_staging_dir="$(mktemp --directory --tmpdir "${META_APPLICATION_NAME}"-staging.XXXXXX.tmpdir)"
+
 	declare -i result="0";
 
-	# Check all scripts in repo
-	find . -name \*.bash -print0 | xargs --null --max-args=1 --verbose shellcheck || result="${?}"
+	# Checkout all scripts from staging area to temp folder
+	git diff -z --cached --name-only --diff-filter=ACM "*.bash" | git checkout-index --stdin -z --prefix="${temp_staging_dir}/"
+
+	# Run ShellCheck on all scripts
+	find "${temp_staging_dir}" -name "*.bash" -print0 | xargs --null --max-args=1 --verbose shellcheck || result="${?}"
+
+	rm -rf "${temp_staging_dir}"
 
 	if [ "${result}" -ne 0 ]; then
 		printf "%s: ERROR: ShellCheck failed, please check your script.\n" "${META_PROGRAM_NAME_OVERRIDE}" 1>&2
