@@ -35,6 +35,12 @@ for a_command in mkdir tar git; do
 done
 
 determine_package_revision(){
+	if [ ! -d "${RUNTIME_SCRIPT_DIRECTORY}/.git" ]; then
+		# FIXME: This is a source tarball without git repository, currently we don't know how to deal with this case(may requires smudge filter)
+		printf "unknown"
+		return 0
+	fi
+
 	if [ -n "$(git tag --contains HEAD)" ]; then
 		# HEAD is a tag, this is a released version)
 		printf "%s" "$(git tag --contains HEAD)"

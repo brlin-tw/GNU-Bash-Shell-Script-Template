@@ -513,6 +513,11 @@ init() {
 		exit "${COMMON_RESULT_SUCCESS}"
 	fi
 
+	if [ ! -d "${RUNTIME_SCRIPT_DIRECTORY}/.git" ]; then
+		printf "ERROR: git repository doesn't exist, you must initialize a git repository before running this script\n" 1>&2
+		exit "${COMMON_RESULT_FAILURE}"
+	fi
+
 	cd "${RUNTIME_SCRIPT_DIRECTORY}"
 
 	ln --symbolic --relative --force "${SDC_GIT_HOOKS_CLIENT_SIDE_DIR}"/pre-commit.bash .git/hooks/pre-commit
