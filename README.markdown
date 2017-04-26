@@ -1,4 +1,5 @@
 # GNU Bash Shell Script 範本<br>GNU Bash Shell Script Template
+本專案設計易於重複使用的 GNU Bash Shell Script，方便使用者設計新的 shell script  
 <https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template>
 
 ## 智慧財產授權條款<br>Intellectual Property License
@@ -21,3 +22,8 @@ This means that GPL is enforced only when you're making another "shell script te
 ### [GNU Core Utilities(Coreutils)](http://www.gnu.org/software/coreutils/coreutils.html)
 用於得出程式檔名與路徑
 
+### [ShellCheck – shell script analysis tool](http://www.shellcheck.net/)（限開發環境）
+用於檢查 shell script 的各種潛在問題
+
+## 下載軟體<br>Download Software
+請至本專案的[軟體釋出頁面](https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template/releases)下載建構好的軟體與來源代碼
