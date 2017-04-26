@@ -518,7 +518,7 @@ init() {
 	source "${HOME}"/.config/user-dirs.dirs
 
 	cp --force "${SDC_SOURCE_CODE_DIR}"/*.bash "${XDG_TEMPLATES_DIR}"
-	cp --force "${KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${XDG_TEMPLATES_DIR}"
+	cp --force "${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${XDG_TEMPLATES_DIR}"
 
 	printf "已完成安裝。\n"
 
