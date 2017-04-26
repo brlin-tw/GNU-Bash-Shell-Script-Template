@@ -200,7 +200,7 @@ meta_checkRuntimeDependencies() {
 			meta_workaround_errexit_setup on
 			if [ ${exit_status} -ne 0 ]; then
 				printf "ERROR: Command \"%s\" not found, program cannot continue like this.\n" "${a_command}" 1>&2
-				printf "ERROR: Please make sure %s is installed and it's executable path is in your operating system's executable search path.\n" "${META_RUNTIME_DEPENDENCIES["${a_command}"]}" >&2
+				printf "ERROR: Please make sure %s is installed and it's executable path is in your operating system's executable search path.\n" "${array_ref["${a_command}"]}" >&2
 				printf "Goodbye.\n"
 				exit "${COMMON_RESULT_FAILURE}"
 			fi
