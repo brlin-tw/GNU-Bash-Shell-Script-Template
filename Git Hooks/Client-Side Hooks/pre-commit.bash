@@ -517,15 +517,19 @@ init() {
 	fi
 
 	declare temp_staging_dir
-	readonly temp_staging_dir="$(mktemp --directory --tmpdir "${META_APPLICATION_NAME}"-staging.XXXXXX.tmpdir)"
+	readonly temp_staging_dir="$(mktemp --directory --tmpdir "${META_APPLICATION_NAME}".XXXXXX.tmpdir)"
 
 	declare -i result="0";
 
 	# Checkout all scripts from staging area to temp folder
-	git diff -z --cached --name-only --diff-filter=ACM "*.bash" | git checkout-index --stdin -z --prefix="${temp_staging_dir}/"
+	git diff -z --cached --name-only --diff-filter=ACM "*.bash"\
+		| git checkout-index --stdin -z --prefix="${temp_staging_dir}/"
 
 	# Run ShellCheck on all scripts
-	find "${temp_staging_dir}" -name "*.bash" -print0 | xargs --null --max-args=1 --verbose shellcheck || result="${?}"
+	cd "${temp_staging_dir}" # get cleaner output from find
+	find "${temp_staging_dir}" -name "*.bash" -print0\
+		| xargs --null --max-args=1 --verbose shellcheck\
+		|| result="${?}"
 
 	rm -rf "${temp_staging_dir}"
 
