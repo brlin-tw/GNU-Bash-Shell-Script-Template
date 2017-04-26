@@ -517,7 +517,7 @@ init() {
 	# For $XDG_TEMPLATES_DIR
 	source "${HOME}"/.config/user-dirs.dirs
 
-	cp --force "${RUNTIME_SCRIPT_DIRECTORY}"/*.bash "${XDG_TEMPLATES_DIR}"
+	cp --force "${SDC_SOURCE_CODE_DIR}"/*.bash "${XDG_TEMPLATES_DIR}"
 	cp --force "${KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${XDG_TEMPLATES_DIR}"
 
 	printf "已完成安裝。\n"
