@@ -397,9 +397,14 @@ declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG="--debug"
 declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT="-d"
 declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION="Enable debug mode"
 
+declare -r COMMANDLINE_OPTION_JUST_UNINSTALL="--uninstall"
+declare -r COMMANDLINE_OPTION_JUST_UNINSTALL_SHORT="-u"
+declare -r COMMANDLINE_OPTION_jUST_UNINSTALL_DESCRIPTION="Uninstall the software\nBy default the installer will install the software after removing previous installation, this option inhibits it"
+
 ## Program Configuration Variables
 declare -i global_just_show_help="${COMMON_BOOLEAN_FALSE}"
 declare -i global_enable_debugging="${COMMON_BOOLEAN_FALSE}"
+declare -i global_just_uninstall="${COMMON_BOOLEAN_FALSE}"
 
 ## Drop first element from array and shift remaining elements 1 element backward
 meta_util_array_shift(){
@@ -443,6 +448,9 @@ meta_processCommandlineArguments() {
 					"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}"|"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}")
 						global_enable_debugging="${COMMON_BOOLEAN_TRUE}"
 						;;
+					"${COMMANDLINE_OPTION_JUST_UNINSTALL}"|"${COMMANDLINE_OPTION_JUST_UNINSTALL_SHORT}")
+						global_just_uninstall="${COMMON_BOOLEAN_TRUE}"
+						;;
 					*)
 						printf "ERROR: Unknown command-line argument \"%s\"\n" "${arguments[0]}" >&2
 						return ${COMMON_RESULT_FAILURE}
@@ -476,7 +484,7 @@ meta_util_printSingleCommandlineOptionHelp(){
 	fi
 
 	printf "### %s / %s ###\n" "${long_option}" "${short_option}"
-	printf "%s\n" "${description}"
+	printf "%b\n" "${description}" # We allow backslash sequence in description
 
 	if [ "${#}" -eq 4 ]; then
 		printf "Current value: %s\n" "${current_value}"
@@ -508,9 +516,24 @@ meta_printHelpMessage(){
 	printf "## Command-line Options ##\n"
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" "${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" "${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
+	meta_util_printSingleCommandlineOptionHelp \
+		"${COMMANDLINE_OPTION_jUST_UNINSTALL_DESCRIPTION}"\
+		"${COMMANDLINE_OPTION_JUST_UNINSTALL}"\
+		"${COMMANDLINE_OPTION_JUST_UNINSTALL_SHORT}"
 	return "${COMMON_RESULT_SUCCESS}"
 }
 declare -fr meta_printHelpMessage
+
+## Attempt to remove old installation files
+remove_old_installation(){
+	printf "正在清除過去安裝範本（如果有的話）……\n"
+	rm --verbose --force "${XDG_TEMPLATES_DIR}"/*.bash* || true
+	printf "完成\n"
+
+	printf "\n" # Additional blank line for separating output
+	return "${COMMON_RESULT_SUCCESS}"
+}
+readonly -f remove_old_installation
 
 ## Defensive Bash Programming - init function, program's entry point
 ## http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/
@@ -538,6 +561,12 @@ init() {
 	# external file, disable check
 	#shellcheck disable=SC1090
 	source "${HOME}"/.config/user-dirs.dirs
+
+	remove_old_installation
+	if [ "${global_just_uninstall}" -eq "${COMMON_BOOLEAN_TRUE}" ]; then
+		printf "已解除安裝軟體\n"
+		exit "${COMMON_RESULT_SUCCESS}"
+	fi
 
 	printf "正在安裝範本檔案……\n"
 	cp --force "${SDC_SOURCE_CODE_DIR}"/*.bash "${XDG_TEMPLATES_DIR}"
