@@ -3,9 +3,10 @@ dist: trusty
 # Fake language, we use Bash ;)
 language: c
 install:
-  - sudo apt-add-repository multiverse
+#  - sudo apt-add-repository multiverse # already enabled in vm environment
   - sudo apt-get update -qq
-  - sudo apt-get install shellcheck
+  - sudo apt-get install cabal-install
+  - cabal install --global ShellCheck
   - sudo apt-get install realpath || true # should be in coreutils since 16.04(?)
 script:
 - ./setup-development-environment.bash
