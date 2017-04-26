@@ -1,0 +1,11 @@
+sudo: false
+# Fake language, we use Bash ;)
+language: c
+script:
+- ./setup-development-environment.bash
+- ./.git/hooks/pre-commit
+- ./build.bash
+addons:
+  apt:
+    packages:
+    - shellcheck
