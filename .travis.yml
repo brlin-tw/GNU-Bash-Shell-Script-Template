@@ -6,7 +6,8 @@ install:
 #  - sudo apt-add-repository multiverse # already enabled in vm environment
   - sudo apt-get update -qq
   - sudo apt-get install cabal-install
-  - cabal install --global ShellCheck
+  - sudo cabal update
+  - sudo cabal install --global ShellCheck
   - sudo apt-get install realpath || true # should be in coreutils since 16.04(?)
 script:
 - ./setup-development-environment.bash
