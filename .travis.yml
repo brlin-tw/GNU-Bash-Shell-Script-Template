@@ -1,4 +1,5 @@
 sudo: false
+dist: trusty
 # Fake language, we use Bash ;)
 language: c
 script:
