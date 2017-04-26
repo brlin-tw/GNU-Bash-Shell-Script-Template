@@ -1,0 +1,9 @@
+# Software Directory Configuration paths
+# This file defines sub-directories that the application uses, in Self-contained Hierarchy Configuration(S.H.C.) paths
+# SDC_EXECUTABLE_DIR="${SHC_PREFIX_DIR}/Executables"
+# SDC_LIBRARY_DIR="${SHC_PREFIX_DIR}/Libraries"
+# SDC_SHARED_RES_DIR="${SHC_PREFIX_DIR}/Resources"
+# SDC_I18N_DATA_DIR="${SHC_PREFIX_DIR}/Resources/I18N"
+# SDC_SETTINGS_DIR="${SHC_PREFIX_DIR}/Settings"
+# SDC_TEMP_DIR="${SHC_PREFIX_DIR}/Temporary Files"
+KDE_TEMPLATE_SETUP_DIR="${SHC_PREFIX_DIR}/Template Setup for KDE"
