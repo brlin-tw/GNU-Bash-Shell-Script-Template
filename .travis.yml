@@ -50,5 +50,4 @@ deploy:
   file: "Software Release/*.tar.bz2"
   skip_cleanup: true
   on:
-    repo: Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
     tags: true
