@@ -26,9 +26,8 @@ git:
   depth: 1
 
 install:
-- sudo apt-get update -qq
-- curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-- sudo apt-get install git-lfs
+- "./Utilities for Travis CI/Install Git LFS in Travis CI Container Environment.bash"
+- PATH="${PWD}/$(printf git-lfs-*):${PATH}"
 
 before_script:
 - git lfs pull
