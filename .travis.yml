@@ -26,7 +26,7 @@ git:
   depth: 1
 
 install:
-- './Utilities for Travis CI/Install Git LFS in Travis CI Container Environment.bash'
+- ./Utilities\ for\ Travis\ CI/Install\ Git\ LFS\ in\ Travis\ CI\ Container\ Environment.bash
 - PATH="${PWD}/$(printf git-lfs-*):${PATH}"
 
 before_script:
