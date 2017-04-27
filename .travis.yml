@@ -34,7 +34,7 @@ before_script:
 - git lfs pull
 
 script:
-- bash -c 'shopt -s globstar; shellcheck **/*.{bash}'
+- bash -c 'shopt -s globstar; shellcheck **/*.bash'
 - ./build.bash
 
 matrix:
