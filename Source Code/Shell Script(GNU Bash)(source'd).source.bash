@@ -1,8 +1,13 @@
-# 〈程式片段檔名〉 - 〈程式片段描述文字（一言以蔽之）〉
-# 〈程式片段智慧財產權擁有者名諱、地址（選用）〉 © 〈智慧財產權生效年〉
-# 〈更多程式片段描述文字〉
+# <Source Description>
+# <Copyright Holder Name> © <Copyright Activation Latest Year, for determining year of end of copyright protection>
 #shellcheck shell=bash
+## Include Guard to prevent multiple sourcing
+## TODO: rename INCLUDE_GUARD to something sensible for each file, like INCLUDE_GUARD_FOO
+if [ -z "${INCLUDE_GUARD}" ]; then
+	return 0
+fi
 
-######## Included files ########
+## TODO: Put your code here
 
-######## Included files ended ########
+## Set Include Guard
+declare INCLUDE_GUARD=1
