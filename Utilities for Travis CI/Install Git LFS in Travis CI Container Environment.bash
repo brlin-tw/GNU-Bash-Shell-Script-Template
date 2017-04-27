@@ -54,15 +54,21 @@ trap errexit ERR
 init(){
 	declare latest_release_tag
 	latest_release_tag="$(fetch_latest_git_lfs_release_tag)"
+	readonly latest_release_tag
 
-	wget "https://github.com/git-lfs/git-lfs/releases/download/${latest_release_tag}/git-lfs-linux-amd64-${latest_release_tag:1}.tar.gz"
+	readonly download_and_install_directory="${HOME}/Software"
+	mkdir --parents "${download_and_install_directory}"
 
-	tar --extract --verbose --file "git-lfs-linux-amd64-${latest_release_tag:1}.tar.gz"
+	wget --directory-prefix="${download_and_install_directory}" "https://github.com/git-lfs/git-lfs/releases/download/${latest_release_tag}/git-lfs-linux-amd64-${latest_release_tag:1}.tar.gz"
+
+	tar --extract --verbose --directory="${download_and_install_directory}" --file "${download_and_install_directory}/git-lfs-linux-amd64-${latest_release_tag:1}.tar.gz"
 
 	printf "%s: OK, you should add the following command in .travis.yml to add git-lfs to executable search path: \n" "${RUNTIME_SCRIPT_FILENAME}"
 	printf "\n"
 
-	printf "\tPATH=\"\${PWD}/\$(printf git-lfs-*):\${PATH}\"\n"
+	readonly git_lfs_folder_name="${latest_release_tag:1}"
+	printf "\tPATH=\"%s/%s:\${PATH}\"\n" "${download_and_install_directory}" "${git_lfs_folder_name}"
+
 	exit 0
 }
 readonly -f init
