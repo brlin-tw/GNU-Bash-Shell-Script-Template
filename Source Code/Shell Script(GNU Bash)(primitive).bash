@@ -32,7 +32,7 @@ trap_errexit(){
 
 trap_exit(){
 	printf "Goodbye.\n"
-}; readonly -f trap_exit; trap trap_exit
+}; readonly -f trap_exit; trap trap_exit EXIT
 
 ## init function: program entrypoint
 init(){
