@@ -1,4 +1,4 @@
-#shellcheck shell=bash
+# shellcheck shell=bash
 
 # <Source Description>
 # <Copyright Holder Name> © <Copyright Activation Latest Year, for determining year of end of copyright protection>
