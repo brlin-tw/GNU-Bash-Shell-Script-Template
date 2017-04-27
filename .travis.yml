@@ -12,6 +12,7 @@ addons:
     - debian-sid    # Grab shellcheck from the Debian repo (o_O)
     packages:
     - shellcheck
+    - realpath      # Merged to GNU Coreutils in Ubuntu 16.04
 
 ## We only support Ubuntu 14.04 and newer
 dist: trusty
