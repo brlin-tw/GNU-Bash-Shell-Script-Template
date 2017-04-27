@@ -1,21 +1,45 @@
-sudo: required
+# Travis CI Configuration
+# https://docs.travis-ci.com
+# This file is based on
+# TravisCI · koalaman/shellcheck Wiki
+# https://github.com/koalaman/shellcheck/wiki/TravisCI
+## Use container-based infrastructure for quicker build start-up
+sudo: false
+
+addons:
+  apt:
+    sources:
+    - debian-sid    # Grab shellcheck from the Debian repo (o_O)
+    packages:
+    - shellcheck
+
+## We only support Ubuntu 14.04 and newer
 dist: trusty
-# Fake language, we use Bash ;)
-language: c
+
+language: bash
+
+## EXPERIMENTAL
+## Customizing the Build - Travis CI
+## https://docs.travis-ci.com/user/customizing-the-build/#Git-Clone-Depth
+## > Please note that if you use a depth of 1 and have a queue of jobs, Travis CI won’t build commits that are in the queue when you push a new commit.
+git:
+  depth: 1
+
 install:
 - sudo apt-get update -qq
-- sudo apt-get install cabal-install
-- sudo cabal update
-- sudo cabal install --global ShellCheck
-- sudo apt-get install realpath || true
 - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
 - sudo apt-get install git-lfs
+
 before_script:
 - git lfs pull
+
 script:
-- ./setup-development-environment.bash
-- ./.git/hooks/pre-commit
+- bash -c 'shopt -s globstar; shellcheck **/*.{sh,bash}'
 - ./build.bash
+
+matrix:
+  fast_finish: true
+
 deploy:
   provider: releases
   api_key:
@@ -24,5 +48,5 @@ deploy:
   file: "Software Release/*.tar.bz2"
   skip_cleanup: true
   on:
-    repo: Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
+#    repo: Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
     tags: true
