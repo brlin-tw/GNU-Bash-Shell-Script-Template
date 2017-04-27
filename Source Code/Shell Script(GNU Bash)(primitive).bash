@@ -25,6 +25,15 @@ readonly RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCR
 readonly RUNTIME_SCRIPT_PATH_RELATIVE="${0}"
 readonly RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
 
+trap_errexit(){
+	printf "An error occurred and script is prematurely aborted\n" 1>&2
+	return 0
+}; readonly -f trap_errexit; trap trap_errexit ERR
+
+trap_exit(){
+	printf "Goodbye.\n"
+}; readonly -f trap_exit; trap trap_exit
+
 ## init function: program entrypoint
 init(){
 
