@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Install Git LFS in Travis CI Container Environment
 # 林博仁 Copyright 2017
+# Run following command after this script in travis.yml:
+#
+# 	PATH="$(printf "${HOME}"/git-lfs-*):${PATH}"
+#
 ## Makes debuggers' life easier - Unofficial Bash Strict Mode
 ## http://redsymbol.net/articles/unofficial-bash-strict-mode/
 ### Exit immediately if a pipeline, which may consist of a single simple command, a list, or a compound command returns a non-zero status.  The shell does not exit if the command that fails is part of the command list immediately following a `while' or `until' keyword, part of the test in an `if' statement, part of any command executed in a `&&' or `||' list except the command following the final `&&' or `||', any command in a pipeline but the last, or if the command's return status is being inverted with `!'.  If a compound command other than a subshell returns a non-zero status because a command failed while `-e' was being ignored, the shell does not exit.  A trap on `ERR', if set, is executed before the shell exits.
@@ -56,19 +60,16 @@ init(){
 	latest_release_tag="$(fetch_latest_git_lfs_release_tag)"
 	readonly latest_release_tag
 
-	readonly download_and_install_directory="${HOME}/Software"
-	mkdir --parents "${download_and_install_directory}"
+	wget --directory-prefix="${HOME}" "https://github.com/git-lfs/git-lfs/releases/download/${latest_release_tag}/git-lfs-linux-amd64-${latest_release_tag:1}.tar.gz"
 
-	wget --directory-prefix="${download_and_install_directory}" "https://github.com/git-lfs/git-lfs/releases/download/${latest_release_tag}/git-lfs-linux-amd64-${latest_release_tag:1}.tar.gz"
+	tar --extract --verbose --directory="${HOME}" --file "${HOME}/git-lfs-linux-amd64-${latest_release_tag:1}.tar.gz"
 
-	tar --extract --verbose --directory="${download_and_install_directory}" --file "${download_and_install_directory}/git-lfs-linux-amd64-${latest_release_tag:1}.tar.gz"
-
-	printf "%s: OK, you should add the following command in .travis.yml to add git-lfs to executable search path: \n" "${RUNTIME_SCRIPT_FILENAME}"
+	printf "Git Large File Storage installed successfully, note that you should also run the following command in .travis.yml to add git-lfs to executable search path:\n"
 	printf "\n"
 
-	readonly git_lfs_folder_name="${latest_release_tag:1}"
-	printf "\tPATH=\"%s/%s:\${PATH}\"\n" "${download_and_install_directory}" "${git_lfs_folder_name}"
-
+	# Disable SC2016, the expansion isn't going to happen here
+	# shellcheck disable=SC2016
+	printf '\tPATH="$(printf "${HOME}"/git-lfs-*):${PATH}"\n'
 	exit 0
 }
 readonly -f init

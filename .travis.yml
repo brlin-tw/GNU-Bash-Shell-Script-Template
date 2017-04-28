@@ -28,7 +28,7 @@ git:
 
 install:
 - ./Utilities\ for\ Travis\ CI/Install\ Git\ LFS\ in\ Travis\ CI\ Container\ Environment.bash
-- PATH="${PWD}/$(printf git-lfs-*):${PATH}"
+- PATH="$(printf "${HOME}"/git-lfs-*):${PATH}"
 
 before_script:
 - git lfs pull
