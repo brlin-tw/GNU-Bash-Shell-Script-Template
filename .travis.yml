@@ -31,6 +31,7 @@ install:
 - PATH="$(printf "${HOME}"/git-lfs-*):${PATH}"
 
 before_script:
+- git lfs install # Install Git LFS config, which makes LFS files not making Git considered as "dirty"
 - git lfs pull
 
 script:
