@@ -38,6 +38,5 @@ trap_exit(){
 init(){
 
 	exit 0
-}
-readonly -f init
+}; readonly -f init
 init "${@}"

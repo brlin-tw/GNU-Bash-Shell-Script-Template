@@ -102,8 +102,8 @@ meta_trap_errexit(){
 
 	printf "Goodbye.\n"
 	return "${COMMON_RESULT_SUCCESS}"
-}
-readonly -f meta_trap_errexit
+}; readonly -f meta_trap_errexit
+
 # Variable is expanded when trap triggered, not now
 #shellcheck disable=SC2016
 declare -r TRAP_ERREXIT_ARG='meta_trap_errexit ${LINENO} "${BASH_COMMAND}" ${?}'
@@ -152,8 +152,7 @@ meta_printApplicationInfoBeforeNormalExit(){
 		read -r enter_holder
 	fi
 	return "${COMMON_RESULT_SUCCESS}"
-}
-declare -fr meta_printApplicationInfoBeforeNormalExit
+}; declare -fr meta_printApplicationInfoBeforeNormalExit
 trap 'meta_printApplicationInfoBeforeNormalExit' EXIT
 
 ## Workarounds
@@ -178,8 +177,7 @@ meta_workaround_errexit_setup() {
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 	return "${COMMON_RESULT_SUCCESS}"
-}
-declare -fr meta_workaround_errexit_setup
+}; declare -fr meta_workaround_errexit_setup
 
 ## Runtime Dependencies Checking
 ## shell - Check if a program exists from a Bash script - Stack Overflow
@@ -208,8 +206,7 @@ meta_checkRuntimeDependencies() {
 		unset exit_status
 		return "${COMMON_RESULT_SUCCESS}"
 	fi
-}
-declare -fr meta_checkRuntimeDependencies
+}; declare -fr meta_checkRuntimeDependencies
 meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
 meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
 
@@ -400,8 +397,7 @@ meta_util_array_shift(){
 	fi
 
 	return "${COMMON_RESULT_SUCCESS}"
-}
-declare -fr meta_util_array_shift
+}; declare -fr meta_util_array_shift
 
 ## Understand what argument is in the command, and set the global variables accordingly.
 meta_processCommandlineArguments() {
@@ -433,8 +429,7 @@ meta_processCommandlineArguments() {
 	fi
 
 	return "${COMMON_RESULT_SUCCESS}"
-}
-declare -fr meta_processCommandlineArguments
+}; declare -fr meta_processCommandlineArguments
 
 ## Print single segment of commandline option help
 meta_util_printSingleCommandlineOptionHelp(){
@@ -463,8 +458,7 @@ meta_util_printSingleCommandlineOptionHelp(){
 
 	printf "\n" # Separate with next option(or next heading)
 	return "${COMMON_RESULT_SUCCESS}"
-}
-declare -fr meta_util_printSingleCommandlineOptionHelp
+}; declare -fr meta_util_printSingleCommandlineOptionHelp
 
 ## Print help message whenever:
 ##   * User requests it
@@ -488,8 +482,7 @@ meta_printHelpMessage(){
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" "${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" "${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
 	return "${COMMON_RESULT_SUCCESS}"
-}
-declare -fr meta_printHelpMessage
+}; declare -fr meta_printHelpMessage
 
 ## Defensive Bash Programming - init function, program's entry point
 ## http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/
@@ -514,6 +507,5 @@ init() {
 	fi
 
 	exit "${COMMON_RESULT_SUCCESS}"
-}
-declare -fr init
+}; declare -fr init
 init
