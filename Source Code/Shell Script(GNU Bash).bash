@@ -102,7 +102,7 @@ meta_trap_errexit(){
 
 	printf "Goodbye.\n"
 	return "${COMMON_RESULT_SUCCESS}"
-}; readonly -f meta_trap_errexit
+}; declare -fr meta_trap_errexit
 
 # Variable is expanded when trap triggered, not now
 #shellcheck disable=SC2016
@@ -228,7 +228,7 @@ declare RUNTIME_SCRIPT_PATH_RELATIVE
 ### Runtime environment's executable search path priority set
 declare -a RUNTIME_PATH_DIRECTORIES
 IFS=':' read -r -a RUNTIME_PATH_DIRECTORIES <<< "${PATH}" || true # Without this `read` will return 1
-readonly RUNTIME_PATH_DIRECTORIES
+declare -r RUNTIME_PATH_DIRECTORIES
 
 ### The guessed user input base command (without the arguments), this is handy when showing help, where the proper base command can be displayed(default: auto-detect, unset if not available)
 ### If ${RUNTIME_SCRIPT_DIRECTORY} is in ${RUNTIME_PATH_DIRECTORIES}, this would be ${RUNTIME_SCRIPT_FILENAME}, if not this would be ./${RUNTIME_SCRIPT_PATH_RELATIVE}
@@ -239,7 +239,7 @@ declare -ir RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY="${#}"
 if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -ne 0 ]; then
 	declare -a RUNTIME_COMMANDLINE_ARGUMENT_LIST
 	RUNTIME_COMMANDLINE_ARGUMENT_LIST=("${@:1}")
-	readonly RUNTIME_COMMANDLINE_ARGUMENT_LIST
+	declare -r RUNTIME_COMMANDLINE_ARGUMENT_LIST
 fi
 
 ### Auto-detection algorithm
@@ -252,11 +252,11 @@ else
 	# BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki
 	# http://mywiki.wooledge.org/BashFAQ/028
 	RUNTIME_SCRIPT_FILENAME="$(basename "${BASH_SOURCE[0]}")"
-	readonly RUNTIME_SCRIPT_FILENAME
+	declare -r RUNTIME_SCRIPT_FILENAME
 	RUNTIME_SCRIPT_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
-	readonly RUNTIME_SCRIPT_DIRECTORY
-	readonly RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
-	readonly RUNTIME_SCRIPT_PATH_RELATIVE="${0}"
+	declare -r RUNTIME_SCRIPT_DIRECTORY
+	declare -r RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
+	declare -r RUNTIME_SCRIPT_PATH_RELATIVE="${0}"
 
 	declare pathdir
 	for pathdir in "${RUNTIME_PATH_DIRECTORIES[@]}"; do
@@ -282,7 +282,7 @@ else
 		fi
 	done
 	unset pathdir
-	readonly RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
+	declare -r RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
 fi
 
 ## Software Directories Configuration(S.D.C.)
@@ -312,12 +312,12 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 		## Software installation directory prefix, should be overridable by configure/install script
 		declare -r FHS_PREFIX_DIR="/usr/local"
 
-		readonly SDC_EXECUTABLES_DIR="${FHS_PREFIX_DIR}/bin"
-		readonly SDC_LIBRARIES_DIR="${FHS_PREFIX_DIR}/lib"
-		readonly SDC_SHARED_RES_DIR="${FHS_PREFIX_DIR}/share/${META_APPLICATION_IDENTIFIER}"
-		readonly SDC_I18N_DATA_DIR="${FHS_PREFIX_DIR}/share/locale"
-		readonly SDC_SETTINGS_DIR="/etc/${META_APPLICATION_IDENTIFIER}"
-		readonly SDC_TEMP_DIR="/tmp/${META_APPLICATION_IDENTIFIER}"
+		declare -r SDC_EXECUTABLES_DIR="${FHS_PREFIX_DIR}/bin"
+		declare -r SDC_LIBRARIES_DIR="${FHS_PREFIX_DIR}/lib"
+		declare -r SDC_SHARED_RES_DIR="${FHS_PREFIX_DIR}/share/${META_APPLICATION_IDENTIFIER}"
+		declare -r SDC_I18N_DATA_DIR="${FHS_PREFIX_DIR}/share/locale"
+		declare -r SDC_SETTINGS_DIR="/etc/${META_APPLICATION_IDENTIFIER}"
+		declare -r SDC_TEMP_DIR="/tmp/${META_APPLICATION_IDENTIFIER}"
 		;;
 	SHC)
 		# Self-contained Hierarchy Configuration(S.H.C.) paths
@@ -327,7 +327,7 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 		#shellcheck disable=SC1090,SC1091
 		source "${RUNTIME_SCRIPT_DIRECTORY}/SOFTWARE_INSTALLATION_PREFIX_DIR.source" || true
 		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_SCRIPT_DIRECTORY}/${SOFTWARE_INSTALLATION_PREFIX_DIR:-.}")" # By default we expect that the software installation directory prefix is same directory as script
-		readonly SHC_PREFIX_DIR
+		declare -r SHC_PREFIX_DIR
 
 		## Read external software directory configuration(S.D.C.)
 		### Scope of external project
@@ -441,12 +441,12 @@ meta_util_printSingleCommandlineOptionHelp(){
 	local description="${1}"; shift # Option description
 	local long_option="${1}"; shift # The long version of option
 	local short_option="${1}" # The short version of option
-	readonly description long_option short_option
+	declare -r description long_option short_option
 
 	if [ "${#}" -eq 4 ]; then
 		shift
 		local current_value="${1}" # Current value of option, if option has value
-		readonly current_value
+		declare -r current_value
 	fi
 
 	printf "### %s / %s ###\n" "${long_option}" "${short_option}"
@@ -494,7 +494,7 @@ init() {
 	fi
 
 	# Secure configuration variables by marking them readonly
-	readonly \
+	declare -r \
 		global_just_show_help\
 		global_enable_debugging
 
