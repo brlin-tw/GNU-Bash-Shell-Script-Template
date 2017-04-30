@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #shellcheck disable=SC2034
-# The above line will be obselute after Ubuntu's provided version of ShellCheck <0.4.6 EoL'd, refer https://github.com/koalaman/shellcheck/wiki/Ignore for more info.
+# The above line will be here next to the shebang instead of below of "## Meta about This Program" due to ShellCheck <0.4.6's bug.  This should be moved after Ubuntu's provided version of ShellCheck <0.4.6 EoL'd.  Refer https://github.com/koalaman/shellcheck/issues/779 for more information.
 
 ## Metadata about This Program
 ### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_SCRIPT_FILENAME}(optional)
