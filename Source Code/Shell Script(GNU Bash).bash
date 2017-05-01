@@ -5,7 +5,7 @@
 # https://www.gnu.org/software/bash/manual/
 
 ## Metadata about This Program
-### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_SCRIPT_FILENAME}(optional)
+### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_SCRIPT_NAME}(optional)
 declare -r META_PROGRAM_NAME_OVERRIDE=""
 
 ### Program's identifier, program's name with character limitation exposed by platform(optional)
@@ -227,6 +227,9 @@ meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
 ### Script's filename(default: auto-detect, unset if not available)
 declare RUNTIME_SCRIPT_FILENAME
 
+### Script's name(default: script's filename without extension, META_PROGRAM_NAME_OVERRIDE if set
+declare RUNTIME_SCRIPT_NAME
+
 ### Script's resident directory(default: auto-detect, unset if not available)
 declare RUNTIME_SCRIPT_DIRECTORY
 
@@ -255,6 +258,7 @@ else
 	# http://mywiki.wooledge.org/BashFAQ/028
 	RUNTIME_SCRIPT_FILENAME="$(basename "${BASH_SOURCE[0]}")"
 	declare -r RUNTIME_SCRIPT_FILENAME
+	RUNTIME_SCRIPT_NAME="${META_PROGRAM_NAME_OVERRIDE:-${RUNTIME_SCRIPT_FILENAME%.*}}"
 	RUNTIME_SCRIPT_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
 	declare -r RUNTIME_SCRIPT_DIRECTORY
 	declare -r RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
@@ -475,11 +479,7 @@ meta_util_printSingleCommandlineOptionHelp(){
 ##   * User requests it
 ##   * An command syntax error has detected
 meta_printHelpMessage(){
-	if [ -n "${META_PROGRAM_NAME_OVERRIDE}" ]; then
-		printf "# %s #\n" "${META_PROGRAM_NAME_OVERRIDE}"
-	else
-		printf "# %s #\n" "${RUNTIME_COMMAND_BASE}"
-	fi
+	printf "# %s #\n" "${RUNTIME_SCRIPT_NAME}"
 
 	if [ -n "${META_PROGRAM_DESCRIPTION}" ]; then
 		printf "%s\n" "${META_PROGRAM_DESCRIPTION}"
