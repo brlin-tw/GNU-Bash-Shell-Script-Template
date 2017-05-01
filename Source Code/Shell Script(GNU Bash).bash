@@ -91,7 +91,7 @@ set -o nounset
 ## Functions that will be triggered if certain condition met
 ## BASHDOC: Shell Builtin Commands » Bourne Shell Builtins(trap)
 ### Collect all information useful for debugging
-meta_trap_errexit_print_debugging_info(){
+meta_trap_err_print_debugging_info(){
 	if [ ${#} -ne 3 ]; then
 		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
@@ -117,9 +117,9 @@ meta_trap_errexit_print_debugging_info(){
 	printf "\n" # Separate list and further content
 
 	return "${COMMON_RESULT_SUCCESS}"
-}; declare -rf meta_trap_errexit_print_debugging_info
+}; declare -rf meta_trap_err_print_debugging_info
 
-meta_trap_errexit(){
+meta_trap_err(){
 	if [ ${#} -ne 3 ]; then
 		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
@@ -129,7 +129,7 @@ meta_trap_errexit(){
 	local -r failing_command="${1}"; shift # The failing command
 	local -ir failing_command_return_status=${1} # The failing command's return value
 
-	meta_trap_errexit_print_debugging_info "${line_error_location}" "${failing_command}" "${failing_command_return_status}"
+	meta_trap_err_print_debugging_info "${line_error_location}" "${failing_command}" "${failing_command_return_status}"
 
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_errexit
