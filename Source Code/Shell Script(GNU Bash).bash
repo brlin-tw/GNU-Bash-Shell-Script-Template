@@ -379,11 +379,11 @@ declare -i global_enable_debugging="${COMMON_BOOLEAN_FALSE}"
 
 ## Drop first element from array and shift remaining elements 1 element backward
 meta_util_array_shift(){
-	local -n array_ref=${1}
+	local -n array_ref="${1}"
 
 	# Check input validity
 	# When -v test is used against a nameref, the name is tested
-	if [ ${#array_ref[@]} -eq 0 ]; then
+	if [ "${#array_ref[@]}" -eq 0 ]; then
 		printf "ERROR: array is empty!\n" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
@@ -392,7 +392,7 @@ meta_util_array_shift(){
 	unset "array_ref[0]"
 
 	# Repack array if element still available in array
-	if [ ${#array_ref[@]} -ne 0 ]; then
+	if [ "${#array_ref[@]}" -ne 0 ]; then
 		array_ref=("${array_ref[@]}")
 	fi
 
