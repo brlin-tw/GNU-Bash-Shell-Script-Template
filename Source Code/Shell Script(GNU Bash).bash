@@ -245,15 +245,6 @@ declare -r RUNTIME_PATH_DIRECTORIES
 ### If ${RUNTIME_SCRIPT_DIRECTORY} is in ${RUNTIME_PATH_DIRECTORIES}, this would be ${RUNTIME_SCRIPT_FILENAME}, if not this would be ./${RUNTIME_SCRIPT_PATH_RELATIVE}
 declare RUNTIME_COMMAND_BASE
 
-### Collect command-line arguments
-declare -ir RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY="${#}"
-if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -ne 0 ]; then
-	declare -a RUNTIME_COMMANDLINE_ARGUMENT_LIST
-	RUNTIME_COMMANDLINE_ARGUMENT_LIST=("${@:1}")
-	declare -r RUNTIME_COMMANDLINE_ARGUMENT_LIST
-fi
-
-### Auto-detection algorithm
 if [ ! -v BASH_SOURCE ]; then
 	# S.H.C. isn't possible(probably from stdin), force STANDALONE mode
 	META_SOFTWARE_INSTALL_STYLE=STANDALONE
@@ -294,6 +285,14 @@ else
 	done
 	unset pathdir
 	declare -r RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
+fi
+
+### Collect command-line arguments
+declare -ir RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY="${#}"
+if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -ne 0 ]; then
+	declare -a RUNTIME_COMMANDLINE_ARGUMENT_LIST
+	RUNTIME_COMMANDLINE_ARGUMENT_LIST=("${@:1}")
+	declare -r RUNTIME_COMMANDLINE_ARGUMENT_LIST
 fi
 
 ## Software Directories Configuration(S.D.C.)
