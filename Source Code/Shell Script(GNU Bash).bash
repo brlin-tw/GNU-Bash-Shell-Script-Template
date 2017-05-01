@@ -90,14 +90,19 @@ set -o nounset
 ## Traps
 ## Functions that will be triggered if certain condition met
 ## BASHDOC: Shell Builtin Commands » Bourne Shell Builtins(trap)
-### Trigger trap if program prematurely exited due to an error, collect all information useful to debug
-meta_trap_errexit(){
-	# No need to debug abort script
-	set +o xtrace
+### Collect all information useful for debugging
+meta_trap_errexit_print_debugging_info(){
+	if [ ${#} -ne 3 ]; then
+		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
+		return "${COMMON_RESULT_FAILURE}"
+	fi
 
 	local -ir line_error_location=${1}; shift # The line number that triggers the error
 	local -r failing_command="${1}"; shift # The failing command
 	local -ir failing_command_return_status=${1} # The failing command's return value
+
+	# Don't print trace for printf commands
+	set +o xtrace
 
 	printf "ERROR: %s has encountered an error and is ending prematurely, %s for support.\n" "${META_PROGRAM_NAME_OVERRIDE:-This program}" "${META_APPLICATION_SEEKING_HELP_OPTION}" 1>&2
 
@@ -111,7 +116,21 @@ meta_trap_errexit(){
 	printf "	* Intepreter info: GNU Bash v%s on %s platform\n" "${BASH_VERSION}" "${MACHTYPE}"
 	printf "\n" # Separate list and further content
 
-	printf "Goodbye.\n"
+	return "${COMMON_RESULT_SUCCESS}"
+}; declare -rf meta_trap_errexit_print_debugging_info
+
+meta_trap_errexit(){
+	if [ ${#} -ne 3 ]; then
+		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
+		return "${COMMON_RESULT_FAILURE}"
+	fi
+
+	local -ir line_error_location=${1}; shift # The line number that triggers the error
+	local -r failing_command="${1}"; shift # The failing command
+	local -ir failing_command_return_status=${1} # The failing command's return value
+
+	meta_trap_errexit_print_debugging_info "${line_error_location}" "${failing_command}" "${failing_command_return_status}"
+
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_errexit
 
