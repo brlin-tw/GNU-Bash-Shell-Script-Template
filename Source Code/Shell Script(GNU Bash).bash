@@ -15,6 +15,8 @@ declare -r META_PROGRAM_IDENTIFIER=""
 declare -r META_PROGRAM_DESCRIPTION=""
 
 ### Intellectual property license applied to this program(optional)
+### Choose a License
+### https://choosealicense.com/
 declare -r META_PROGRAM_LICENSE=""
 
 ### Whether program should pause and expect user pressing enter when program ended, which is useful when launching scripts in GUI, which may undesirebly close the terminal emulator window when the script is exited and leaving user no chance to check execution result
