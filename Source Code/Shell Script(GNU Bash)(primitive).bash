@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#shellcheck disable=SC2034
 # Comments prefixed by BASHDOC: are hints to specific GNU Bash Manual's section:
 # https://www.gnu.org/software/bash/manual/
 
@@ -22,25 +23,25 @@ set -o pipefail
 ## BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki
 ## http://mywiki.wooledge.org/BashFAQ/028
 RUNTIME_SCRIPT_FILENAME="$(basename "${BASH_SOURCE[0]}")"
-readonly RUNTIME_SCRIPT_FILENAME
+declare -r RUNTIME_SCRIPT_FILENAME
 RUNTIME_SCRIPT_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
-readonly RUNTIME_SCRIPT_DIRECTORY
-readonly RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
-readonly RUNTIME_SCRIPT_PATH_RELATIVE="${0}"
-readonly RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
+declare -r RUNTIME_SCRIPT_DIRECTORY
+declare -r RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
+declare -r RUNTIME_SCRIPT_PATH_RELATIVE="${0}"
+declare -r RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
 
 trap_errexit(){
 	printf "An error occurred and the script is prematurely aborted\n" 1>&2
 	return 0
-}; readonly -f trap_errexit; trap trap_errexit ERR
+}; declare -fr trap_errexit; trap trap_errexit ERR
 
 trap_exit(){
 	return 0
-}; readonly -f trap_exit; trap trap_exit EXIT
+}; declare -fr trap_exit; trap trap_exit EXIT
 
 ## init function: program entrypoint
 init(){
 
 	exit 0
-}; readonly -f init
+}; declare -fr init
 init "${@}"
