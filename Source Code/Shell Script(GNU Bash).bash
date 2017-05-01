@@ -132,7 +132,7 @@ meta_trap_err(){
 	meta_trap_err_print_debugging_info "${line_error_location}" "${failing_command}" "${failing_command_return_status}"
 
 	return "${COMMON_RESULT_SUCCESS}"
-}; declare -fr meta_trap_errexit
+}; declare -fr meta_trap_err
 
 # Variable is expanded when trap triggered, not now
 #shellcheck disable=SC2016
@@ -187,7 +187,7 @@ meta_trap_exit_print_application_information(){
 meta_trap_exit(){
 	meta_trap_exit_print_application_information
 	return "${COMMON_RESULT_SUCCESS}"
-}
+}; declare -fr meta_trap_exit
 trap 'meta_trap_exit' EXIT
 
 ## Workarounds
