@@ -522,8 +522,7 @@ meta_printHelpMessage(){
 ## Defensive Bash Programming - init function, program's entry point
 ## http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/
 init() {
-	meta_processCommandlineArguments
-	if [ "${?}" -eq "${COMMON_RESULT_FAILURE}" ]; then
+	if ! meta_processCommandlineArguments; then
 		meta_printHelpMessage
 		exit "${COMMON_RESULT_FAILURE}"
 	fi
