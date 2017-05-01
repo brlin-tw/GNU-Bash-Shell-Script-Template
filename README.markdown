@@ -48,3 +48,8 @@
 GNU General Public License v3+ *with an exception of only using this software as a template of a shell script(which you can use any license you prefer, attribution appreciated)*
 
 This means that GPL is enforced only when you're making another "shell script template" using this software, which you're demanded to also using GPL for your work
+
+## 類似專案<br>Similar Projects
+Similar projects that we may benifit from:
+
+* [BASH3 Boilerplate – Template for writing better Bash scripts](http://bash3boilerplate.sh/)
