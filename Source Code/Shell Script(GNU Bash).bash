@@ -167,7 +167,7 @@ meta_workaround_errexit_setup() {
 	if [ "${option}" == "on" ]; then
 		set -o errexit
 		# We separate the arguments to TRAP_ERREXIT_ARG, so it should be expand here
-#shellcheck disable=SC2064
+		#shellcheck disable=SC2064
 		trap "${TRAP_ERREXIT_ARG}" ERR
 	elif [ "${option}" == "off" ]; then
 		set +o errexit
