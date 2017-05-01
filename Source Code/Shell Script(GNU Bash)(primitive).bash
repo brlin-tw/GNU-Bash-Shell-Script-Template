@@ -1,16 +1,20 @@
 #!/usr/bin/env bash
+# Comments prefixed by BASHDOC: are hints to specific GNU Bash Manual's section:
+# https://www.gnu.org/software/bash/manual/
+
 ## Makes debuggers' life easier - Unofficial Bash Strict Mode
 ## http://redsymbol.net/articles/unofficial-bash-strict-mode/
-### Exit immediately if a pipeline, which may consist of a single simple command, a list, or a compound command returns a non-zero status.  The shell does not exit if the command that fails is part of the command list immediately following a `while' or `until' keyword, part of the test in an `if' statement, part of any command executed in a `&&' or `||' list except the command following the final `&&' or `||', any command in a pipeline but the last, or if the command's return status is being inverted with `!'.  If a compound command other than a subshell returns a non-zero status because a command failed while `-e' was being ignored, the shell does not exit.  A trap on `ERR', if set, is executed before the shell exits.
+## BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
+### Exit prematurely if a command's return value is not 0(with some exceptions), triggers ERR trap if available.
 set -o errexit
 
-### Treat unset variables and parameters other than the special parameters `@' or `*' as an error when performing parameter expansion.  An error message will be written to the standard error, and a non-interactive shell will exit.
-set -o nounset
-
-### If set, any trap on `ERR' is inherited by shell functions, command substitutions, and commands executed in a subshell environment.  The `ERR' trap is normally not inherited in such cases.
+### Trap on `ERR' is inherited by shell functions, command substitutions, and subshell environment as well
 set -o errtrace
 
-### If set, the return value of a pipeline is the value of the last (rightmost) command to exit with a non-zero status, or zero if all commands in the pipeline exit successfully.  This option is disabled by default.
+### Exit prematurely if an unset variable is expanded, causing parameter expansion failure.
+set -o nounset
+
+### Let the return value of a pipeline be the value of the last (rightmost) command to exit with a non-zero status
 set -o pipefail
 
 ## Non-overridable Primitive Variables
