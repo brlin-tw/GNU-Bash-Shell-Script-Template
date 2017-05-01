@@ -35,7 +35,6 @@ trap_errexit(){
 }; readonly -f trap_errexit; trap trap_errexit ERR
 
 trap_exit(){
-	printf "Goodbye.\n"
 	return 0
 }; readonly -f trap_exit; trap trap_exit EXIT
 
