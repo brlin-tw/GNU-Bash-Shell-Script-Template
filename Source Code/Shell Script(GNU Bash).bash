@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 #shellcheck disable=SC2034
 # The above line will be here next to the shebang instead of below of "## Meta about This Program" due to ShellCheck <0.4.6's bug.  This should be moved after Ubuntu's provided version of ShellCheck <0.4.6 EoL'd.  Refer https://github.com/koalaman/shellcheck/issues/779 for more information.
+# Comments prefixed by BASHDOC: are hints to specific GNU Bash Manual's section:
+# https://www.gnu.org/software/bash/manual/
 
 ## Metadata about This Program
 ### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_SCRIPT_FILENAME}(optional)
@@ -46,6 +48,7 @@ declare -r META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
 declare META_SOFTWARE_INSTALL_STYLE="STANDALONE"
 
 ### These are the dependencies that the script foundation needs, and needs to be checked IMMEDIATELY
+### BASHDOC: Bash Features - Arrays(associative array)
 declare -r META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS="GNU Coreutils"
 declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 	["basename"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
@@ -66,19 +69,25 @@ declare -ir COMMON_BOOLEAN_FALSE=1
 
 ## Makes debuggers' life easier - Unofficial Bash Strict Mode
 ## http://redsymbol.net/articles/unofficial-bash-strict-mode/
-### Exit immediately if a pipeline, which may consist of a single simple command, a list, or a compound command returns a non-zero status.  The shell does not exit if the command that fails is part of the command list immediately following a `while' or `until' keyword, part of the test in an `if' statement, part of any command executed in a `&&' or `||' list except the command following the final `&&' or `||', any command in a pipeline but the last, or if the command's return status is being inverted with `!'.  If a compound command other than a subshell returns a non-zero status because a command failed while `-e' was being ignored, the shell does not exit.  A trap on `ERR', if set, is executed before the shell exits.
+## BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
+### Prematurely terminates the script on any command returning non-zero, append " || true"(BASHDOC: Basic Shell Features » Shell Commands » Lists of Commands) if the non-zero return value is rather intended to happen.  A trap on `ERR', if set, is executed before the shell exits.
 set -o errexit
 
-### Treat unset variables and parameters other than the special parameters `@' or `*' as an error when performing parameter expansion.  An error message will be written to the standard error, and a non-interactive shell will exit.
-set -o nounset
-
-### If set, any trap on `ERR' is inherited by shell functions, command substitutions, and commands executed in a subshell environment.  The `ERR' trap is normally not inherited in such cases.
+### If set, any trap on `ERR' is also inherited by shell functions, command substitutions, and commands executed in a subshell environment.
 set -o errtrace
 
-### If set, the return value of a pipeline is the value of the last (rightmost) command to exit with a non-zero status, or zero if all commands in the pipeline exit successfully.  This option is disabled by default.
+### If set, the return value of a pipeline(BASHDOC: Basic Shell Features » Shell Commands » Pipelines) is the value of the last (rightmost) command to exit with a non-zero status, or zero if all commands in the pipeline exit successfully.
 set -o pipefail
 
-## Trap functions
+### Treat unset variables and parameters other than the special parameters `@' or `*' as an error when performing parameter expansion.  An error message will be written to the standard error, and a non-interactive shell will exit.
+### NOTE: errexit will NOT be triggered by this condition
+### bash - Correct behavior of EXIT and ERR traps when using `set -eu` - Unix & Linux Stack Exchange
+### https://unix.stackexchange.com/questions/208112/correct-behavior-of-exit-and-err-traps-when-using-set-eu
+set -o nounset
+
+## Traps
+## Functions that will be triggered if certain condition met
+## BASHDOC: Shell Builtin Commands » Bourne Shell Builtins(trap)
 ### Trigger trap if program prematurely exited due to an error, collect all information useful to debug
 meta_trap_errexit(){
 	# No need to debug abort script
@@ -111,7 +120,7 @@ declare -r TRAP_ERREXIT_ARG='meta_trap_errexit ${LINENO} "${BASH_COMMAND}" ${?}'
 #shellcheck disable=SC2064
 trap "${TRAP_ERREXIT_ARG}" ERR
 
-### Trap - Introduce itself everytime
+### Introduce itself everytime
 meta_printApplicationInfoBeforeNormalExit(){
 	# No need to debug this area, keep output simple
 	set +o xtrace
@@ -287,6 +296,7 @@ fi
 
 ## Software Directories Configuration(S.D.C.)
 ## This section defines and determines the directories used by the software
+## REFER: https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#software-directories-configurationsdc
 ### Directory to find executables(default: autodetermined, unset if not available)
 declare SDC_EXECUTABLES_DIR=""
 
