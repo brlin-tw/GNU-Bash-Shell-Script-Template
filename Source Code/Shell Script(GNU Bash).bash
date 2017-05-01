@@ -141,8 +141,8 @@ declare -r TRAP_ERREXIT_ARG='meta_trap_errexit ${LINENO} "${BASH_COMMAND}" ${?}'
 #shellcheck disable=SC2064
 trap "${TRAP_ERREXIT_ARG}" ERR
 
-### Introduce itself everytime
-meta_printApplicationInfoBeforeNormalExit(){
+### Introduce the program and software at leaving
+meta_trap_exit_print_application_information(){
 	# No need to debug this area, keep output simple
 	set +o xtrace
 
@@ -182,8 +182,13 @@ meta_printApplicationInfoBeforeNormalExit(){
 		read -r enter_holder
 	fi
 	return "${COMMON_RESULT_SUCCESS}"
-}; declare -fr meta_printApplicationInfoBeforeNormalExit
-trap 'meta_printApplicationInfoBeforeNormalExit' EXIT
+}; declare -fr meta_trap_exit_print_application_information
+
+meta_trap_exit(){
+	meta_trap_exit_print_application_information
+	return "${COMMON_RESULT_SUCCESS}"
+}
+trap 'meta_trap_exit' EXIT
 
 ## Workarounds
 ### Temporarily disable errexit
