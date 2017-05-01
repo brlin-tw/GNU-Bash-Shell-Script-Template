@@ -520,7 +520,8 @@ init() {
 
 	cd "${RUNTIME_SCRIPT_DIRECTORY}"
 
-	ln --symbolic --relative --force "${SDC_GIT_HOOKS_CLIENT_SIDE_DIR}"/pre-commit.bash .git/hooks/pre-commit
+	printf "Setting pre-commit hook..."
+	ln --symbolic --relative --force "${SDC_GIT_HOOKS_CLIENT_SIDE_DIR}"/pre-commit.bash .git/hooks/pre-commit && printf "done\n"
 
 	exit "${COMMON_RESULT_SUCCESS}"
 }
