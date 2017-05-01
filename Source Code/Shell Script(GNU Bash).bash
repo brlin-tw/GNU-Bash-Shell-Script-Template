@@ -505,7 +505,7 @@ init() {
 	fi
 
 	# Secure configuration variables by marking them readonly
-	declare -r \
+	declare -gr \
 		global_just_show_help\
 		global_enable_debugging
 
