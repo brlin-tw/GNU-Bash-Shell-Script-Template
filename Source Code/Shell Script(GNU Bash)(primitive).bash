@@ -24,6 +24,7 @@ set -o pipefail
 ## http://mywiki.wooledge.org/BashFAQ/028
 RUNTIME_SCRIPT_FILENAME="$(basename "${BASH_SOURCE[0]}")"
 declare -r RUNTIME_SCRIPT_FILENAME
+declare -r RUNTIME_SCRIPT_NAME="${RUNTIME_SCRIPT_FILENAME%.*}"
 RUNTIME_SCRIPT_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
 declare -r RUNTIME_SCRIPT_DIRECTORY
 declare -r RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
