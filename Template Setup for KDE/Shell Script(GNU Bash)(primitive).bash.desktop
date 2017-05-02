@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Shell Script(GNU Bash)(primitive)
-Name[zh_TW]=Shell Script(GNU Bash)（簡化版）
+Name=Shell Script(GNU Bash)(primitive).bash
+Name[zh_TW]=Shell Script(GNU Bash)（簡化版）.bash
 Type=Link
 Icon=text-x-script
 URL=Shell Script(GNU Bash)(primitive).bash
