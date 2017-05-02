@@ -1,4 +1,5 @@
 # shellcheck shell=bash
+# shellcheck disable=SC2034
 
 # <Source Description>
 # <Copyright Holder Name> © <Copyright Activation Latest Year, for determining year of end of copyright protection>
@@ -12,3 +13,6 @@ fi
 
 ## Set Include Guard
 declare INCLUDE_GUARD=1
+
+## Template version this script based on, for incorporating new features from the template
+declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"

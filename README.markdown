@@ -35,11 +35,16 @@
   <https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification>
 
 ## 軟體依賴資訊<br>Software Dependency Information
-### [GNU Core Utilities(Coreutils)](http://www.gnu.org/software/coreutils/coreutils.html)
+### 執行時期依賴軟體<br>Runtime Dependencies
+#### [GNU Core Utilities(Coreutils)](http://www.gnu.org/software/coreutils/coreutils.html)
 用於得出程式檔名與路徑
 
-### [ShellCheck – shell script analysis tool](http://www.shellcheck.net/)（限開發環境）
+### 開發時期依賴軟體<br>Development Dependencies
+#### [ShellCheck – shell script analysis tool](http://www.shellcheck.net/)
 用於檢查 shell script 的各種潛在問題
+
+#### [GNU Sed](https://www.gnu.org/software/sed/)
+用來實現版本號注入
 
 ## 下載軟體<br>Download Software
 請至本專案的[軟體釋出頁面](https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template/releases)下載建構好的軟體與來源代碼

@@ -523,6 +523,16 @@ init() {
 	printf "Setting pre-commit hook..."
 	ln --symbolic --relative --force "${SDC_GIT_HOOKS_CLIENT_SIDE_DIR}"/pre-commit.bash .git/hooks/pre-commit && printf "done\n"
 
+	printf "Setting project-specific git configurations..."
+	git config include.path ../.gitconfig && printf "done.\n"
+
+	printf "Activate Git smudge filter..."\
+		&& git stash save >/dev/null\
+		&& rm .git/index >/dev/null\
+		&& git checkout HEAD -- "$(git rev-parse --show-toplevel)" >/dev/null\
+		&& git stash pop >/dev/null\
+		&& printf "done.\n"
+
 	exit "${COMMON_RESULT_SUCCESS}"
 }
 declare -fr init

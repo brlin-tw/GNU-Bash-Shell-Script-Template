@@ -543,3 +543,6 @@ init() {
 	exit "${COMMON_RESULT_SUCCESS}"
 }; declare -fr init
 init
+
+## Template version this script based on, for incorporating new features from the template
+declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"

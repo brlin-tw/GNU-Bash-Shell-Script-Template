@@ -40,9 +40,25 @@ trap_exit(){
 	return 0
 }; declare -fr trap_exit; trap trap_exit EXIT
 
+check_runtime_dependencies(){
+	# We just have one command to check, so...
+	# shellcheck disable=SC2043
+	for a_command in sed; do
+		if ! command -v "${a_command}" &>/dev/null; then
+			printf "ERROR: %s command not found.\n" "${a_command}" 1>&2
+			return 1
+		fi
+	done
+	return 0
+}; declare -fr check_runtime_dependencies
+
 ## init function: program entrypoint
 init(){
-
+	printf "INFO: %s called\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
+	if ! check_runtime_dependencies; then
+		exit 1
+	fi
+	sed 's/^declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=.*$/declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"/'
 	exit 0
 }; declare -fr init
 init "${@}"
