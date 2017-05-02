@@ -37,6 +37,7 @@ trap_errexit(){
 }; declare -fr trap_errexit; trap trap_errexit ERR
 
 trap_exit(){
+	printf "DEBUG: %s is leaving\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
 	return 0
 }; declare -fr trap_exit; trap trap_exit EXIT
 
@@ -54,7 +55,7 @@ check_runtime_dependencies(){
 
 ## init function: program entrypoint
 init(){
-	printf "INFO: %s called\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
+	printf "DEBUG: %s called\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
 	if ! check_runtime_dependencies; then
 		exit 1
 	fi
