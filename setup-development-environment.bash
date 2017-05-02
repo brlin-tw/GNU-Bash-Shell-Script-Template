@@ -526,12 +526,12 @@ init() {
 	printf "Setting project-specific git configurations..."
 	git config include.path ../.gitconfig && printf "done.\n"
 
-	printf "Activate Git smudge filter..."\
-		&& git stash save >/dev/null\
-		&& rm .git/index >/dev/null\
-		&& git checkout HEAD -- "$(git rev-parse --show-toplevel)" >/dev/null\
-		&& git stash pop >/dev/null\
-		&& printf "done.\n"
+	printf "Activate Git smudge filter...\n"
+	git stash save &>/dev/null || true
+	rm .git/index >/dev/null
+	git checkout HEAD -- "$(git rev-parse --show-toplevel)" >/dev/null
+	git stash pop &>/dev/null || true
+	printf "done.\n"
 
 	exit "${COMMON_RESULT_SUCCESS}"
 }
