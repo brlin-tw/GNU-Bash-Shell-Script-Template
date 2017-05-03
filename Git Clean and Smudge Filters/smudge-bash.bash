@@ -63,6 +63,11 @@ init(){
 		exit 1
 	fi
 
+	# Make Git don't consider tree is dirty even when it shouldn't because of the existing clean filter
+	# Why does 'git status' ignore the .gitattributes clean filter? - Stack Overflow
+	# http://stackoverflow.com/questions/19807979/why-does-git-status-ignore-the-gitattributes-clean-filter
+	git add -u
+
 	declare version
 	version="$(describe_this_version)"
 
