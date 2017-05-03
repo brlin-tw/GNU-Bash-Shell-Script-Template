@@ -5,7 +5,7 @@
 # https://www.gnu.org/software/bash/manual/
 
 ## Metadata about This Program
-### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_SCRIPT_NAME}(optional)
+### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_EXECUTABLE_NAME}(optional)
 declare -r META_PROGRAM_NAME_OVERRIDE=""
 
 ### Program's identifier, program's name with character limitation exposed by platform(optional)
@@ -46,8 +46,8 @@ declare -r META_APPLICATION_ISSUE_TRACKER_URL=""
 ### An action to let user get help from developer or other sources when error occurred
 declare -r META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
 
-### The Software Directory Configuration this software uses, refer below section for more info
-declare META_SOFTWARE_INSTALL_STYLE="STANDALONE"
+### The Software Directory Configuration this application uses, refer below section for more info
+declare META_APPLICATION_INSTALL_STYLE="STANDALONE"
 
 ### These are the dependencies that the script foundation needs, and needs to be checked IMMEDIATELY
 ### BASHDOC: Bash Features - Arrays(associative array)
@@ -246,47 +246,51 @@ meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
 meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
 
 ## Info acquired from runtime environment
-## Defensive Bash Programming - not-overridable primitive definitions
-## http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/
-### Script's filename(default: auto-detect, unset if not available)
-declare RUNTIME_SCRIPT_FILENAME
+## --------------------------------------
+## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#runtime-determined-settings
+## The following variables defines the environment aspects that can only be detected in runtime, we use RUNTIME_ namespace for these variables.
+## These variables will not be set if technically not available(e.g. the program is provided to intepreter/etc. via stdin), or just not implemented yet
 
-### Script's name(default: script's filename without extension, META_PROGRAM_NAME_OVERRIDE if set
-declare RUNTIME_SCRIPT_NAME
+### The running executable's filename(without the underlying path)
+declare RUNTIME_EXECUTABLE_FILENAME
 
-### Script's resident directory(default: auto-detect, unset if not available)
-declare RUNTIME_SCRIPT_DIRECTORY
+### The running program's filename(like RUNTIME_EXECUTABLE_FILENAME, but without the filename extension
+### (default: script's filename without extension, META_PROGRAM_NAME_OVERRIDE if set
+declare RUNTIME_EXECUTABLE_NAME
 
-### Script's absolute path(location + filename)(default: auto-detect, unset if not available)
-declare RUNTIME_SCRIPT_PATH_ABSOLUTE
+### The path of the directory that the executable reside in
+declare RUNTIME_EXECUTABLE_DIRECTORY
 
-### Script's relative path(to current working directory)(default: auto-detect, unset if not available)
-declare RUNTIME_SCRIPT_PATH_RELATIVE
+### Executable's absolute path(location + filename)
+declare RUNTIME_EXECUTABLE_PATH_ABSOLUTE
 
-### Runtime environment's executable search path priority set
+### Executable's relative path(to current working directory)
+declare RUNTIME_EXECUTABLE_PATH_RELATIVE
+
+### Runtime environment's executable search path priority array
 declare -a RUNTIME_PATH_DIRECTORIES
 IFS=':' read -r -a RUNTIME_PATH_DIRECTORIES <<< "${PATH}" || true # Without this `read` will return 1
 declare -r RUNTIME_PATH_DIRECTORIES
 
 ### The guessed user input base command (without the arguments), this is handy when showing help, where the proper base command can be displayed(default: auto-detect, unset if not available)
-### If ${RUNTIME_SCRIPT_DIRECTORY} is in ${RUNTIME_PATH_DIRECTORIES}, this would be ${RUNTIME_SCRIPT_FILENAME}, if not this would be ./${RUNTIME_SCRIPT_PATH_RELATIVE}
+### If ${RUNTIME_EXECUTABLE_DIRECTORY} is in ${RUNTIME_PATH_DIRECTORIES}, this would be ${RUNTIME_EXECUTABLE_FILENAME}, if not this would be ./${RUNTIME_EXECUTABLE_PATH_RELATIVE}
 declare RUNTIME_COMMAND_BASE
 
 if [ ! -v BASH_SOURCE ]; then
 	# S.H.C. isn't possible(probably from stdin), force STANDALONE mode
-	META_SOFTWARE_INSTALL_STYLE=STANDALONE
+	META_APPLICATION_INSTALL_STYLE=STANDALONE
 
-	unset RUNTIME_SCRIPT_FILENAME RUNTIME_SCRIPT_DIRECTORY RUNTIME_SCRIPT_PATH_ABSOLUTE RUNTIME_SCRIPT_PATH_RELATIVE
+	unset RUNTIME_EXECUTABLE_FILENAME RUNTIME_EXECUTABLE_DIRECTORY RUNTIME_EXECUTABLE_PATH_ABSOLUTE RUNTIME_EXECUTABLE_PATH_RELATIVE
 else
 	# BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki
 	# http://mywiki.wooledge.org/BashFAQ/028
-	RUNTIME_SCRIPT_FILENAME="$(basename "${BASH_SOURCE[0]}")"
-	declare -r RUNTIME_SCRIPT_FILENAME
-	RUNTIME_SCRIPT_NAME="${META_PROGRAM_NAME_OVERRIDE:-${RUNTIME_SCRIPT_FILENAME%.*}}"
-	RUNTIME_SCRIPT_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
-	declare -r RUNTIME_SCRIPT_DIRECTORY
-	declare -r RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
-	declare -r RUNTIME_SCRIPT_PATH_RELATIVE="${0}"
+	RUNTIME_EXECUTABLE_FILENAME="$(basename "${BASH_SOURCE[0]}")"
+	declare -r RUNTIME_EXECUTABLE_FILENAME
+	RUNTIME_EXECUTABLE_NAME="${META_PROGRAM_NAME_OVERRIDE:-${RUNTIME_EXECUTABLE_FILENAME%.*}}"
+	RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
+	declare -r RUNTIME_EXECUTABLE_DIRECTORY
+	declare -r RUNTIME_EXECUTABLE_PATH_ABSOLUTE="${RUNTIME_EXECUTABLE_DIRECTORY}/${RUNTIME_EXECUTABLE_FILENAME}"
+	declare -r RUNTIME_EXECUTABLE_PATH_RELATIVE="${0}"
 
 	declare pathdir
 	for pathdir in "${RUNTIME_PATH_DIRECTORIES[@]}"; do
@@ -299,15 +303,15 @@ else
 
 		# If resolved path isn't the same path (id. est. symbolic links), also check the resolved path
 		if [ "${pathdir}" != "${resolved_pathdir}" ]; then
-			if [ "${RUNTIME_SCRIPT_DIRECTORY}" == "${resolved_pathdir}" ]; then
-				RUNTIME_COMMAND_BASE="${RUNTIME_SCRIPT_FILENAME}"
+			if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${resolved_pathdir}" ]; then
+				RUNTIME_COMMAND_BASE="${RUNTIME_EXECUTABLE_FILENAME}"
 				break
 			fi
 		fi
 		unset resolved_pathdir
 
-		if [ "${RUNTIME_SCRIPT_DIRECTORY}" == "${pathdir}" ]; then
-			RUNTIME_COMMAND_BASE="${RUNTIME_SCRIPT_FILENAME}"
+		if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${pathdir}" ]; then
+			RUNTIME_COMMAND_BASE="${RUNTIME_EXECUTABLE_FILENAME}"
 			break
 		fi
 	done
@@ -344,7 +348,7 @@ declare SDC_SETTINGS_DIR=""
 ### Directory contain temporory files created by program(default: autodetermined, unset if not available)
 declare SDC_TEMP_DIR=""
 
-case "${META_SOFTWARE_INSTALL_STYLE}" in
+case "${META_APPLICATION_INSTALL_STYLE}" in
 	FHS)
 		# Filesystem Hierarchy Standard(F.H.S.) configuration paths
 		# http://refspecs.linuxfoundation.org/FHS_3.0/fhs
@@ -364,8 +368,8 @@ case "${META_SOFTWARE_INSTALL_STYLE}" in
 		## Software installation directory prefix, should be overridable by configure/install script
 		### Scope of external project
 		#shellcheck disable=SC1090,SC1091
-		source "${RUNTIME_SCRIPT_DIRECTORY}/SOFTWARE_INSTALLATION_PREFIX_DIR.source" || true
-		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_SCRIPT_DIRECTORY}/${SOFTWARE_INSTALLATION_PREFIX_DIR:-.}")" # By default we expect that the software installation directory prefix is same directory as script
+		source "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source" || true
+		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_EXECUTABLE_DIRECTORY}/${SOFTWARE_INSTALLATION_PREFIX_DIR:-.}")" # By default we expect that the software installation directory prefix is same directory as script
 		declare -r SHC_PREFIX_DIR
 
 		## Read external software directory configuration(S.D.C.)
@@ -503,7 +507,7 @@ meta_util_printSingleCommandlineOptionHelp(){
 ##   * User requests it
 ##   * An command syntax error has detected
 meta_printHelpMessage(){
-	printf "# %s #\n" "${RUNTIME_SCRIPT_NAME}"
+	printf "# %s #\n" "${RUNTIME_EXECUTABLE_NAME}"
 
 	if [ -n "${META_PROGRAM_DESCRIPTION}" ]; then
 		printf "%s\n" "${META_PROGRAM_DESCRIPTION}"

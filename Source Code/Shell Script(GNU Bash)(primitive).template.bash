@@ -22,13 +22,13 @@ set -o pipefail
 ##
 ## BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki
 ## http://mywiki.wooledge.org/BashFAQ/028
-RUNTIME_SCRIPT_FILENAME="$(basename "${BASH_SOURCE[0]}")"
-declare -r RUNTIME_SCRIPT_FILENAME
-declare -r RUNTIME_SCRIPT_NAME="${RUNTIME_SCRIPT_FILENAME%.*}"
-RUNTIME_SCRIPT_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
-declare -r RUNTIME_SCRIPT_DIRECTORY
-declare -r RUNTIME_SCRIPT_PATH_ABSOLUTE="${RUNTIME_SCRIPT_DIRECTORY}/${RUNTIME_SCRIPT_FILENAME}"
-declare -r RUNTIME_SCRIPT_PATH_RELATIVE="${0}"
+RUNTIME_EXECUTABLE_FILENAME="$(basename "${BASH_SOURCE[0]}")"
+declare -r RUNTIME_EXECUTABLE_FILENAME
+declare -r RUNTIME_EXECUTABLE_NAME="${RUNTIME_EXECUTABLE_FILENAME%.*}"
+RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
+declare -r RUNTIME_EXECUTABLE_DIRECTORY
+declare -r RUNTIME_EXECUTABLE_PATH_ABSOLUTE="${RUNTIME_EXECUTABLE_DIRECTORY}/${RUNTIME_EXECUTABLE_FILENAME}"
+declare -r RUNTIME_EXECUTABLE_PATH_RELATIVE="${0}"
 declare -r RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
 
 trap_errexit(){
