@@ -78,13 +78,8 @@ init(){
 
 	# Workaround: git tag always dirty even when it's isn't, manually fixing it
 	# Make Git don't consider tree is dirty even when it shouldn't because of the existing clean filter
-	for template_file in "${SDC_SOURCE_CODE_DIR}/"*.bash; do
-		# Why does 'git status' ignore the .gitattributes clean filter? - Stack Overflow
-		# http://stackoverflow.com/questions/19807979/why-does-git-status-ignore-the-gitattributes-clean-filter
-		git add -u
-
-		"${SDC_GIT_FILTERS_DIR}/smudge-bash.manual-apply.bash" "${template_file}"
-	done
+	find "${SDC_SOURCE_CODE_DIR}" -name "*.bash" -print0 | xargs --null --max-args=1 --verbose "${SDC_GIT_FILTERS_DIR}/clean-bash.manual-apply.bash"
+	"${SDC_GIT_FILTERS_DIR}/smudge-bash.manual-apply.bash" "${SDC_SOURCE_CODE_DIR}/"*.bash
 
 	if [ ! -d "${SDC_RELEASE_DIR}" ]; then
 		mkdir --parents "${SDC_RELEASE_DIR}"

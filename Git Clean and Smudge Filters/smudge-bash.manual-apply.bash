@@ -107,6 +107,11 @@ smudge_file(){
 	declare -r temp_file_name=stdout.bash
 	declare -r temp_file="${global_temp_directory}/${temp_file_name}"
 
+	# Workaround: Make Git don't consider tree is dirty even when it shouldn't because of the existing clean filter
+	# Why does 'git status' ignore the .gitattributes clean filter? - Stack Overflow
+	# http://stackoverflow.com/questions/19807979/why-does-git-status-ignore-the-gitattributes-clean-filter
+	git add -u
+
 	printf "Smudging %s...\n" "${target_file}"
 	"${RUNTIME_SCRIPT_DIRECTORY}"/smudge-bash.bash <"${target_file}" >"${temp_file}"
 	cat "${temp_file}" >"${target_file}"
