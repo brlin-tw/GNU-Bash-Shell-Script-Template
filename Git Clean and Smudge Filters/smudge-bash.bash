@@ -51,13 +51,24 @@ check_runtime_dependencies(){
 	return 0
 }; declare -fr check_runtime_dependencies
 
+describe_this_version(){
+	git describe --tags --dirty --always
+	return 0
+}; declare -fr describe_this_version
+
 ## init function: program entrypoint
 init(){
 	printf "DEBUG: %s called\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
 	if ! check_runtime_dependencies; then
 		exit 1
 	fi
-	sed "s/^declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=\"@@TEMPLATE_VERSION@@\"$/declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=\"$(git describe --tags --dirty --always)\"/"
+
+	declare version
+	version="$(describe_this_version)"
+
+	printf "%s: DEBUG: Use %s as this version's tag\n" "${RUNTIME_SCRIPT_NAME}" "${version}" 1>&2
+	sed "s/^declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=\"@@TEMPLATE_VERSION@@\"$/declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=\"${version}\"/"
+	printf "DEBUG: %s is done\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
 	exit 0
 }; declare -fr init
 init "${@}"

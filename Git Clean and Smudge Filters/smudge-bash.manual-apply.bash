@@ -46,26 +46,121 @@ check_runtime_dependencies(){
 	return 0
 }
 
+declare -i global_just_show_help="0"
+declare -i global_enable_debug_mode="0"
+declare -a global_input_file_list=()
+declare global_temp_directory=""
+
+print_help(){
+	if [ "${#}" -ne 0 ]; then
+		printf "%s: Function argument quantity illegal, got %u instead of 0\n" "${FUNCNAME[0]}" "${#}" 1>&2
+		return 1
+	fi
+
+	cat <<-END_OF_HERE_DOCUMENT
+		# "${RUNTIME_SCRIPT_NAME}"'s Helpful Note #
+		This program replaces @@TEMPLATE_VERSION@@ pattern in template files to proper git revision description.
+
+		## Usage ##
+		\`\`\`bash
+		"${RUNTIME_COMMAND_BASE}" (Commandline Options) (Files to be smudged...)
+		\`\`\`
+
+		## Commandline Options ##
+		* -h / --help: display this help"
+		* -d / --debug: enable traces for debugging"
+
+		## Examples ##
+		We <3 examples!
+
+		* \`${RUNTIME_COMMAND_BASE} my_awesome_template.template.bash another_one.template.bash\`
+
+		END_OF_HERE_DOCUMENT
+
+	return 0
+}; declare -fr print_help
+
+parse_commandline_arguments(){
+	for commandline_argument in "${@}"; do
+		case "${commandline_argument}" in
+			-h | --help)
+				global_just_show_help="1"
+			;;
+			-d | --debug)
+				global_enable_debug_mode="1"
+			;;
+			*)
+				global_input_file_list+=("${commandline_argument}")
+			;;
+		esac
+	done
+	return 0
+}; declare -fr parse_commandline_arguments
+
+smudge_file(){
+	if [ "${#}" -ne 1 ]; then
+		printf "%s: Function argument quantity illegal, got %u instead of 1\n" "${FUNCNAME[0]}" "${#}" 1>&2
+		return 1
+	fi
+
+	target_file="${1}"
+	declare -r temp_file_name=stdout.bash
+	declare -r temp_file="${global_temp_directory}/${temp_file_name}"
+
+	printf "Smudging %s...\n" "${target_file}"
+	"${RUNTIME_SCRIPT_DIRECTORY}"/smudge-bash.bash <"${target_file}" >"${temp_file}"
+	cat "${temp_file}" >"${target_file}"
+
+	return 0;
+}; declare -fr smudge_file
+
+create_temp_directory(){
+	if [ "${#}" -ne 0 ]; then
+		printf "%s: Function argument quantity illegal, got %u instead of 0\n" "${FUNCNAME[0]}" "${#}" 1>&2
+		return 1
+	fi
+
+	global_temp_directory="$(mktemp --tmpdir --directory "${RUNTIME_SCRIPT_NAME}.XXXX")"
+
+	declare -gr global_temp_directory
+	return 0
+}; declare -fr create_temp_directory
+
 ## init function: program entrypoint
 init(){
 	if ! check_runtime_dependencies; then
 		exit 1
 	fi
 
-	if [ "${#}" -ne 1 ]; then
-		printf "ERROR: Wrong command-line argument quantity.\n" 1>&2
+	if [ "${#}" -eq 0 ]; then
+		global_just_show_help="1"
+	fi
+
+	if ! parse_commandline_arguments "${@}"; then
 		exit 1
 	fi
 
-	target_file="${1}"
+	if [ "${global_enable_debug_mode}" -eq 1 ]; then
+		set -o xtrace
+	fi
 
-	global_temp_directory="$(mktemp --tmpdir --directory "${RUNTIME_SCRIPT_NAME}.XXXX")"
-	declare -gr global_temp_directory
-	declare -r temp_file_name=stdout.bash
+	if [ "${global_just_show_help}" -eq 1 ]; then
+		print_help
+		exit 0
+	fi
 
-	"${RUNTIME_SCRIPT_DIRECTORY}"/smudge-bash.bash <"${target_file}" >"${global_temp_directory}/${temp_file_name}"
-	cat "${global_temp_directory}/${temp_file_name}" >"${target_file}"
+	if ! create_temp_directory; then
+		exit 1
+	fi
 
+	# Unlike ${@}, ${array[@]} is NOT considered a unbounded variable exception
+	# Bash empty array expansion with `set -u` - Stack Overflow
+	# http://stackoverflow.com/questions/7577052/bash-empty-array-expansion-with-set-u
+	( set +o nounset
+		for a_file in "${global_input_file_list[@]}"; do
+			smudge_file "${a_file}"
+		done
+	);
 	exit 0
 }; readonly -f init
 init "${@}"

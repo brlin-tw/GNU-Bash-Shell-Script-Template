@@ -60,6 +60,7 @@ init(){
 		exit 1
 	fi
 	sed 's/^declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=.*$/declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"/'
+	printf "DEBUG: %s is done\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
 	exit 0
 }; declare -fr init
 init "${@}"

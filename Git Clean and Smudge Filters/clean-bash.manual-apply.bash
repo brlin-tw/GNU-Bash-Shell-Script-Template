@@ -52,6 +52,9 @@ init(){
 		exit 1
 	fi
 
+	global_temp_directory="$(mktemp --tmpdir --directory "${RUNTIME_SCRIPT_NAME}.XXXX")"
+	declare -gr global_temp_directory
+
 	if [ "${#}" -ne 1 ]; then
 		printf "ERROR: Wrong command-line argument quantity.\n" 1>&2
 		exit 1
@@ -59,8 +62,6 @@ init(){
 
 	target_file="${1}"
 
-	global_temp_directory="$(mktemp --tmpdir --directory "${RUNTIME_SCRIPT_NAME}.XXXX")"
-	declare -gr global_temp_directory
 	declare -r temp_file_name=stdout.bash
 
 	"${RUNTIME_SCRIPT_DIRECTORY}"/clean-bash.bash <"${target_file}" >"${global_temp_directory}/${temp_file_name}"
