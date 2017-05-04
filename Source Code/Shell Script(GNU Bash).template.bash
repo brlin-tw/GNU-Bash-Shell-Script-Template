@@ -26,25 +26,26 @@ declare -r META_PROGRAM_LICENSE=""
 declare -i META_PROGRAM_PAUSE_BEFORE_EXIT="0"
 
 ### Years since any fraction of copyright material is activated, indicates the year when copyright protection will be outdated(optional)
-declare -r META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=""
+declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=""
 
+## Metadata about the application this program belongs to
 ### Human-readable name of application(optional)
-declare -r META_APPLICATION_NAME=""
+declare META_APPLICATION_NAME=""
 
 ### Application's identifier, application's name with limitation posed by other software, default(not implemented): unnamed-application
-declare -r META_APPLICATION_IDENTIFIER=""
+declare META_APPLICATION_IDENTIFIER=""
 
 ### Developers' name of application(optional)
-declare -r META_APPLICATION_DEVELOPER_NAME=""
+declare META_APPLICATION_DEVELOPER_NAME=""
 
 ### Application's official site URL(optional)
-declare -r META_APPLICATION_SITE_URL=""
+declare META_APPLICATION_SITE_URL=""
 
 ### Application's issue tracker, if there's any(optional)
-declare -r META_APPLICATION_ISSUE_TRACKER_URL=""
+declare META_APPLICATION_ISSUE_TRACKER_URL=""
 
 ### An action to let user get help from developer or other sources when error occurred
-declare -r META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
+declare META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
 
 ### The Software Directory Configuration this application uses, refer below section for more info
 declare META_APPLICATION_INSTALL_STYLE="STANDALONE"
@@ -141,6 +142,26 @@ declare -r TRAP_ERREXIT_ARG='meta_trap_err ${LINENO} "${BASH_COMMAND}" ${?}'
 #shellcheck disable=SC2064
 trap "${TRAP_ERREXIT_ARG}" ERR
 
+meta_util_is_parameter_set_and_not_null(){
+	if [ "${#}" -ne 1 ]; then
+		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		return "${COMMON_RESULT_FAILURE}"
+	fi
+
+	declare -n name_reference
+	name_reference="${1}"
+
+	if [ ! -v name_reference ]; then
+		return "${COMMON_RESULT_FAILURE}"
+	else
+		if [ -z "${name_reference}" ]; then
+			return "${COMMON_RESULT_FAILURE}"
+		else
+			return "${COMMON_RESULT_SUCCESS}"
+		fi
+	fi
+}; declare -fr meta_util_is_parameter_set_and_not_null
+
 ### Introduce the program and software at leaving
 meta_trap_exit_print_application_information(){
 	# No need to debug this area, keep output simple
@@ -152,13 +173,18 @@ meta_trap_exit_print_application_information(){
 	# * Pausing program is desired(META_PROGRAM_PAUSE_BEFORE_EXIT=1)
 	#
 	# ...cause it's kinda stupid for a trailing line at end-of-program-output
-	if [ -n "${META_APPLICATION_NAME}" ] || [ -n "${META_APPLICATION_DEVELOPER_NAME}" ] || [ -n "${META_APPLICATION_SITE_URL}" ] || [ -n "${META_PROGRAM_LICENSE}" ] || [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
+	if meta_util_is_parameter_set_and_not_null META_APPLICATION_NAME\
+		|| meta_util_is_parameter_set_and_not_null META_APPLICATION_DEVELOPER_NAME\
+		|| meta_util_is_parameter_set_and_not_null META_APPLICATION_SITE_URL\
+		|| meta_util_is_parameter_set_and_not_null META_PROGRAM_LICENSE\
+		|| meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
+			&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
 		printf -- "------------------------------------\n"
 	fi
-	if [ -n "${META_APPLICATION_NAME}" ]; then
+	if meta_util_is_parameter_set_and_not_null META_APPLICATION_NAME; then
 		printf "%s\n" "${META_APPLICATION_NAME}"
 	fi
-	if [ -n "${META_APPLICATION_DEVELOPER_NAME}" ]; then
+	if meta_util_is_parameter_set_and_not_null META_APPLICATION_DEVELOPER_NAME; then
 		printf "%s et. al." "${META_APPLICATION_DEVELOPER_NAME}"
 		if [ -n "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}" ]; then
 			printf " " # Separator with ${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}
@@ -166,16 +192,19 @@ meta_trap_exit_print_application_information(){
 			printf "\n"
 		fi
 	fi
-	if [ -n "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}" ]; then
+	if meta_util_is_parameter_set_and_not_null META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE; then
 		printf "© %s\n" "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}"
 	fi
-	if [ -n "${META_APPLICATION_SITE_URL}" ]; then
+	if meta_util_is_parameter_set_and_not_null META_APPLICATION_SITE_URL; then
 		printf "Official Website: %s\n" "${META_APPLICATION_SITE_URL}"
 	fi
-	if [ -n "${META_PROGRAM_LICENSE}" ]; then
+	if meta_util_is_parameter_set_and_not_null META_PROGRAM_LICENSE; then
 		printf "Intellectual Property License: %s\n" "${META_PROGRAM_LICENSE}"
+	elif meta_util_is_parameter_set_and_not_null META_APPLICATION_LICENSE; then
+		printf "Intellectual Property License: %s\n" "${META_APPLICATION_LICENSE}"
 	fi
-	if [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
+	if meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
+		&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
 		local enter_holder
 
 		printf "Press ENTER to quit the program.\n"
@@ -213,6 +242,32 @@ meta_workaround_errexit_setup() {
 	fi
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_workaround_errexit_setup
+
+meta_util_declare_global_parameters(){
+	if [ "${#}" -eq 0 ]; then
+		printf "%s: Error: Function parameter quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		return "${COMMON_RESULT_FAILURE}"
+	fi
+
+	for parameter_name in "${@}"; do
+		declare -g "${parameter_name}"
+	done
+	return "${COMMON_RESULT_SUCCESS}"
+}; declare -fr meta_util_declare_global_parameters
+
+meta_util_unset_global_parameters_if_null(){
+	if [ "${#}" -eq 0 ]; then
+		printf "%s: Error: Function parameter quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		return "${COMMON_RESULT_FAILURE}"
+	fi
+
+	for parameter_name in "${@}"; do
+		if [ -z "${parameter_name}" ]; then
+			unset "${parameter_name}"
+		fi
+	done
+	return "${COMMON_RESULT_SUCCESS}"
+}; declare -fr meta_util_unset_global_parameters_if_null
 
 ## Runtime Dependencies Checking
 ## shell - Check if a program exists from a Bash script - Stack Overflow
@@ -330,23 +385,13 @@ fi
 ## Software Directories Configuration(S.D.C.)
 ## This section defines and determines the directories used by the software
 ## REFER: https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#software-directories-configurationsdc
-### Directory to find executables(default: autodetermined, unset if not available)
-declare SDC_EXECUTABLES_DIR=""
-
-### Directory to find libraries(default: autodetermined, unset if not available)
-declare SDC_LIBRARIES_DIR=""
-
-### Directory contain shared resources(default: autodetermined, unset if not available)
-declare SDC_SHARED_RES_DIR=""
-
-### Directory contain internationalization(I18N) data(default: autodetermined, unset if not available)
-declare SDC_I18N_DATA_DIR=""
-
-### Directory contain software settings(default: autodetermined, unset if not available)
-declare SDC_SETTINGS_DIR=""
-
-### Directory contain temporory files created by program(default: autodetermined, unset if not available)
-declare SDC_TEMP_DIR=""
+meta_util_declare_global_parameters\
+	SDC_EXECUTABLES_DIR\
+	SDC_LIBRARIES_DIR\
+	SDC_SHARED_RES_DIR\
+	SDC_I18N_DATA_DIR\
+	SDC_SETTINGS_DIR\
+	SDC_TEMP_DIR
 
 case "${META_APPLICATION_INSTALL_STYLE}" in
 	FHS)
@@ -357,10 +402,17 @@ case "${META_APPLICATION_INSTALL_STYLE}" in
 
 		declare -r SDC_EXECUTABLES_DIR="${FHS_PREFIX_DIR}/bin"
 		declare -r SDC_LIBRARIES_DIR="${FHS_PREFIX_DIR}/lib"
-		declare -r SDC_SHARED_RES_DIR="${FHS_PREFIX_DIR}/share/${META_APPLICATION_IDENTIFIER}"
 		declare -r SDC_I18N_DATA_DIR="${FHS_PREFIX_DIR}/share/locale"
-		declare -r SDC_SETTINGS_DIR="/etc/${META_APPLICATION_IDENTIFIER}"
-		declare -r SDC_TEMP_DIR="/tmp/${META_APPLICATION_IDENTIFIER}"
+		if [ -n "${META_APPLICATION_IDENTIFIER}" ]; then
+			declare -r SDC_SHARED_RES_DIR="${FHS_PREFIX_DIR}/share/${META_APPLICATION_IDENTIFIER}"
+			declare -r SDC_SETTINGS_DIR="/etc/${META_APPLICATION_IDENTIFIER}"
+			declare -r SDC_TEMP_DIR="/tmp/${META_APPLICATION_IDENTIFIER}"
+		else
+			unset\
+				SDC_SHARED_RES_DIR\
+				SDC_SETTINGS_DIR\
+				SDC_TEMP_DIR
+		fi
 		;;
 	SHC)
 		# Self-contained Hierarchy Configuration(S.H.C.) paths
@@ -369,31 +421,20 @@ case "${META_APPLICATION_INSTALL_STYLE}" in
 		### Scope of external project
 		#shellcheck disable=SC1090,SC1091
 		source "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source" || true
-		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_EXECUTABLE_DIRECTORY}/${SOFTWARE_INSTALLATION_PREFIX_DIR:-.}")" # By default we expect that the software installation directory prefix is same directory as script
+		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_EXECUTABLE_DIRECTORY}/${PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY:-.}")" # By default we expect that the software installation directory prefix is same directory as script
 		declare -r SHC_PREFIX_DIR
 
 		## Read external software directory configuration(S.D.C.)
 		### Scope of external project
 		#shellcheck disable=SC1090,SC1091
-		source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source" || true
-		if [ -z "${SDC_EXECUTABLES_DIR}" ]; then
-			unset SDC_EXECUTABLES_DIR
-		fi
-		if [ -z "${SDC_LIBRARIES_DIR}" ]; then
-			unset SDC_LIBRARIES_DIR
-		fi
-		if [ -z "${SDC_SHARED_RES_DIR}" ]; then
-			unset SDC_SHARED_RES_DIR
-		fi
-		if [ -z "${SDC_I18N_DATA_DIR}" ]; then
-			unset SDC_I18N_DATA_DIR
-		fi
-		if [ -z "${SDC_SETTINGS_DIR}" ]; then
-			unset SDC_SETTINGS_DIR
-		fi
-		if [ -z "${SDC_TEMP_DIR}" ]; then
-			unset SDC_TEMP_DIR
-		fi
+		source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source" 2>/dev/null || true
+		meta_util_unset_global_parameters_if_null\
+			SDC_EXECUTABLES_DIR\
+			SDC_LIBRARIES_DIR\
+			SDC_SHARED_RES_DIR\
+			SDC_I18N_DATA_DIR\
+			SDC_SETTINGS_DIR\
+			SDC_TEMP_DIR
 		;;
 	STANDALONE)
 		# Standalone Configuration
@@ -401,11 +442,65 @@ case "${META_APPLICATION_INSTALL_STYLE}" in
 		unset SDC_EXECUTABLES_DIR SDC_LIBRARIES_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
 		;;
 	*)
-		unset SDC_EXECUTABLES_DIR SDC_LIBRARIES_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
 		printf "Error: Unknown software directories configuration, program can not continue.\n" 1>&2
 		exit 1
 		;;
 esac
+
+for parameter_name in \
+	SDC_EXECUTABLES_DIR\
+	SDC_LIBRARIES_DIR\
+	SDC_SHARED_RES_DIR\
+	SDC_I18N_DATA_DIR\
+	SDC_SETTINGS_DIR\
+	SDC_TEMP_DIR\
+	; do
+	if meta_util_is_parameter_set_and_not_null "${parameter_name}"; then
+		declare -r "${parameter_name}"
+	else
+		unset "${parameter_name}"
+	fi
+done
+
+## Setup application metadata
+case "${META_APPLICATION_INSTALL_STYLE}" in
+	FHS)
+		if [ -v "${SDC_SHARED_RES_DIR}" ] && [ -n "${SDC_SHARED_RES_DIR}" ]; then
+			:
+		else
+			# Scope of external project
+			# shellcheck disable=SC1090,SC1091
+			source "${SDC_SHARED_RES_DIR}/APPLICATION_METADATA.source" 2>/dev/null || true
+		fi
+		;;
+	SHC)
+		# Scope of external project
+		# shellcheck disable=SC1090,SC1091
+		source "${SHC_PREFIX_DIR}/APPLICATION_METADATA.source" 2>/dev/null || true
+		;;
+	STANDALONE)
+		: # metadata can only be set from header
+		;;
+	*)
+		printf "Error: Unknown META_APPLICATION_INSTALL_STYLE, program can not continue.\n" 1>&2
+		exit 1
+		;;
+esac
+
+for parameter_name in \
+	META_APPLICATION_NAME\
+	META_APPLICATION_DEVELOPER_NAME\
+	META_APPLICATION_LICENSE\
+	META_APPLICATION_SITE_URL\
+	META_APPLICATION_ISSUE_TRACKER_URL\
+	META_APPLICATION_SEEKING_HELP_OPTION\
+	; do
+	if meta_util_is_parameter_set_and_not_null "${parameter_name}"; then
+		declare -r "${parameter_name}"
+	else
+		unset "${parameter_name}"
+	fi
+done
 
 ## Program's Commandline Options Definitions
 declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG="--help"
@@ -509,7 +604,7 @@ meta_util_printSingleCommandlineOptionHelp(){
 meta_printHelpMessage(){
 	printf "# %s #\n" "${RUNTIME_EXECUTABLE_NAME}"
 
-	if [ -n "${META_PROGRAM_DESCRIPTION}" ]; then
+	if meta_util_is_parameter_set_and_not_null META_PROGRAM_DESCRIPTION; then
 		printf "%s\n" "${META_PROGRAM_DESCRIPTION}"
 		printf "\n"
 	fi

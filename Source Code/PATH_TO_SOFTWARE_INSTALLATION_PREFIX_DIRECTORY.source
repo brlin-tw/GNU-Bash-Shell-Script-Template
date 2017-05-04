@@ -1,0 +1,2 @@
+# Relative path to the software's installation prefix directory from this directory
+PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY=..
