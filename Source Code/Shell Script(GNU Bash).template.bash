@@ -596,19 +596,18 @@ meta_util_printSingleCommandlineOptionHelp(){
 
 	local description="${1}"; shift # Option description
 	local long_option="${1}"; shift # The long version of option
-	local short_option="${1}" # The short version of option
+	local short_option="${1}"; shift # The short version of option
 	declare -r description long_option short_option
 
-	if [ "${#}" -eq 4 ]; then
-		shift
-		local current_value="${1}" # Current value of option, if option has value
+	if [ "${#}" -ne 0 ]; then
+		local current_value="${1}"; shift # Current value of option, if option has value
 		declare -r current_value
 	fi
 
 	printf "### %s / %s ###\n" "${long_option}" "${short_option}"
 	printf "%s\n" "${description}"
 
-	if [ "${#}" -eq 4 ]; then
+	if [ -v current_value ]; then
 		printf "Current value: %s\n" "${current_value}"
 	fi
 
