@@ -6,18 +6,18 @@
 
 ## Metadata about This Program
 ### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_EXECUTABLE_NAME}(optional)
-declare -r META_PROGRAM_NAME_OVERRIDE=""
+declare META_PROGRAM_NAME_OVERRIDE=""
 
 ### Program's identifier, program's name with character limitation exposed by platform(optional)
-declare -r META_PROGRAM_IDENTIFIER=""
+declare META_PROGRAM_IDENTIFIER=""
 
 ### Program's description, default(optional)
-declare -r META_PROGRAM_DESCRIPTION=""
+declare META_PROGRAM_DESCRIPTION=""
 
 ### Intellectual property license applied to this program(optional)
 ### Choose a License
 ### https://choosealicense.com/
-declare -r META_PROGRAM_LICENSE=""
+declare META_PROGRAM_LICENSE=""
 
 ### Whether program should pause and expect user pressing enter when program ended, which is useful when launching scripts in GUI, which may undesirebly close the terminal emulator window when the script is exited and leaving user no chance to check execution result
 ### 0: Don't pause(default)
@@ -87,6 +87,24 @@ set -o pipefail
 ### bash - Correct behavior of EXIT and ERR traps when using `set -eu` - Unix & Linux Stack Exchange
 ### https://unix.stackexchange.com/questions/208112/correct-behavior-of-exit-and-err-traps-when-using-set-eu
 set -o nounset
+
+## Unset all null META_PROGRAM_* parameters and readonly all others
+for parameter_name in \
+	META_PROGRAM_NAME_OVERRIDE\
+	META_PROGRAM_IDENTIFIER\
+	META_PROGRAM_DESCRIPTION\
+	META_PROGRAM_LICENSE\
+	META_PROGRAM_PAUSE_BEFORE_EXIT\
+	META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE\
+	; do
+	if [ -v "${parameter_name}" ]; then
+		if [ -z "${parameter_name}" ]; then
+			declare -r "${parameter_name}"
+		else
+			unset "${parameter_name}"
+		fi
+	fi
+done
 
 ## Traps
 ## Functions that will be triggered if certain condition met
