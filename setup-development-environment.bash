@@ -522,7 +522,7 @@ init() {
 
 	printf "Fetching submodules.."
 	git submodule init
-	git submodule update --depth 1 --recursive
+	git submodule update --recursive
 	printf "done.\n"
 
 	printf "Setting pre-commit hook..."
