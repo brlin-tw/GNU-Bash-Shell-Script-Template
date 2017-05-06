@@ -665,3 +665,7 @@ init
 ## and is based on the following version:
 declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"
 ## You may rebase your script to incorporate new features and fixes from the template
+
+## This script is comforming to Flexible Software Installation Specification
+## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification
+## and is based on the following version: v1.2.0
