@@ -1,0 +1,3 @@
+# Software Directory Configuration paths under SDC_THIRDPARTY_SOFTWARE_DIR
+# This file defines sub-directories that the application uses, in Self-contained Hierarchy Configuration(S.H.C.) paths
+SDC_BASHBEAUTIFY_DIR="${SDC_THIRDPARTY_SOFTWARE_DIR}/the Bash Script Beautifier(patched)"

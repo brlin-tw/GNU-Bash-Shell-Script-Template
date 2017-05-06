@@ -1,0 +1,4 @@
+[submodule "Third-party Software/the Bash Script Beautifier(patched)"]
+	path = Third-party Software/the Bash Script Beautifier(patched)
+	url = https://github.com/Lin-Buo-Ren/bashbeautify.git
+	branch = patch-tab-indentation-and-no-backup

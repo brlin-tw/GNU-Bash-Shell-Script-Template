@@ -520,6 +520,11 @@ init() {
 
 	cd "${RUNTIME_SCRIPT_DIRECTORY}"
 
+	printf "Fetching submodules.."
+	git submodule init
+	git submodule update --depth 1 --recursive
+	printf "done.\n"
+
 	printf "Setting pre-commit hook..."
 	ln --symbolic --relative --force "${SDC_GIT_HOOKS_CLIENT_SIDE_DIR}"/pre-commit.bash .git/hooks/pre-commit && printf "done\n"
 

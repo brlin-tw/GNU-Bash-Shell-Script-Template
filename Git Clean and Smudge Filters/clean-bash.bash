@@ -38,13 +38,15 @@ trap_errexit(){
 
 trap_exit(){
 	printf "DEBUG: %s is leaving\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
+	if ! rm "${temp_file}"; then
+		printf "%s: %s: Error: Unable to remove temporary file\n" "${RUNTIME_SCRIPT_NAME}" "${FUNCNAME[0]}" 1>&2
+		exit 1
+	fi
 	return 0
 }; declare -fr trap_exit; trap trap_exit EXIT
 
 check_runtime_dependencies(){
-	# We just have one command to check, so...
-	# shellcheck disable=SC2043
-	for a_command in sed; do
+	for a_command in sed python; do
 		if ! command -v "${a_command}" &>/dev/null; then
 			printf "ERROR: %s command not found.\n" "${a_command}" 1>&2
 			return 1
@@ -59,7 +61,48 @@ init(){
 	if ! check_runtime_dependencies; then
 		exit 1
 	fi
-	sed 's/^declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=.*$/declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"/'
+
+	declare -g temp_file
+	temp_file="$(mktemp --tmpdir "${RUNTIME_SCRIPT_NAME}.tmp.XXXXXX")"
+
+	# dump current stdin to temp_file
+	cat >"${temp_file}"
+
+	# undo version injection
+	sed --in-place 's/^declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=.*$/declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"/' "${temp_file}"
+
+	# enforce coding style
+	# Scope of "Flexible Software Installation Specification" project
+	# shellcheck disable=SC1090
+	if ! source "${RUNTIME_SCRIPT_DIRECTORY}"/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source 2>/dev/null \
+		|| [ ! -v PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY ]; then
+		printf -- "%s: Error: Unable to acquire installation prefix location\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
+		exit 1
+	fi
+
+	SHC_PREFIX_DIR="${RUNTIME_SCRIPT_DIRECTORY}/${PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY}"
+	# Scope of "Flexible Software Installation Specification" project
+	# shellcheck disable=SC1090
+	if ! source "${SHC_PREFIX_DIR}"/SOFTWARE_DIRECTORY_CONFIGURATION.source 2>/dev/null\
+		|| [ ! -v SDC_THIRDPARTY_SOFTWARE_DIR ]; then
+		printf -- "%s: Error: Unable to acquire third-party software directory\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
+		exit 1
+	fi
+
+	# Scope of "Flexible Software Installation Specification" project
+	# shellcheck disable=SC1090
+	if ! source "${SDC_THIRDPARTY_SOFTWARE_DIR}"/SOFTWARE_DIRECTORY_CONFIGURATION.source 2>/dev/null\
+		|| [ ! -v SDC_BASHBEAUTIFY_DIR ]; then
+		printf -- "%s: Error: Unable to acquire Bashbeautify directory\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
+		exit 1
+	fi
+	unset exit_status
+
+	"${SDC_BASHBEAUTIFY_DIR}"/bashbeautify.py "${temp_file}"
+
+	# dump temp_file to stdout
+	cat "${temp_file}"
+
 	printf "DEBUG: %s is done\n" "${RUNTIME_SCRIPT_NAME}" 1>&2
 	exit 0
 }; declare -fr init
