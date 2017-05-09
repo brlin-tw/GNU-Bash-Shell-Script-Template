@@ -1,5 +1,5 @@
 # 如何貢獻本專案<br>How to Contribute This Project
-This documents explains how to contribute this project in many aspects, make sure to read them thoroughly before making any contribution
+This documents explains how to contribute this project in many aspects, make sure to read them thoroughly before making any contributions
 
 ## 回報議題<br>Reporting Issues
 The so-called "issue" includes but not limited to software bugs and suggestions
