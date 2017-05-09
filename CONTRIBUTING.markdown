@@ -1,5 +1,14 @@
 # 如何貢獻本專案<br>How to Contribute This Project
-This documents explains how to contribute this project in many aspects, make sure to read them thoroughly before making any contribution
+This documents explains how to contribute this project in many aspects, make sure to read them thoroughly before making any contributions
+
+## 語言問題<br>Language Issues
+This project is initially a native linguo project, which means Chinese is used as the first priority language.  However I acknowlege the importance of using a much universal language(id. est. English) for a collaborative project so here's the policy:
+
+* Once a collaborator whose not familiar with Chinese starts to colab. with the project, this project will start the tranfer process to become a fully English project, which required the following to be in English or Multi-lingual which English is required as a first priority language:
+	* document contents
+	* patch info
+	* code strings and comments
+* If you have any questions about a previously used Chinese content, feel free to ask on the issue tracker
 
 ## 回報議題<br>Reporting Issues
 The so-called "issue" includes but not limited to software bugs and suggestions
@@ -19,7 +28,7 @@ There's so many aspects of the code that can be improved, however please conside
 It is required to mimic the coding style of the current code
 
 #### 縮排<br>Indentation
-This project uses tab characters as indentation character as it's width can be flexibly configured in any modern text editor
+This project uses tab characters as indentation character as it's width can be flexibly configured in any modern text editors
 
 #### 不同類型內容間的留白<br>Space padding between different kind of context
 * Padding are required for operators
