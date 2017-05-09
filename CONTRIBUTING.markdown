@@ -19,7 +19,7 @@ There's so many aspects of the code that can be improved, however please conside
 It is required to mimic the coding style of the current code
 
 #### 縮排<br>Indentation
-This project uses tab characters as indentation character as it's width can be flexibly configured in any modern text editor
+This project uses tab characters as indentation character as it's width can be flexibly configured in any modern text editors
 
 #### 不同類型內容間的留白<br>Space padding between different kind of context
 * Padding are required for operators
