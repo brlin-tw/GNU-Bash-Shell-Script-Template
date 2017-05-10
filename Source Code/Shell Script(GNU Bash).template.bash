@@ -98,7 +98,7 @@ for parameter_name in \
 	META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE\
 	; do
 	if [ -v "${parameter_name}" ]; then
-		if [ -z "${parameter_name}" ]; then
+		if [ -n "${parameter_name}" ]; then
 			declare -r "${parameter_name}"
 		else
 			unset "${parameter_name}"
