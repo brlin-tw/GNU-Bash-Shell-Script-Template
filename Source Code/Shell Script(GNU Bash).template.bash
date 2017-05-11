@@ -19,14 +19,14 @@ declare META_PROGRAM_DESCRIPTION=""
 ### https://choosealicense.com/
 declare META_PROGRAM_LICENSE=""
 
+### Years since any fraction of copyright material is activated, indicates the year when copyright protection will be outdated(optional)
+declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=""
+
 ### Whether program should pause and expect user pressing enter when program ended, which is useful when launching scripts in GUI, which may undesirebly close the terminal emulator window when the script is exited and leaving user no chance to check execution result
 ### 0: Don't pause(default)
 ### 1: Pause
 ### This parameter is overridable, in case of command-line options like --interactive and --no-interactive
 declare -i META_PROGRAM_PAUSE_BEFORE_EXIT="0"
-
-### Years since any fraction of copyright material is activated, indicates the year when copyright protection will be outdated(optional)
-declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=""
 
 ## Metadata about the application this program belongs to
 ### Human-readable name of application(optional)
@@ -215,13 +215,13 @@ meta_trap_exit_print_application_information(){
 	if meta_util_is_parameter_set_and_not_null META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE; then
 		printf "© %s\n" "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}"
 	fi
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_SITE_URL; then
-		printf "Official Website: %s\n" "${META_APPLICATION_SITE_URL}"
-	fi
 	if meta_util_is_parameter_set_and_not_null META_PROGRAM_LICENSE; then
 		printf "Intellectual Property License: %s\n" "${META_PROGRAM_LICENSE}"
 	elif meta_util_is_parameter_set_and_not_null META_APPLICATION_LICENSE; then
 		printf "Intellectual Property License: %s\n" "${META_APPLICATION_LICENSE}"
+	fi
+	if meta_util_is_parameter_set_and_not_null META_APPLICATION_SITE_URL; then
+		printf "Official Website: %s\n" "${META_APPLICATION_SITE_URL}"
 	fi
 	if meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
 		&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
