@@ -195,8 +195,10 @@ meta_trap_exit_print_application_information(){
 		|| meta_util_is_parameter_set_and_not_null META_APPLICATION_DEVELOPER_NAME\
 		|| meta_util_is_parameter_set_and_not_null META_APPLICATION_SITE_URL\
 		|| meta_util_is_parameter_set_and_not_null META_PROGRAM_LICENSE\
-		|| meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
-			&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
+		|| (\
+			meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
+			&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ] \
+		); then
 		printf -- "------------------------------------\n"
 	fi
 	if meta_util_is_parameter_set_and_not_null META_APPLICATION_NAME; then
