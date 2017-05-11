@@ -441,18 +441,32 @@ case "${META_APPLICATION_INSTALL_STYLE}" in
 		fi
 		;;
 	SHC)
-		# Self-contained Hierarchy Configuration(S.H.C.) paths
-		# This is the convention when F.H.S. is not possible(not a F.H.S. compliant UNIX-like system) or not desired, everything is put under package's DIR(and for runtime-generated files, in user's directory) instead.
-		## Software installation directory prefix, should be overridable by configure/install script
-		### Scope of external project
-		#shellcheck disable=SC1090,SC1091
-		source "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source" || true
-		SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_EXECUTABLE_DIRECTORY}/${PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY:-.}")" # By default we expect that the software installation directory prefix is same directory as script
+		# Setup Self-contained Hierarchy Configuration(S.H.C.)
+		# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#self-contained-hierarchy-configurationshc
+		# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#path_to_software_installation_prefix_directorysourceshc-only
+		# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#shc_prefix_dirshc-only
+		if [ -f "${RUNTIME_EXECUTABLE_DIRECTORY}/APPLICATION_METADATA.source" ]; then
+			SHC_PREFIX_DIR="${RUNTIME_EXECUTABLE_DIRECTORY}"
+		else
+			if [ ! -f "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source" ]; then
+				printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source not exist, can't setup Self-contained Hierarchy Configuration.\n" 1>&2
+				exit 1
+			fi
+			# Scope of Flexible Software Installation Specification
+			# shellcheck disable=SC1090,SC1091
+			source "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source"
+			if ! meta_util_is_parameter_set_and_not_null PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY; then
+				printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY not defined, can't setup Self-contained Hierarchy Configuration.\n" 1>&2
+				exit 1
+			fi
+			SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_EXECUTABLE_DIRECTORY}/${PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY}")"
+		fi
 		declare -r SHC_PREFIX_DIR
 
-		## Read external software directory configuration(S.D.C.)
-		### Scope of external project
-		#shellcheck disable=SC1090,SC1091
+		# Read external software directory configuration(S.D.C.)
+		# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#software-directories-configurationsdc
+		# Scope of Flexible Software Installation Specification
+		# shellcheck disable=SC1090,SC1091
 		source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source" 2>/dev/null || true
 		meta_util_unset_global_parameters_if_null\
 			SDC_EXECUTABLES_DIR\
@@ -676,4 +690,4 @@ declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERS
 
 ## This script is comforming to Flexible Software Installation Specification
 ## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification
-## and is based on the following version: v1.2.0
+## and is based on the following version: v1.5.0
