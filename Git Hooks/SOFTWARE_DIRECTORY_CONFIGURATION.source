@@ -1,0 +1,3 @@
+# Software Directory Configuration paths
+# This file defines sub-directories that the application uses, in Self-contained Hierarchy Configuration(S.H.C.) paths
+SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR="${SDC_GIT_HOOKS_DIR}/Git Pre-commit Hook for GNU Bash Projects"

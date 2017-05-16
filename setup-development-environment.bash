@@ -525,7 +525,25 @@ init() {
 		&& printf "done\n"
 
 	printf "Setting pre-commit hook..."
-	ln --symbolic --relative --force "${SDC_GIT_HOOKS_CLIENT_SIDE_DIR}"/pre-commit.bash .git/hooks/pre-commit && printf "done\n"
+	if ! [ -v SDC_GIT_HOOKS_DIR ]; then
+		printf "%s: Error: Unable to locate Git Hooks directory" "${RUNTIME_SCRIPT_FILENAME}" 1>&2
+		exit 1
+	fi
+	# SOFTWARE_DIRECTORY_CONFIGURATION.source is scope of Flexible Software Installation Specification
+	# shellcheck disable=SC1090
+	if ! source "${SDC_GIT_HOOKS_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"\
+		|| ! [ -v SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR ]\
+		|| [ -z "${SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR}" ]; then
+		printf "%s: Error: Unable to locate Git Precommit Hooks for Bash directory" "${RUNTIME_SCRIPT_FILENAME}" 1>&2
+		exit 1
+	fi
+	ln\
+		--symbolic\
+		--relative\
+		--force\
+		"${SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR}/Pre-commit Script.bash"\
+		"${SHC_PREFIX_DIR}"/.git/hooks/pre-commit\
+		&& printf "done\n"
 
 	printf "Setting project-specific git configurations..."
 	git config include.path ../.gitconfig && printf "done.\n"
