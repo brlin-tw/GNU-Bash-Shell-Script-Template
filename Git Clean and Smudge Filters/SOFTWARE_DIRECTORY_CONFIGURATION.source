@@ -1,0 +1,3 @@
+# Software Directory Configuration paths
+# This file defines sub-directories that the application uses, in Self-contained Hierarchy Configuration(S.H.C.) paths
+SDC_CLEAN_FILTER_FOR_BASH_DIR="${SDC_GIT_FILTERS_DIR}/Clean Filter for GNU Bash Scripts"
