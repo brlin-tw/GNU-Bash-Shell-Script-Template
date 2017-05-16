@@ -24,7 +24,7 @@ language: bash
 ## https://docs.travis-ci.com/user/customizing-the-build/#Git-Clone-Depth
 ## > Please note that if you use a depth of 1 and have a queue of jobs, Travis CI won’t build commits that are in the queue when you push a new commit.
 git:
-  depth: 1
+  depth: 30
 
 install:
 - ./Utilities\ for\ Travis\ CI/Install\ Git\ LFS\ in\ Travis\ CI\ Container\ Environment.bash
