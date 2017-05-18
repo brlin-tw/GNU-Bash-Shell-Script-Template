@@ -399,17 +399,12 @@ else
 			continue
 		fi
 
+		# If executable is in shell's executable search path, consider the command is the executable's filename
+		# Also do so if the resolved path matches(symbolic linked)
 		resolved_pathdir="$(realpath "${pathdir}")"
 
-		# If resolved path isn't the same path (id. est. symbolic links), also check the resolved path
-		if [ "${pathdir}" != "${resolved_pathdir}" ]; then
-			if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${resolved_pathdir}" ]; then
-				RUNTIME_COMMAND_BASE="${RUNTIME_EXECUTABLE_FILENAME}"
-				break
-			fi
-		fi
-
-		if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${pathdir}" ]; then
+		if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${pathdir}" ]\
+			|| [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${resolved_pathdir}" ]; then
 			RUNTIME_COMMAND_BASE="${RUNTIME_EXECUTABLE_FILENAME}"
 			break
 		fi
