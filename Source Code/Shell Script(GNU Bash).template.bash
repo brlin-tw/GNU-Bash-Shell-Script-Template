@@ -106,7 +106,7 @@ for parameter_name in \
 			unset "${parameter_name}"
 		fi
 	fi
-done
+done; unset parameter_name
 
 ## Traps
 ## Functions that will be triggered if certain condition met
@@ -283,7 +283,7 @@ meta_util_declare_global_parameters(){
 
 	for parameter_name in "${@}"; do
 		declare -g "${parameter_name}"
-	done
+	done; unset parameter_name
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_declare_global_parameters
 
@@ -297,7 +297,7 @@ meta_util_unset_global_parameters_if_null(){
 		if [ -z "${parameter_name}" ]; then
 			unset "${parameter_name}"
 		fi
-	done
+	done; parameter_name
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_unset_global_parameters_if_null
 
@@ -310,9 +310,7 @@ meta_checkRuntimeDependencies() {
 	if [ "${#array_ref[@]}" -eq 0 ]; then
 		return "${COMMON_RESULT_SUCCESS}"
 	else
-		declare -i exit_status
-
-		for a_command in "${!array_ref[@]}"; do
+		declare -i exit_status; for a_command in "${!array_ref[@]}"; do
 
 			meta_workaround_errexit_setup off
 			command -v "${a_command}" >/dev/null 2>&1
@@ -324,8 +322,7 @@ meta_checkRuntimeDependencies() {
 				printf "Goodbye.\n"
 				exit "${COMMON_RESULT_FAILURE}"
 			fi
-		done
-		unset exit_status
+		done; unset a_command exit_status
 		return "${COMMON_RESULT_SUCCESS}"
 	fi
 }; declare -fr meta_checkRuntimeDependencies
@@ -390,7 +387,6 @@ else
 	declare -r RUNTIME_EXECUTABLE_PATH_ABSOLUTE="${RUNTIME_EXECUTABLE_DIRECTORY}/${RUNTIME_EXECUTABLE_FILENAME}"
 	declare -r RUNTIME_EXECUTABLE_PATH_RELATIVE="${0}"
 
-	declare pathdir
 	for pathdir in "${RUNTIME_PATH_DIRECTORIES[@]}"; do
 		# It is possible that the pathdir is invalid (e.g. wrong configuration or misuse ":" as path content which is not allowed in PATH), simply ignore it
 		if [ ! -d "${pathdir}" ]; then
@@ -406,14 +402,12 @@ else
 				break
 			fi
 		fi
-		unset resolved_pathdir
 
 		if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${pathdir}" ]; then
 			RUNTIME_COMMAND_BASE="${RUNTIME_EXECUTABLE_FILENAME}"
 			break
 		fi
-	done
-	unset pathdir
+	done; unset pathdir resolved_pathdir
 	declare -r RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
 fi
 
@@ -519,7 +513,7 @@ for parameter_name in \
 	else
 		unset "${parameter_name}"
 	fi
-done
+done; unset parameter_name
 
 ## Setup application metadata
 if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE; then
@@ -561,7 +555,7 @@ for parameter_name in \
 	else
 		unset "${parameter_name}"
 	fi
-done
+done; unset parameter_name
 
 ## Program's Commandline Options Definitions
 declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG="--help"
