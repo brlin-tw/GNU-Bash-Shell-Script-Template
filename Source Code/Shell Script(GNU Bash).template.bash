@@ -91,7 +91,7 @@ set -o errtrace
 set -o pipefail
 
 ### Treat unset variables and parameters other than the special parameters `@' or `*' as an error when performing parameter expansion.  An error message will be written to the standard error, and a non-interactive shell will exit.
-### NOTE: errexit will NOT be triggered by this condition
+### NOTE: errexit will NOT be triggered by this condition as this is not a command error
 ### bash - Correct behavior of EXIT and ERR traps when using `set -eu` - Unix & Linux Stack Exchange
 ### https://unix.stackexchange.com/questions/208112/correct-behavior-of-exit-and-err-traps-when-using-set-eu
 set -o nounset
