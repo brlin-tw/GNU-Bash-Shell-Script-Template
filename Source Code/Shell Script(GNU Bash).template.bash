@@ -606,10 +606,12 @@ meta_processCommandlineArguments() {
 				break
 			else
 				case "${arguments[0]}" in
-					"${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}"|"${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}")
+					"${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}"\
+					|"${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}")
 						global_just_show_help="${COMMON_BOOLEAN_TRUE}"
 						;;
-					"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}"|"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}")
+					"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}"\
+					|"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}")
 						global_enable_debugging="${COMMON_BOOLEAN_TRUE}"
 						;;
 					*)
