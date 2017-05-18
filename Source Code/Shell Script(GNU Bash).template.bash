@@ -368,10 +368,17 @@ declare -r RUNTIME_PATH_DIRECTORIES
 declare RUNTIME_COMMAND_BASE
 
 if [ ! -v BASH_SOURCE ]; then
-	# S.H.C. isn't possible(probably from stdin), force STANDALONE mode
-	META_APPLICATION_INSTALL_STYLE=STANDALONE
-
-	unset RUNTIME_EXECUTABLE_FILENAME RUNTIME_EXECUTABLE_DIRECTORY RUNTIME_EXECUTABLE_PATH_ABSOLUTE RUNTIME_EXECUTABLE_PATH_RELATIVE
+	if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE\
+		&& [ "${META_APPLICATION_INSTALL_STYLE}" == "SHC" ]; then
+		printf "GNU Bash Shell Script Template: Error: META_APPLICATION_INSTALL_STYLE set to SHC, but is not possible due to unknown script location, make sure the program is not run as intepreter's standard input stream.\n" 1>&2
+		exit 1
+	fi
+	unset \
+		RUNTIME_EXECUTABLE_FILENAME\
+		RUNTIME_EXECUTABLE_NAME\
+		RUNTIME_EXECUTABLE_DIRECTORY\
+		RUNTIME_EXECUTABLE_PATH_ABSOLUTE\
+		RUNTIME_EXECUTABLE_PATH_RELATIVE
 else
 	# BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki
 	# http://mywiki.wooledge.org/BashFAQ/028
