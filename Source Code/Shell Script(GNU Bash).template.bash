@@ -5,6 +5,8 @@
 # https://www.gnu.org/software/bash/manual/
 
 ## Metadata about This Program
+## Fill in metadata about this program for reusing in the script
+## You may safely remove this entire section if you don't need it
 ### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_EXECUTABLE_NAME}(optional)
 declare META_PROGRAM_NAME_OVERRIDE=""
 
