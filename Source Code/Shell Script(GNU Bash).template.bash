@@ -125,7 +125,11 @@ meta_trap_err_print_debugging_info(){
 	# Don't print trace for printf commands
 	set +o xtrace
 
-	printf "ERROR: %s has encountered an error and is ending prematurely, %s for support.\n" "${META_PROGRAM_NAME_OVERRIDE:-This program}" "${META_APPLICATION_SEEKING_HELP_OPTION}" 1>&2
+	printf \
+		"ERROR: %s has encountered an error and is ending prematurely, %s for support.\n"\
+		"${META_PROGRAM_NAME_OVERRIDE:-${RUNTIME_EXECUTABLE_NAME:-This program}}"\
+		"${META_APPLICATION_SEEKING_HELP_OPTION:-contact developer}"\
+		1>&2
 
 	printf "\n" # Separate paragraphs
 
