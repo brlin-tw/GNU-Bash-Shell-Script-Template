@@ -325,8 +325,12 @@ meta_checkRuntimeDependencies() {
 		return "${COMMON_RESULT_SUCCESS}"
 	fi
 }; declare -fr meta_checkRuntimeDependencies
-meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
-meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
+if meta_util_is_parameter_set_and_not_null META_RUNTIME_DEPENDENCIES_CRITICAL; then
+	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
+fi
+if meta_util_is_parameter_set_and_not_null META_RUNTIME_DEPENDENCIES; then
+	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
+fi
 
 ## Info acquired from runtime environment
 ## --------------------------------------
@@ -421,73 +425,75 @@ meta_util_declare_global_parameters\
 	SDC_SETTINGS_DIR\
 	SDC_TEMP_DIR
 
-case "${META_APPLICATION_INSTALL_STYLE}" in
-	FHS)
-		# Filesystem Hierarchy Standard(F.H.S.) configuration paths
-		# http://refspecs.linuxfoundation.org/FHS_3.0/fhs
-		## Software installation directory prefix, should be overridable by configure/install script
-		declare -r FHS_PREFIX_DIR="/usr/local"
+if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE; then
+	case "${META_APPLICATION_INSTALL_STYLE}" in
+		FHS)
+			# Filesystem Hierarchy Standard(F.H.S.) configuration paths
+			# http://refspecs.linuxfoundation.org/FHS_3.0/fhs
+			## Software installation directory prefix, should be overridable by configure/install script
+			declare -r FHS_PREFIX_DIR="/usr/local"
 
-		declare -r SDC_EXECUTABLES_DIR="${FHS_PREFIX_DIR}/bin"
-		declare -r SDC_LIBRARIES_DIR="${FHS_PREFIX_DIR}/lib"
-		declare -r SDC_I18N_DATA_DIR="${FHS_PREFIX_DIR}/share/locale"
-		if [ -n "${META_APPLICATION_IDENTIFIER}" ]; then
-			declare -r SDC_SHARED_RES_DIR="${FHS_PREFIX_DIR}/share/${META_APPLICATION_IDENTIFIER}"
-			declare -r SDC_SETTINGS_DIR="/etc/${META_APPLICATION_IDENTIFIER}"
-			declare -r SDC_TEMP_DIR="/tmp/${META_APPLICATION_IDENTIFIER}"
-		else
-			unset\
-				SDC_SHARED_RES_DIR\
-				SDC_SETTINGS_DIR\
-				SDC_TEMP_DIR
-		fi
-		;;
-	SHC)
-		# Setup Self-contained Hierarchy Configuration(S.H.C.)
-		# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#self-contained-hierarchy-configurationshc
-		# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#path_to_software_installation_prefix_directorysourceshc-only
-		# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#shc_prefix_dirshc-only
-		if [ -f "${RUNTIME_EXECUTABLE_DIRECTORY}/APPLICATION_METADATA.source" ]; then
-			SHC_PREFIX_DIR="${RUNTIME_EXECUTABLE_DIRECTORY}"
-		else
-			if [ ! -f "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source" ]; then
-				printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source not exist, can't setup Self-contained Hierarchy Configuration.\n" 1>&2
-				exit 1
+			declare -r SDC_EXECUTABLES_DIR="${FHS_PREFIX_DIR}/bin"
+			declare -r SDC_LIBRARIES_DIR="${FHS_PREFIX_DIR}/lib"
+			declare -r SDC_I18N_DATA_DIR="${FHS_PREFIX_DIR}/share/locale"
+			if [ -n "${META_APPLICATION_IDENTIFIER}" ]; then
+				declare -r SDC_SHARED_RES_DIR="${FHS_PREFIX_DIR}/share/${META_APPLICATION_IDENTIFIER}"
+				declare -r SDC_SETTINGS_DIR="/etc/${META_APPLICATION_IDENTIFIER}"
+				declare -r SDC_TEMP_DIR="/tmp/${META_APPLICATION_IDENTIFIER}"
+			else
+				unset\
+					SDC_SHARED_RES_DIR\
+					SDC_SETTINGS_DIR\
+					SDC_TEMP_DIR
 			fi
+			;;
+		SHC)
+			# Setup Self-contained Hierarchy Configuration(S.H.C.)
+			# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#self-contained-hierarchy-configurationshc
+			# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#path_to_software_installation_prefix_directorysourceshc-only
+			# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#shc_prefix_dirshc-only
+			if [ -f "${RUNTIME_EXECUTABLE_DIRECTORY}/APPLICATION_METADATA.source" ]; then
+				SHC_PREFIX_DIR="${RUNTIME_EXECUTABLE_DIRECTORY}"
+			else
+				if [ ! -f "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source" ]; then
+					printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source not exist, can't setup Self-contained Hierarchy Configuration.\n" 1>&2
+					exit 1
+				fi
+				# Scope of Flexible Software Installation Specification
+				# shellcheck disable=SC1090,SC1091
+				source "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source"
+				if ! meta_util_is_parameter_set_and_not_null PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY; then
+					printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY not defined, can't setup Self-contained Hierarchy Configuration.\n" 1>&2
+					exit 1
+				fi
+				SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_EXECUTABLE_DIRECTORY}/${PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY}")"
+			fi
+			declare -r SHC_PREFIX_DIR
+
+			# Read external software directory configuration(S.D.C.)
+			# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#software-directories-configurationsdc
 			# Scope of Flexible Software Installation Specification
 			# shellcheck disable=SC1090,SC1091
-			source "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source"
-			if ! meta_util_is_parameter_set_and_not_null PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY; then
-				printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY not defined, can't setup Self-contained Hierarchy Configuration.\n" 1>&2
-				exit 1
-			fi
-			SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_EXECUTABLE_DIRECTORY}/${PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY}")"
-		fi
-		declare -r SHC_PREFIX_DIR
-
-		# Read external software directory configuration(S.D.C.)
-		# https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#software-directories-configurationsdc
-		# Scope of Flexible Software Installation Specification
-		# shellcheck disable=SC1090,SC1091
-		source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source" 2>/dev/null || true
-		meta_util_unset_global_parameters_if_null\
-			SDC_EXECUTABLES_DIR\
-			SDC_LIBRARIES_DIR\
-			SDC_SHARED_RES_DIR\
-			SDC_I18N_DATA_DIR\
-			SDC_SETTINGS_DIR\
-			SDC_TEMP_DIR
-		;;
-	STANDALONE)
-		# Standalone Configuration
-		# This program don't rely on any directories, make no attempt defining them
-		unset SDC_EXECUTABLES_DIR SDC_LIBRARIES_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
-		;;
-	*)
-		printf "Error: Unknown software directories configuration, program can not continue.\n" 1>&2
-		exit 1
-		;;
-esac
+			source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source" 2>/dev/null || true
+			meta_util_unset_global_parameters_if_null\
+				SDC_EXECUTABLES_DIR\
+				SDC_LIBRARIES_DIR\
+				SDC_SHARED_RES_DIR\
+				SDC_I18N_DATA_DIR\
+				SDC_SETTINGS_DIR\
+				SDC_TEMP_DIR
+			;;
+		STANDALONE)
+			# Standalone Configuration
+			# This program don't rely on any directories, make no attempt defining them
+			unset SDC_EXECUTABLES_DIR SDC_LIBRARIES_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
+			;;
+		*)
+			printf "Error: Unknown software directories configuration, program can not continue.\n" 1>&2
+			exit 1
+			;;
+	esac
+fi
 
 for parameter_name in \
 	SDC_EXECUTABLES_DIR\
@@ -505,29 +511,31 @@ for parameter_name in \
 done
 
 ## Setup application metadata
-case "${META_APPLICATION_INSTALL_STYLE}" in
-	FHS)
-		if [ -v "${SDC_SHARED_RES_DIR}" ] && [ -n "${SDC_SHARED_RES_DIR}" ]; then
-			:
-		else
+if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE; then
+	case "${META_APPLICATION_INSTALL_STYLE}" in
+		FHS)
+			if [ -v "${SDC_SHARED_RES_DIR}" ] && [ -n "${SDC_SHARED_RES_DIR}" ]; then
+				:
+			else
+				# Scope of external project
+				# shellcheck disable=SC1090,SC1091
+				source "${SDC_SHARED_RES_DIR}/APPLICATION_METADATA.source" 2>/dev/null || true
+			fi
+			;;
+		SHC)
 			# Scope of external project
 			# shellcheck disable=SC1090,SC1091
-			source "${SDC_SHARED_RES_DIR}/APPLICATION_METADATA.source" 2>/dev/null || true
-		fi
-		;;
-	SHC)
-		# Scope of external project
-		# shellcheck disable=SC1090,SC1091
-		source "${SHC_PREFIX_DIR}/APPLICATION_METADATA.source" 2>/dev/null || true
-		;;
-	STANDALONE)
-		: # metadata can only be set from header
-		;;
-	*)
-		printf "Error: Unknown META_APPLICATION_INSTALL_STYLE, program can not continue.\n" 1>&2
-		exit 1
-		;;
-esac
+			source "${SHC_PREFIX_DIR}/APPLICATION_METADATA.source" 2>/dev/null || true
+			;;
+		STANDALONE)
+			: # metadata can only be set from header
+			;;
+		*)
+			printf "Error: Unknown META_APPLICATION_INSTALL_STYLE, program can not continue.\n" 1>&2
+			exit 1
+			;;
+	esac
+fi
 
 for parameter_name in \
 	META_APPLICATION_NAME\
