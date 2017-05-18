@@ -4,8 +4,8 @@
 # Comments prefixed by BASHDOC: are hints to specific GNU Bash Manual's section:
 # https://www.gnu.org/software/bash/manual/
 
-## Metadata about This Program
-## Fill in metadata about this program for reusing in the script
+## META_PROGRAM_*: Metadata about This Program
+## Fill in metadata about this program for reusing in the script and documenting purposes
 ## You may safely remove this entire section if you don't need it
 ### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_EXECUTABLE_NAME}(optional)
 declare META_PROGRAM_NAME_OVERRIDE=""
@@ -30,7 +30,9 @@ declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=""
 ### This parameter is overridable, in case of command-line options like --interactive and --no-interactive
 declare -i META_PROGRAM_PAUSE_BEFORE_EXIT="0"
 
-## Metadata about the application this program belongs to
+## META_APPLICATION_*: Metadata about the application this program belongs to
+## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#meta_application_
+## You may safely remove this entire section if you don't need it
 ### Human-readable name of application(optional)
 declare META_APPLICATION_NAME=""
 
@@ -52,9 +54,13 @@ declare META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
 ### The Software Directory Configuration this application uses, refer below section for more info
 declare META_APPLICATION_INSTALL_STYLE="STANDALONE"
 
+## META_RUNTIME_*: Runtime dependencies information for dependency checking
+## You may safely remove this entire section if you don't need it
+### Human-friendly runtime dependency name definition
+declare -r META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS="GNU Coreutils"
+
 ### These are the dependencies that the script foundation needs, and needs to be checked IMMEDIATELY
 ### BASHDOC: Bash Features - Arrays(associative array)
-declare -r META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS="GNU Coreutils"
 declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 	["basename"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
 	["realpath"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
@@ -333,7 +339,7 @@ if meta_util_is_parameter_set_and_not_null META_RUNTIME_DEPENDENCIES; then
 	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
 fi
 
-## Info acquired from runtime environment
+## RUNTIME_*: Info acquired from runtime environment
 ## --------------------------------------
 ## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#runtime-determined-settings
 ## The following variables defines the environment aspects that can only be detected in runtime, we use RUNTIME_ namespace for these variables.
