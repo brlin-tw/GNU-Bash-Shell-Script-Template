@@ -374,7 +374,7 @@ if [ ! -v BASH_SOURCE ]; then
 	if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE\
 		&& [ "${META_APPLICATION_INSTALL_STYLE}" == "SHC" ]; then
 		printf "GNU Bash Shell Script Template: Error: META_APPLICATION_INSTALL_STYLE set to SHC, but is not possible due to unknown script location, make sure the program is not run as intepreter's standard input stream.\n" 1>&2
-		exit 1
+		exit "${COMMON_RESULT_FAILURE}"
 	fi
 	unset \
 		RUNTIME_EXECUTABLE_FILENAME\
