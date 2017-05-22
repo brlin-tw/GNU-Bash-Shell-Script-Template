@@ -96,24 +96,6 @@ set -o pipefail
 ### https://unix.stackexchange.com/questions/208112/correct-behavior-of-exit-and-err-traps-when-using-set-eu
 set -o nounset
 
-## Unset all null META_PROGRAM_* parameters and readonly all others
-for parameter_name in \
-	META_PROGRAM_NAME_OVERRIDE\
-	META_PROGRAM_IDENTIFIER\
-	META_PROGRAM_DESCRIPTION\
-	META_PROGRAM_LICENSE\
-	META_PROGRAM_PAUSE_BEFORE_EXIT\
-	META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE\
-	; do
-	if [ -v "${parameter_name}" ]; then
-		if [ -n "${parameter_name}" ]; then
-			declare -r "${parameter_name}"
-		else
-			unset "${parameter_name}"
-		fi
-	fi
-done; unset parameter_name
-
 ## Traps
 ## Functions that will be triggered if certain condition met
 ## BASHDOC: Shell Builtin Commands » Bourne Shell Builtins(trap)
@@ -192,6 +174,25 @@ meta_util_is_parameter_set_and_not_null(){
 	fi
 }; declare -fr meta_util_is_parameter_set_and_not_null
 
+meta_util_make_parameter_readonly_if_not_null_otherwise_unset(){
+	if [ "${#}" -eq 0 ]; then
+		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		return "${COMMON_RESULT_FAILURE}"
+	fi
+
+	for parameter_name in "${@}"; do
+		if [ -v parameter_name ]; then
+			if [ -z "${parameter_name}" ]; then
+				unset "${parameter_name}"
+			else
+				declare -r "${parameter_name}"
+			fi
+		fi
+	done; unset parameter_name
+
+	return "${COMMON_RESULT_SUCCESS}"
+}; declare -fr meta_util_make_parameter_readonly_if_not_null_otherwise_unset
+
 ### Introduce the program and software at leaving
 meta_trap_exit_print_application_information(){
 	# No need to debug this area, keep output simple
@@ -256,6 +257,15 @@ meta_trap_exit(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_exit
 trap 'meta_trap_exit' EXIT
+
+## Unset all null META_PROGRAM_* parameters and readonly all others
+meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
+	META_PROGRAM_NAME_OVERRIDE\
+	META_PROGRAM_IDENTIFIER\
+	META_PROGRAM_DESCRIPTION\
+	META_PROGRAM_LICENSE\
+	META_PROGRAM_PAUSE_BEFORE_EXIT\
+	META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE
 
 ## Workarounds
 ### Temporarily disable errexit
@@ -501,20 +511,13 @@ if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE; then
 	esac
 fi
 
-for parameter_name in \
+meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
 	SDC_EXECUTABLES_DIR\
 	SDC_LIBRARIES_DIR\
 	SDC_SHARED_RES_DIR\
 	SDC_I18N_DATA_DIR\
 	SDC_SETTINGS_DIR\
-	SDC_TEMP_DIR\
-	; do
-	if meta_util_is_parameter_set_and_not_null "${parameter_name}"; then
-		declare -r "${parameter_name}"
-	else
-		unset "${parameter_name}"
-	fi
-done; unset parameter_name
+	SDC_TEMP_DIR
 
 ## Setup application metadata
 if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE; then
@@ -543,20 +546,13 @@ if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE; then
 	esac
 fi
 
-for parameter_name in \
+meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
 	META_APPLICATION_NAME\
 	META_APPLICATION_DEVELOPER_NAME\
 	META_APPLICATION_LICENSE\
 	META_APPLICATION_SITE_URL\
 	META_APPLICATION_ISSUE_TRACKER_URL\
-	META_APPLICATION_SEEKING_HELP_OPTION\
-	; do
-	if meta_util_is_parameter_set_and_not_null "${parameter_name}"; then
-		declare -r "${parameter_name}"
-	else
-		unset "${parameter_name}"
-	fi
-done; unset parameter_name
+	META_APPLICATION_SEEKING_HELP_OPTION
 
 ## Program's Commandline Options Definitions
 declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG="--help"
