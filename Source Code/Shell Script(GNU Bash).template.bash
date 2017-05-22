@@ -123,10 +123,26 @@ meta_trap_err_print_debugging_info(){
 
 	printf "Technical information:\n"
 	printf "\n" # Separate list title and items
-	printf "	* The error happens at line %s\n" "${line_error_location}"
-	printf "	* The failing command is \"%s\"\n" "${failing_command}"
-	printf "	* Failing command's return status is %s\n" "${failing_command_return_status}"
-	printf "	* Intepreter info: GNU Bash v%s on %s platform\n" "${BASH_VERSION}" "${MACHTYPE}"
+	printf "* The failing command is \"%s\"\n" "${failing_command}"
+	printf "* Failing command's return status is %s\n" "${failing_command_return_status}"
+	printf "* Intepreter info: GNU Bash v%s on %s platform\n" "${BASH_VERSION}" "${MACHTYPE}"
+	printf "* Stacktrace:\n"
+	declare -i level=0; while [ "${level}" -lt "${#FUNCNAME[@]}" ]; do
+		if [ "${level}" -eq 0 ]; then
+			printf "	%u. %s(%s:%u)\n"\
+				"${level}"\
+				"${FUNCNAME[${level}]}"\
+				"${BASH_SOURCE[${level}]}"\
+				"${line_error_location}"
+		else
+			printf "	%u. %s(%s:%u)\n"\
+				"${level}"\
+				"${FUNCNAME[${level}]}"\
+				"${BASH_SOURCE[${level}]}"\
+				"${BASH_LINENO[((${level} - 1))]}"
+		fi
+		((level = level + 1))
+	done; unset level
 	printf "\n" # Separate list and further content
 
 	return "${COMMON_RESULT_SUCCESS}"
