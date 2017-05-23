@@ -581,6 +581,11 @@ declare -i global_enable_debugging="${COMMON_BOOLEAN_FALSE}"
 
 ## Drop first element from array and shift remaining elements 1 element backward
 meta_util_array_shift(){
+	if [ "${#}" -ne 1 ]; then
+		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		exit "${COMMON_RESULT_FAILURE}"
+	fi
+
 	local -n array_ref="${1}"
 	if [ "${#array_ref[@]}" -eq 0 ]; then
 		printf "ERROR: array is empty!\n" 1>&2
