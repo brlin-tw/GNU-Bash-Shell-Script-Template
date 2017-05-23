@@ -173,19 +173,19 @@ trap "${TRAP_ERREXIT_ARG}" ERR
 meta_util_is_parameter_set_and_not_null(){
 	if [ "${#}" -ne 1 ]; then
 		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
-		return "${COMMON_RESULT_FAILURE}"
+		exit "${COMMON_RESULT_FAILURE}"
 	fi
 
 	declare -n name_reference
 	name_reference="${1}"
 
 	if [ ! -v name_reference ]; then
-		return "${COMMON_RESULT_FAILURE}"
+		return "${COMMON_BOOLEAN_FALSE}"
 	else
 		if [ -z "${name_reference}" ]; then
-			return "${COMMON_RESULT_FAILURE}"
+			return "${COMMON_BOOLEAN_FALSE}"
 		else
-			return "${COMMON_RESULT_SUCCESS}"
+			return "${COMMON_BOOLEAN_TRUE}"
 		fi
 	fi
 }; declare -fr meta_util_is_parameter_set_and_not_null
