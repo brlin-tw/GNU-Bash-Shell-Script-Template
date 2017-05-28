@@ -345,7 +345,7 @@ meta_util_unset_global_parameters_if_null(){
 		if [ -z "${parameter_name}" ]; then
 			unset "${parameter_name}"
 		fi
-	done; parameter_name
+	done; unset parameter_name
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_unset_global_parameters_if_null
 
