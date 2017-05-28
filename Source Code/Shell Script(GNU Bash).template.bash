@@ -170,6 +170,22 @@ declare -r TRAP_ERREXIT_ARG='meta_trap_err ${LINENO} "${BASH_COMMAND}" ${?}'
 #shellcheck disable=SC2064
 trap "${TRAP_ERREXIT_ARG}" ERR
 
+# NOTE: Associative arrays are NOT supported by this function
+meta_util_is_array_set_and_not_null(){
+	if [ "${#}" -ne 1 ]; then
+		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		exit "${COMMON_RESULT_FAILURE}"
+	fi
+
+	declare -n array_nameref="${1}"
+
+	if [ "${#array_nameref[@]}" -eq 0 ]; then
+		return "${COMMON_BOOLEAN_FALSE}"
+	fi
+	return "${COMMON_BOOLEAN_TRUE}"
+}; declare -fr meta_util_is_array_set_and_not_null
+
+# NOTE: Array and nameref are NOT supported by this function
 meta_util_is_parameter_set_and_not_null(){
 	if [ "${#}" -ne 1 ]; then
 		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
@@ -354,10 +370,10 @@ meta_checkRuntimeDependencies() {
 		return "${COMMON_RESULT_SUCCESS}"
 	fi
 }; declare -fr meta_checkRuntimeDependencies
-if meta_util_is_parameter_set_and_not_null META_RUNTIME_DEPENDENCIES_CRITICAL; then
+if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES_CRITICAL; then
 	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
 fi
-if meta_util_is_parameter_set_and_not_null META_RUNTIME_DEPENDENCIES; then
+if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES; then
 	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
 fi
 
