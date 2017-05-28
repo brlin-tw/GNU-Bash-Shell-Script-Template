@@ -596,6 +596,7 @@ declare -i global_just_show_help="${COMMON_BOOLEAN_FALSE}"
 declare -i global_enable_debugging="${COMMON_BOOLEAN_FALSE}"
 
 ## Drop first element from array and shift remaining elements to replace the first one
+## FIXME: command error in this function doesn't not trigger ERR trap for some reason
 meta_util_array_shift(){
 	if [ "${#}" -ne 1 ]; then
 		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
