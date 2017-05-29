@@ -75,13 +75,15 @@ init() {
 		meta_printHelpMessage
 		exit 1
 	fi
-
+aa
 	exit 0
 }; declare -fr init
 
 ## ##################### Start of GBSST Support Code ##########################
 ## The following section are GNU Bash Shell Script's support code, you may
 ## remove the entire section if you want, just leave the last init call
+declare -r GBSS_NAME="GNU Bash Shell Script Template"
+
 ### Common constant definitions
 declare -ir COMMON_RESULT_SUCCESS=0
 declare -ir COMMON_RESULT_FAILURE=1
@@ -390,97 +392,94 @@ meta_checkRuntimeDependencies() {
 		return "${COMMON_RESULT_SUCCESS}"
 	fi
 }; declare -fr meta_checkRuntimeDependencies
-if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES_CRITICAL; then
-	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
-fi
-if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES; then
-	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
-fi
 
 ### RUNTIME_*: Info acquired from runtime environment
 ### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#runtime-determined-settings
 ### The following variables defines the environment aspects that can only be detected in runtime, we use RUNTIME_ namespace for these variables.
 ### These variables will not be set if technically not available(e.g. the program is provided to intepreter/etc. via stdin), or just not implemented yet
-
-#### The running executable's filename(without the underlying path)
-declare RUNTIME_EXECUTABLE_FILENAME
-
-#### The running program's filename(like RUNTIME_EXECUTABLE_FILENAME, but without the filename extension
-#### (default: script's filename without extension, META_PROGRAM_NAME_OVERRIDE if set
-declare RUNTIME_EXECUTABLE_NAME
-
-#### The path of the directory that the executable reside in
-declare RUNTIME_EXECUTABLE_DIRECTORY
-
-#### Executable's absolute path(location + filename)
-declare RUNTIME_EXECUTABLE_PATH_ABSOLUTE
-
-#### Executable's relative path(to current working directory)
-declare RUNTIME_EXECUTABLE_PATH_RELATIVE
-
-#### Runtime environment's executable search path priority array
-declare -a RUNTIME_PATH_DIRECTORIES
-IFS=':' read -r -a RUNTIME_PATH_DIRECTORIES <<< "${PATH}" || true # Without this `read` will return 1
-declare -r RUNTIME_PATH_DIRECTORIES
-
-#### The guessed user input base command (without the arguments), this is handy when showing help, where the proper base command can be displayed(default: auto-detect, unset if not available)
-#### If ${RUNTIME_EXECUTABLE_DIRECTORY} is in ${RUNTIME_PATH_DIRECTORIES}, this would be ${RUNTIME_EXECUTABLE_FILENAME}, if not this would be ./${RUNTIME_EXECUTABLE_PATH_RELATIVE}
-declare RUNTIME_COMMAND_BASE
-
-if [ ! -v BASH_SOURCE ]; then
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE\
-		&& [ "${META_APPLICATION_INSTALL_STYLE}" == "SHC" ]; then
-		printf "GNU Bash Shell Script Template: Error: META_APPLICATION_INSTALL_STYLE set to SHC, but is not possible due to unknown script location, make sure the program is not run as intepreter's standard input stream.\n" 1>&2
-		exit "${COMMON_RESULT_FAILURE}"
-	fi
-	unset \
+meta_fsis_setup_runtime_parameters(){
+	meta_util_declare_global_parameters\
 		RUNTIME_EXECUTABLE_FILENAME\
 		RUNTIME_EXECUTABLE_NAME\
 		RUNTIME_EXECUTABLE_DIRECTORY\
 		RUNTIME_EXECUTABLE_PATH_ABSOLUTE\
-		RUNTIME_EXECUTABLE_PATH_RELATIVE
-else
-	# BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki
-	# http://mywiki.wooledge.org/BashFAQ/028
-	RUNTIME_EXECUTABLE_FILENAME="$(basename "${BASH_SOURCE[0]}")"
-	declare -r RUNTIME_EXECUTABLE_FILENAME
-	RUNTIME_EXECUTABLE_NAME="${META_PROGRAM_NAME_OVERRIDE:-${RUNTIME_EXECUTABLE_FILENAME%.*}}"
-	RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
-	declare -r RUNTIME_EXECUTABLE_DIRECTORY
-	declare -r RUNTIME_EXECUTABLE_PATH_ABSOLUTE="${RUNTIME_EXECUTABLE_DIRECTORY}/${RUNTIME_EXECUTABLE_FILENAME}"
-	declare -r RUNTIME_EXECUTABLE_PATH_RELATIVE="${0}"
+		RUNTIME_EXECUTABLE_PATH_RELATIVE\
+		RUNTIME_COMMAND_BASE
 
-	for pathdir in "${RUNTIME_PATH_DIRECTORIES[@]}"; do
-		# It is possible that the pathdir is invalid (e.g. wrong configuration or misuse ":" as path content which is not allowed in PATH), simply ignore it
-		if [ ! -d "${pathdir}" ]; then
-			continue
+	# Runtime environment's executable search path priority array
+	declare -a RUNTIME_PATH_DIRECTORIES
+	IFS=':' \
+		read -r -a RUNTIME_PATH_DIRECTORIES <<< "${PATH}"\
+		|| true # Without this `read` will return 1
+	declare -r RUNTIME_PATH_DIRECTORIES
+
+	if [ ! -v BASH_SOURCE ]; then
+		if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE\
+			&& [ "${META_APPLICATION_INSTALL_STYLE}" == "SHC" ]; then
+			printf "GNU Bash Shell Script Template: Error: META_APPLICATION_INSTALL_STYLE set to SHC, but is not possible due to unknown script location, make sure the program is not run as intepreter's standard input stream.\n" 1>&2
+			exit "${COMMON_RESULT_FAILURE}"
 		fi
+	else
+		# BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki
+		# http://mywiki.wooledge.org/BashFAQ/028
+		RUNTIME_EXECUTABLE_FILENAME="$(basename "${BASH_SOURCE[0]}")"
+		RUNTIME_EXECUTABLE_NAME="${META_PROGRAM_NAME_OVERRIDE:-${RUNTIME_EXECUTABLE_FILENAME%.*}}"
+		RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
+		RUNTIME_EXECUTABLE_PATH_ABSOLUTE="${RUNTIME_EXECUTABLE_DIRECTORY}/${RUNTIME_EXECUTABLE_FILENAME}"
+		RUNTIME_EXECUTABLE_PATH_RELATIVE="${0}"
 
-		# If executable is in shell's executable search path, consider the command is the executable's filename
-		# Also do so if the resolved path matches(symbolic linked)
-		resolved_pathdir="$(realpath "${pathdir}")"
+		for pathdir in "${RUNTIME_PATH_DIRECTORIES[@]}"; do
+			# It is possible that the pathdir is invalid (e.g. wrong configuration or misuse ":" as path content which is not allowed in PATH), simply ignore it
+			if [ ! -d "${pathdir}" ]; then
+				continue
+			fi
 
-		if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${pathdir}" ]\
-			|| [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${resolved_pathdir}" ]; then
-			RUNTIME_COMMAND_BASE="${RUNTIME_EXECUTABLE_FILENAME}"
-			break
-		fi
-	done; unset pathdir resolved_pathdir
-	declare -r RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
-fi
+			# If executable is in shell's executable search path, consider the command is the executable's filename
+			# Also do so if the resolved path matches(symbolic linked)
+			resolved_pathdir="$(realpath "${pathdir}")"
 
-### Collect command-line arguments
-declare -ir RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY="${#}"
-if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -ne 0 ]; then
-	declare -a RUNTIME_COMMANDLINE_ARGUMENT_LIST
-	RUNTIME_COMMANDLINE_ARGUMENT_LIST=("${@:1}")
-	declare -r RUNTIME_COMMANDLINE_ARGUMENT_LIST
-fi
+			if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${pathdir}" ]\
+				|| [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${resolved_pathdir}" ]; then
+				RUNTIME_COMMAND_BASE="${RUNTIME_EXECUTABLE_FILENAME}"
+				break
+			fi
+		done; unset pathdir resolved_pathdir
+		RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
+	fi
+	meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
+		RUNTIME_EXECUTABLE_FILENAME\
+		RUNTIME_EXECUTABLE_NAME\
+		RUNTIME_EXECUTABLE_DIRECTORY\
+		RUNTIME_EXECUTABLE_PATH_ABSOLUTE\
+		RUNTIME_EXECUTABLE_PATH_RELATIVE\
+		RUNTIME_COMMAND_BASE
+
+	# Collect command-line parameters
+	declare -igr RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY="${#}"
+	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -ne 0 ]; then
+		declare -ag RUNTIME_COMMANDLINE_ARGUMENT_LIST
+		RUNTIME_COMMANDLINE_ARGUMENT_LIST=("${@}")
+		declare -agr RUNTIME_COMMANDLINE_ARGUMENT_LIST
+	fi
+
+	# Set run guard
+	declare -gr meta_fsis_setup_runtime_parameters_called="yes"
+}; declare -fr meta_fsis_setup_runtime_parameters
 
 ### Flexible Software Installation Specification - Software Directories Configuration(S.D.C.)
 ### This function defines and determines the directories used by the software
 ### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#software-directories-configurationsdc
 meta_fsis_setup_software_directories_configuration(){
+	# Run guard
+	if [ ! -v meta_fsis_setup_runtime_parameters_called ]; then
+		printf "%s: %s: %u: Error: This function cannot be called before meta_fsis_setup_runtime_parameters, please contact developer.\n"\
+			"${GBSS_NAME}"\
+			"${FUNCNAME[0]}"\
+			"${LINENO}"\
+			1>&2
+		exit "${COMMON_RESULT_FAILURE}"
+	fi
+
 	meta_util_declare_global_parameters\
 		SDC_EXECUTABLES_DIR\
 		SDC_LIBRARIES_DIR\
@@ -569,13 +568,25 @@ meta_fsis_setup_software_directories_configuration(){
 		SDC_SETTINGS_DIR\
 		SDC_TEMP_DIR
 
+	# Set run guard
+	declare -gr meta_fsis_setup_software_directories_configuration_called="yes"
 	return "${COMMON_RESULT_SUCCESS}"
-}; declare -fr meta_fsis_setup_software_directories_configuration; meta_fsis_setup_software_directories_configuration
+}; declare -fr meta_fsis_setup_software_directories_configuration
 
 ### Flexible Software Installation Specification - Setup application metadata
 ### This function locates and loads the metadata of the application
 ### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#application_metadatasource
 meta_fsis_setup_application_metadata(){
+	# Run guard
+	if [ ! -v meta_fsis_setup_software_directories_configuration_called ]; then
+		printf "%s: %s: %u: Error: This function cannot be called before meta_fsis_setup_software_directories_configuration_called, please contact developer.\n"\
+			"${GBSS_NAME}"\
+			"${FUNCNAME[0]}"\
+			"${LINENO}"\
+			1>&2
+		exit "${COMMON_RESULT_FAILURE}"
+	fi
+
 	meta_util_declare_global_parameters\
 		META_APPLICATION_NAME\
 		META_APPLICATION_DEVELOPER_NAME\
@@ -618,7 +629,7 @@ meta_fsis_setup_application_metadata(){
 		META_APPLICATION_SITE_URL\
 		META_APPLICATION_ISSUE_TRACKER_URL\
 		META_APPLICATION_SEEKING_HELP_OPTION
-}; declare -fr meta_fsis_setup_application_metadata; meta_fsis_setup_application_metadata
+}; declare -fr meta_fsis_setup_application_metadata
 
 ### Program's Commandline Options Definitions
 declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG="--help"
@@ -743,10 +754,21 @@ meta_printHelpMessage(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_printHelpMessage
 
+if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES_CRITICAL; then
+	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
+fi
+if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES; then
+	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
+fi
+
+meta_fsis_setup_runtime_parameters "${@}"
+meta_fsis_setup_software_directories_configuration
+meta_fsis_setup_application_metadata
+
 ### This script is based on the GNU Bash Shell Script Template project
 ### https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
 ### and is based on the following version:
-declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"
+declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="v1.26.0-15-g935eb02-dirty"
 ### You may rebase your script to incorporate new features and fixes from the template
 
 ### This script is comforming to Flexible Software Installation Specification
