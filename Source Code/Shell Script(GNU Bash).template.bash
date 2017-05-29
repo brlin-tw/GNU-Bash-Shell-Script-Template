@@ -4,7 +4,7 @@
 # Comments prefixed by BASHDOC: are hints to specific GNU Bash Manual's section:
 # https://www.gnu.org/software/bash/manual/
 
-## META_PROGRAM_*: Metadata about This Program
+## ############ META_PROGRAM_*: Metadata about This Program ###################
 ## Fill in metadata about this program for reusing in the script and documenting purposes
 ## You may safely remove this entire section if you don't need it
 ### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_EXECUTABLE_NAME}(optional)
@@ -29,6 +29,7 @@ declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=""
 ### 1: Pause
 ### This parameter is overridable, in case of command-line options like --interactive and --no-interactive
 declare -i META_PROGRAM_PAUSE_BEFORE_EXIT="0"
+## ######################## End of META_PROGRAM_* #############################
 
 ## META_APPLICATION_*: Metadata about the application this program belongs to
 ## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#meta_application_
@@ -53,6 +54,7 @@ declare META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
 
 ### The Software Directory Configuration this application uses, refer below section for more info
 declare META_APPLICATION_INSTALL_STYLE="STANDALONE"
+## ####################### End of META_APPLICATION_* ##########################
 
 ## META_RUNTIME_*: Runtime dependencies information for dependency checking
 ## You may safely remove this entire section if you don't need it
@@ -68,38 +70,53 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 
 ### These are the dependencies that are used later and also checked later
 declare -Ar META_RUNTIME_DEPENDENCIES=()
+## ######################### End of META_RUNTIME_* ############################
 
-## Common constant definitions
+## init function, the main program's entry point
+## This function is called from the "main" content near the end of this file,
+## with the command-line parameters as it's arguments
+init() {
+	if ! meta_processCommandlineArguments; then
+		meta_printHelpMessage
+		exit 1
+	fi
+
+	exit 0
+}; declare -fr init
+
+## ###################### Start of GBSS Support Code ##########################
+## The following section are GNU Bash Shell Script's support code, you may
+## remove the entire section if you want, just leave the last init call
+### Common constant definitions
 declare -ir COMMON_RESULT_SUCCESS=0
 declare -ir COMMON_RESULT_FAILURE=1
 declare -ir COMMON_BOOLEAN_TRUE=0
 declare -ir COMMON_BOOLEAN_FALSE=1
 
-## Notes
-### realpath's commandline option, `--strip` will be replaced in favor of `--no-symlinks` after April 2019(Ubuntu 14.04's Support EOL)
+### NOTE: realpath's commandline option, `--strip` will be replaced in favor of `--no-symlinks` after April 2019(Ubuntu 14.04's Support EOL)
 
-## Makes debuggers' life easier - Unofficial Bash Strict Mode
-## http://redsymbol.net/articles/unofficial-bash-strict-mode/
-## BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
-### Prematurely terminates the script on any command returning non-zero, append " || true"(BASHDOC: Basic Shell Features » Shell Commands » Lists of Commands) if the non-zero return value is rather intended to happen.  A trap on `ERR', if set, is executed before the shell exits.
+### Makes debuggers' life easier - Unofficial Bash Strict Mode
+### http://redsymbol.net/articles/unofficial-bash-strict-mode/
+### BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
+#### Prematurely terminates the script on any command returning non-zero, append " || true"(BASHDOC: Basic Shell Features » Shell Commands » Lists of Commands) if the non-zero return value is rather intended to happen.  A trap on `ERR', if set, is executed before the shell exits.
 set -o errexit
 
-### If set, any trap on `ERR' is also inherited by shell functions, command substitutions, and commands executed in a subshell environment.
+#### If set, any trap on `ERR' is also inherited by shell functions, command substitutions, and commands executed in a subshell environment.
 set -o errtrace
 
-### If set, the return value of a pipeline(BASHDOC: Basic Shell Features » Shell Commands » Pipelines) is the value of the last (rightmost) command to exit with a non-zero status, or zero if all commands in the pipeline exit successfully.
+#### If set, the return value of a pipeline(BASHDOC: Basic Shell Features » Shell Commands » Pipelines) is the value of the last (rightmost) command to exit with a non-zero status, or zero if all commands in the pipeline exit successfully.
 set -o pipefail
 
-### Treat unset variables and parameters other than the special parameters `@' or `*' as an error when performing parameter expansion.  An error message will be written to the standard error, and a non-interactive shell will exit.
-### NOTE: errexit will NOT be triggered by this condition as this is not a command error
-### bash - Correct behavior of EXIT and ERR traps when using `set -eu` - Unix & Linux Stack Exchange
-### https://unix.stackexchange.com/questions/208112/correct-behavior-of-exit-and-err-traps-when-using-set-eu
+#### Treat unset variables and parameters other than the special parameters `@' or `*' as an error when performing parameter expansion.  An error message will be written to the standard error, and a non-interactive shell will exit.
+#### NOTE: errexit will NOT be triggered by this condition as this is not a command error
+#### bash - Correct behavior of EXIT and ERR traps when using `set -eu` - Unix & Linux Stack Exchange
+#### https://unix.stackexchange.com/questions/208112/correct-behavior-of-exit-and-err-traps-when-using-set-eu
 set -o nounset
 
-## Traps
-## Functions that will be triggered if certain condition met
-## BASHDOC: Shell Builtin Commands » Bourne Shell Builtins(trap)
-### Collect all information useful for debugging
+### Traps
+### Functions that will be triggered if certain condition met
+### BASHDOC: Shell Builtin Commands » Bourne Shell Builtins(trap)
+#### Collect all information useful for debugging
 meta_trap_err_print_debugging_info(){
 	if [ ${#} -ne 3 ]; then
 		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
@@ -227,7 +244,7 @@ meta_util_make_parameter_readonly_if_not_null_otherwise_unset(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_make_parameter_readonly_if_not_null_otherwise_unset
 
-### Introduce the program and software at leaving
+#### Introduce the program and software at leaving
 meta_trap_exit_print_application_information(){
 	# No need to debug this area, keep output simple
 	set +o xtrace
@@ -292,8 +309,8 @@ meta_trap_exit(){
 }; declare -fr meta_trap_exit
 trap 'meta_trap_exit' EXIT
 
-## Unset all null META_PROGRAM_* parameters and readonly all others
-## META_APPLICATION_IDENTIFIER also as it can't be determined in runtime
+### Unset all null META_PROGRAM_* parameters and readonly all others
+### META_APPLICATION_IDENTIFIER also as it can't be determined in runtime
 meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
 	META_PROGRAM_NAME_OVERRIDE\
 	META_PROGRAM_IDENTIFIER\
@@ -303,8 +320,8 @@ meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
 	META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE\
 	META_APPLICATION_IDENTIFIER
 
-## Workarounds
-### Temporarily disable errexit
+### Workarounds
+#### Temporarily disable errexit
 meta_workaround_errexit_setup() {
 	if [ ${#} -ne 1 ]; then
 		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
@@ -353,9 +370,9 @@ meta_util_unset_global_parameters_if_null(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_unset_global_parameters_if_null
 
-## Runtime Dependencies Checking
-## shell - Check if a program exists from a Bash script - Stack Overflow
-## http://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script
+### Runtime Dependencies Checking
+### shell - Check if a program exists from a Bash script - Stack Overflow
+### http://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script
 meta_checkRuntimeDependencies() {
 	local -n array_ref="${1}"
 
@@ -385,35 +402,35 @@ if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES; then
 	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
 fi
 
-## RUNTIME_*: Info acquired from runtime environment
-## --------------------------------------
-## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#runtime-determined-settings
-## The following variables defines the environment aspects that can only be detected in runtime, we use RUNTIME_ namespace for these variables.
-## These variables will not be set if technically not available(e.g. the program is provided to intepreter/etc. via stdin), or just not implemented yet
+### RUNTIME_*: Info acquired from runtime environment
+### --------------------------------------
+### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#runtime-determined-settings
+### The following variables defines the environment aspects that can only be detected in runtime, we use RUNTIME_ namespace for these variables.
+### These variables will not be set if technically not available(e.g. the program is provided to intepreter/etc. via stdin), or just not implemented yet
 
-### The running executable's filename(without the underlying path)
+#### The running executable's filename(without the underlying path)
 declare RUNTIME_EXECUTABLE_FILENAME
 
-### The running program's filename(like RUNTIME_EXECUTABLE_FILENAME, but without the filename extension
-### (default: script's filename without extension, META_PROGRAM_NAME_OVERRIDE if set
+#### The running program's filename(like RUNTIME_EXECUTABLE_FILENAME, but without the filename extension
+#### (default: script's filename without extension, META_PROGRAM_NAME_OVERRIDE if set
 declare RUNTIME_EXECUTABLE_NAME
 
-### The path of the directory that the executable reside in
+#### The path of the directory that the executable reside in
 declare RUNTIME_EXECUTABLE_DIRECTORY
 
-### Executable's absolute path(location + filename)
+#### Executable's absolute path(location + filename)
 declare RUNTIME_EXECUTABLE_PATH_ABSOLUTE
 
-### Executable's relative path(to current working directory)
+#### Executable's relative path(to current working directory)
 declare RUNTIME_EXECUTABLE_PATH_RELATIVE
 
-### Runtime environment's executable search path priority array
+#### Runtime environment's executable search path priority array
 declare -a RUNTIME_PATH_DIRECTORIES
 IFS=':' read -r -a RUNTIME_PATH_DIRECTORIES <<< "${PATH}" || true # Without this `read` will return 1
 declare -r RUNTIME_PATH_DIRECTORIES
 
-### The guessed user input base command (without the arguments), this is handy when showing help, where the proper base command can be displayed(default: auto-detect, unset if not available)
-### If ${RUNTIME_EXECUTABLE_DIRECTORY} is in ${RUNTIME_PATH_DIRECTORIES}, this would be ${RUNTIME_EXECUTABLE_FILENAME}, if not this would be ./${RUNTIME_EXECUTABLE_PATH_RELATIVE}
+#### The guessed user input base command (without the arguments), this is handy when showing help, where the proper base command can be displayed(default: auto-detect, unset if not available)
+#### If ${RUNTIME_EXECUTABLE_DIRECTORY} is in ${RUNTIME_PATH_DIRECTORIES}, this would be ${RUNTIME_EXECUTABLE_FILENAME}, if not this would be ./${RUNTIME_EXECUTABLE_PATH_RELATIVE}
 declare RUNTIME_COMMAND_BASE
 
 if [ ! -v BASH_SOURCE ]; then
@@ -466,9 +483,9 @@ if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -ne 0 ]; then
 	declare -r RUNTIME_COMMANDLINE_ARGUMENT_LIST
 fi
 
-## Flexible Software Installation Specification - Software Directories Configuration(S.D.C.)
-## This function defines and determines the directories used by the software
-## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#software-directories-configurationsdc
+### Flexible Software Installation Specification - Software Directories Configuration(S.D.C.)
+### This function defines and determines the directories used by the software
+### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#software-directories-configurationsdc
 meta_fsis_setup_software_directories_configuration(){
 	meta_util_declare_global_parameters\
 		SDC_EXECUTABLES_DIR\
@@ -561,9 +578,9 @@ meta_fsis_setup_software_directories_configuration(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_fsis_setup_software_directories_configuration; meta_fsis_setup_software_directories_configuration
 
-## Flexible Software Installation Specification - Setup application metadata
-## This function locates and loads the metadata of the application
-## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#application_metadatasource
+### Flexible Software Installation Specification - Setup application metadata
+### This function locates and loads the metadata of the application
+### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#application_metadatasource
 meta_fsis_setup_application_metadata(){
 	meta_util_declare_global_parameters\
 		META_APPLICATION_NAME\
@@ -609,7 +626,7 @@ meta_fsis_setup_application_metadata(){
 		META_APPLICATION_SEEKING_HELP_OPTION
 }; declare -fr meta_fsis_setup_application_metadata; meta_fsis_setup_application_metadata
 
-## Program's Commandline Options Definitions
+### Program's Commandline Options Definitions
 declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG="--help"
 declare -r COMMANDLINE_OPTION_DISPLAY_HELP_SHORT="-h"
 declare -r COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION="Display help message"
@@ -618,8 +635,8 @@ declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG="--debug"
 declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT="-d"
 declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION="Enable debug mode"
 
-## Drop first element from array and shift remaining elements to replace the first one
-## FIXME: command error in this function doesn't not trigger ERR trap for some reason
+### Drop first element from array and shift remaining elements to replace the first one
+### FIXME: command error in this function doesn't not trigger ERR trap for some reason
 meta_util_array_shift(){
 	if [ "${#}" -ne 1 ]; then
 		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
@@ -643,7 +660,7 @@ meta_util_array_shift(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_array_shift
 
-## Understand what argument is in the command, and set the global variables accordingly.
+### Understand what argument is in the command, and set the global variables accordingly.
 meta_processCommandlineArguments() {
 	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -eq 0 ]; then
 		return "${COMMON_RESULT_SUCCESS}"
@@ -684,7 +701,7 @@ meta_processCommandlineArguments() {
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_processCommandlineArguments
 
-## Print single segment of commandline option help
+### Print single segment of commandline option help
 meta_util_printSingleCommandlineOptionHelp(){
 	if [ "${#}" -ne 3 ] && [ "${#}" -ne 4 ]; then
 		printf "ERROR: %s: Wrong parameter quantity!\n" "${FUNCNAME[0]}" >&2
@@ -712,9 +729,9 @@ meta_util_printSingleCommandlineOptionHelp(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_printSingleCommandlineOptionHelp
 
-## Print help message whenever:
-##   * User requests it
-##   * An command syntax error has detected
+### Print help message whenever:
+###   * User requests it
+###   * An command syntax error has detected
 meta_printHelpMessage(){
 	printf "# %s #\n" "${RUNTIME_EXECUTABLE_NAME}"
 
@@ -732,24 +749,15 @@ meta_printHelpMessage(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_printHelpMessage
 
-## Defensive Bash Programming - init function, program's entry point
-## http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/
-init() {
-	if ! meta_processCommandlineArguments; then
-		meta_printHelpMessage
-		exit "${COMMON_RESULT_FAILURE}"
-	fi
-
-	exit "${COMMON_RESULT_SUCCESS}"
-}; declare -fr init
-init
-
-## This script is based on the GNU Bash Shell Script Template project
-## https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
-## and is based on the following version:
+### This script is based on the GNU Bash Shell Script Template project
+### https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
+### and is based on the following version:
 declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"
-## You may rebase your script to incorporate new features and fixes from the template
+### You may rebase your script to incorporate new features and fixes from the template
 
-## This script is comforming to Flexible Software Installation Specification
-## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification
-## and is based on the following version: v1.5.0
+### This script is comforming to Flexible Software Installation Specification
+### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification
+### and is based on the following version: v1.5.0
+## ###################### End of GBSS Support Code ##########################
+
+init "${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}"
