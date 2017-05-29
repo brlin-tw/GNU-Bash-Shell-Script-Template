@@ -256,7 +256,7 @@ meta_trap_exit_print_application_information(){
 	fi
 	if meta_util_is_parameter_set_and_not_null META_APPLICATION_DEVELOPER_NAME; then
 		printf "%s et. al." "${META_APPLICATION_DEVELOPER_NAME}"
-		if [ -n "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}" ]; then
+		if meta_util_is_parameter_set_and_not_null META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE; then
 			printf " " # Separator with ${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}
 		else
 			printf "\n"
