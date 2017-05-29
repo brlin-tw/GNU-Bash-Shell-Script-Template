@@ -67,8 +67,8 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 declare -Ar META_RUNTIME_DEPENDENCIES=()
 ## #################### End of META_RUNTIME_DEPENDENCIES ######################
 
-## init function, the main program's entry point
-## This function is called from the "main" content near the end of this file,
+## init function: the main program's entry point
+## This function is called from the end of this file,
 ## with the command-line parameters as it's arguments
 init() {
 	if ! meta_processCommandlineArguments; then
