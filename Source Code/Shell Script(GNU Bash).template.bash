@@ -741,7 +741,7 @@ meta_printHelpMessage(){
 	fi
 
 	printf "## Usage ##\n"
-	printf "\t%s (Command-line Options)\n" "${RUNTIME_COMMAND_BASE}"
+	printf "\t%s (command-line options and parameters)\n" "${RUNTIME_COMMAND_BASE}"
 	printf "\n"
 	printf "## Command-line Options ##\n"
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" "${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" "${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
