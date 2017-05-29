@@ -618,10 +618,6 @@ declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG="--debug"
 declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT="-d"
 declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION="Enable debug mode"
 
-## Program Configuration Variables
-declare -i global_just_show_help="${COMMON_BOOLEAN_FALSE}"
-declare -i global_enable_debugging="${COMMON_BOOLEAN_FALSE}"
-
 ## Drop first element from array and shift remaining elements to replace the first one
 ## FIXME: command error in this function doesn't not trigger ERR trap for some reason
 meta_util_array_shift(){
@@ -652,7 +648,11 @@ meta_processCommandlineArguments() {
 	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -eq 0 ]; then
 		return "${COMMON_RESULT_SUCCESS}"
 	else
+		# modifyable parameters for parsing by consuming
 		local -a arguments=("${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}")
+
+		# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
+		local enable_debug="N"
 
 		while :; do
 			# BREAK if no arguments left
@@ -662,11 +662,12 @@ meta_processCommandlineArguments() {
 				case "${arguments[0]}" in
 					"${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}"\
 					|"${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}")
-						global_just_show_help="${COMMON_BOOLEAN_TRUE}"
+						meta_printHelpMessage
+						exit 0
 						;;
 					"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}"\
 					|"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}")
-						global_enable_debugging="${COMMON_BOOLEAN_TRUE}"
+						enable_debug="Y"
 						;;
 					*)
 						printf "ERROR: Unknown command-line argument \"%s\"\n" "${arguments[0]}" >&2
@@ -677,7 +678,9 @@ meta_processCommandlineArguments() {
 			fi
 		done
 	fi
-
+	if [ "${enable_debug}" = "Y" ]; then
+		set -o xtrace
+	fi
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_processCommandlineArguments
 
@@ -735,19 +738,6 @@ init() {
 	if ! meta_processCommandlineArguments; then
 		meta_printHelpMessage
 		exit "${COMMON_RESULT_FAILURE}"
-	fi
-
-	# Secure configuration variables by marking them readonly
-	declare -gr \
-		global_just_show_help\
-		global_enable_debugging
-
-	if [ "${global_enable_debugging}" -eq "${COMMON_BOOLEAN_TRUE}" ]; then
-		set -o xtrace
-	fi
-	if [ "${global_just_show_help}" -eq "${COMMON_BOOLEAN_TRUE}" ]; then
-		meta_printHelpMessage
-		exit "${COMMON_RESULT_SUCCESS}"
 	fi
 
 	exit "${COMMON_RESULT_SUCCESS}"
