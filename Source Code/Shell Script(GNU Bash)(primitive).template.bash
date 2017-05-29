@@ -30,6 +30,23 @@ declare -r RUNTIME_EXECUTABLE_DIRECTORY
 declare -r RUNTIME_EXECUTABLE_PATH_ABSOLUTE="${RUNTIME_EXECUTABLE_DIRECTORY}/${RUNTIME_EXECUTABLE_FILENAME}"
 declare -r RUNTIME_EXECUTABLE_PATH_RELATIVE="${0}"
 declare -r RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
+declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
+
+## init function: entrypoint of main program
+## This function is called near the end of the file,
+## with the script's command-line parameters as arguments
+init(){
+	if ! process_commandline_parameters; then
+		printf\
+			"Error: %s: Invalid command-line parameters.\n"\
+			"${FUNCNAME[0]}"\
+			1>&2
+		print_help
+		exit 1
+	fi
+
+	exit 0
+}; declare -fr init
 
 trap_errexit(){
 	printf "An error occurred and the script is prematurely aborted\n" 1>&2
@@ -40,11 +57,55 @@ trap_exit(){
 	return 0
 }; declare -fr trap_exit; trap trap_exit EXIT
 
-## init function: program entrypoint
-init(){
+print_help(){
+	printf "Currently no help messages are available for this program\n" 1>&2
+	return 0
+}; declare -fr print_help;
 
-	exit 0
-}; declare -fr init
+process_commandline_parameters() {
+	if [ "${#RUNTIME_COMMANDLINE_PARAMETERS[@]}" -eq 0 ]; then
+		return 0
+	fi
+
+	# modifyable parameters for parsing by consuming
+	local -a parameters=("${RUNTIME_COMMANDLINE_PARAMETERS[@]}")
+
+	# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
+	local enable_debug=N
+
+	while true; do
+		if [ "${#parameters[@]}" -eq 0 ]; then
+			break
+		else
+			case "${parameters[0]}" in
+				"--help"\
+				|"-h")
+					print_help;
+					exit 0
+					;;
+				"--debug"\
+				|"-d")
+					enable_debug="Y"
+					;;
+				*)
+					printf "ERROR: Unknown command-line argument \"%s\"\n" "${parameters[0]}" >&2
+					return 1
+					;;
+			esac
+			# shift array by 1 = unset 1st then repack
+			unset "parameters[0]"
+			if [ "${#parameters[@]}" -ne 0 ]; then
+				parameters=("${parameters[@]}")
+			fi
+		fi
+	done
+
+	if [ "${enable_debug}" = "Y" ]; then
+		set -o xtrace
+	fi
+	return 0
+}; declare -fr process_commandline_parameters;
+
 init "${@}"
 
 ## This script is based on the GNU Bash Shell Script Template project
