@@ -79,7 +79,7 @@ init() {
 	exit 0
 }; declare -fr init
 
-## ###################### Start of GBSS Support Code ##########################
+## ##################### Start of GBSST Support Code ##########################
 ## The following section are GNU Bash Shell Script's support code, you may
 ## remove the entire section if you want, just leave the last init call
 ### Common constant definitions
@@ -753,6 +753,6 @@ declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERS
 ### This script is comforming to Flexible Software Installation Specification
 ### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification
 ### and is based on the following version: v1.5.0
-## ###################### End of GBSS Support Code ##########################
+## ###################### End of GBSST Support Code #########################
 
 init "${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}"
