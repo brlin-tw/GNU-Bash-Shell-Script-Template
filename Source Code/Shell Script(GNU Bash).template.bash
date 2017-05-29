@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#shellcheck disable=SC2034
+# shellcheck disable=SC2034
 # The above line will be here next to the shebang instead of below of "## Meta about This Program" due to ShellCheck <0.4.6's bug.  This should be moved after Ubuntu's provided version of ShellCheck <0.4.6 EoL'd.  Refer https://github.com/koalaman/shellcheck/issues/779 for more information.
 # Comments prefixed by BASHDOC: are hints to specific GNU Bash Manual's section:
 # https://www.gnu.org/software/bash/manual/
