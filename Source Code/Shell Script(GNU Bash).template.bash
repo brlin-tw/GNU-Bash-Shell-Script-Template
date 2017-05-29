@@ -398,7 +398,6 @@ if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES; then
 fi
 
 ### RUNTIME_*: Info acquired from runtime environment
-### --------------------------------------
 ### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#runtime-determined-settings
 ### The following variables defines the environment aspects that can only be detected in runtime, we use RUNTIME_ namespace for these variables.
 ### These variables will not be set if technically not available(e.g. the program is provided to intepreter/etc. via stdin), or just not implemented yet
