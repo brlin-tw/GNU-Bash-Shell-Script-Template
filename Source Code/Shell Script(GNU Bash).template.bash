@@ -115,14 +115,15 @@ set -o nounset
 ### BASHDOC: Shell Builtin Commands » Bourne Shell Builtins(trap)
 #### Collect all information useful for debugging
 meta_trap_err_print_debugging_info(){
-	if [ ${#} -ne 3 ]; then
+	if [ ${#} -ne 4 ]; then
 		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
 	local -ir line_error_location=${1}; shift # The line number that triggers the error
 	local -r failing_command="${1}"; shift # The failing command
-	local -ir failing_command_return_status=${1} # The failing command's return value
+	local -ir failing_command_return_status=${1}; shift # The failing command's return value
+	local -r failing_function="${1}"
 
 	# Don't print trace for printf commands
 	set +o xtrace
@@ -141,45 +142,44 @@ meta_trap_err_print_debugging_info(){
 	printf "* Failing command's return status is %s\n" "${failing_command_return_status}"
 	printf "* Intepreter info: GNU Bash v%s on %s platform\n" "${BASH_VERSION}" "${MACHTYPE}"
 	printf "* Stacktrace:\n"
-	declare -i level=0; while [ "${level}" -lt "${#FUNCNAME[@]}" ]; do
-		if [ "${level}" -eq 0 ]; then
-			printf "	%u. %s(%s:%u)\n"\
-				"${level}"\
-				"${FUNCNAME[${level}]}"\
-				"${BASH_SOURCE[${level}]}"\
-				"${line_error_location}"
-		else
-			printf "	%u. %s(%s:%u)\n"\
-				"${level}"\
-				"${FUNCNAME[${level}]}"\
-				"${BASH_SOURCE[${level}]}"\
-				"${BASH_LINENO[((${level} - 1))]}"
-		fi
+
+	# Skip the trap functions in stack
+	declare -i level=0; while [ "${failing_function}" != "${FUNCNAME[$level]}" ];do
+		((level = level +1))
+	done
+	declare -i counter=0; while [ "${level}" -lt "${#FUNCNAME[@]}" ]; do
+		printf "	%u. %s(%s:%u)\n"\
+			"${counter}"\
+			"${FUNCNAME[${level}]}"\
+			"${BASH_SOURCE[${level}]}"\
+			"${BASH_LINENO[((${level} - 1))]}"
 		((level = level + 1))
-	done; unset level
+		((counter = counter +1))
+	done; unset level counter
 	printf "\n" # Separate list and further content
 
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -rf meta_trap_err_print_debugging_info
 
 meta_trap_err(){
-	if [ ${#} -ne 3 ]; then
+	if [ ${#} -ne 4 ]; then
 		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
 	local -ir line_error_location=${1}; shift # The line number that triggers the error
 	local -r failing_command="${1}"; shift # The failing command
-	local -ir failing_command_return_status=${1} # The failing command's return value
+	local -ir failing_command_return_status=${1}; shift # The failing command's return value
+	local -r failing_function="${1}"
 
-	meta_trap_err_print_debugging_info "${line_error_location}" "${failing_command}" "${failing_command_return_status}"
+	meta_trap_err_print_debugging_info "${line_error_location}" "${failing_command}" "${failing_command_return_status}" "${failing_function}"
 
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_err
 
 # Variable is expanded when trap triggered, not now
 #shellcheck disable=SC2016
-declare -r TRAP_ERREXIT_ARG='meta_trap_err ${LINENO} "${BASH_COMMAND}" ${?}'
+declare -r TRAP_ERREXIT_ARG='meta_trap_err ${LINENO} "${BASH_COMMAND}" ${?} ${FUNCNAME[0]}'
 # We separate the arguments to TRAP_ERREXIT_ARG, so it should be expand here
 #shellcheck disable=SC2064
 trap "${TRAP_ERREXIT_ARG}" ERR
