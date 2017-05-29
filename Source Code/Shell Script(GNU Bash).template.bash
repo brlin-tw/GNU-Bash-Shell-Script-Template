@@ -754,4 +754,4 @@ declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERS
 ### and is based on the following version: v1.5.0
 ## ###################### End of GBSST Support Code #########################
 
-init "${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}"
+init "${@}"
