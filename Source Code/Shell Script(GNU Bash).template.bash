@@ -213,13 +213,15 @@ meta_util_make_parameter_readonly_if_not_null_otherwise_unset(){
 	fi
 
 	for parameter_name in "${@}"; do
-		if [ -v parameter_name ]; then
-			if [ -z "${parameter_name}" ]; then
+		declare -n parameter_reference="${parameter_name}"
+		if [ -v "${parameter_name}" ]; then
+			if [ -z "${parameter_reference}" ]; then
 				unset "${parameter_name}"
 			else
 				declare -r "${parameter_name}"
 			fi
 		fi
+		unset -n parameter_reference
 	done; unset parameter_name
 
 	return "${COMMON_RESULT_SUCCESS}"
