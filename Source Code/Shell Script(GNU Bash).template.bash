@@ -51,7 +51,7 @@ declare META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
 declare META_APPLICATION_INSTALL_STYLE="STANDALONE"
 ## ####################### End of META_APPLICATION_* ##########################
 
-## META_RUNTIME_*: Runtime dependencies information for dependency checking
+## META_RUNTIME_DEPENDENCIES: Runtime dependencies information for dependency checking
 ## You may safely remove this entire section if you don't need it
 ### Human-friendly runtime dependency name definition
 declare -r META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS="GNU Coreutils"
@@ -65,7 +65,7 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 
 ### These are the dependencies that are used later and also checked later
 declare -Ar META_RUNTIME_DEPENDENCIES=()
-## ######################### End of META_RUNTIME_* ############################
+## #################### End of META_RUNTIME_DEPENDENCIES ######################
 
 ## init function, the main program's entry point
 ## This function is called from the "main" content near the end of this file,
