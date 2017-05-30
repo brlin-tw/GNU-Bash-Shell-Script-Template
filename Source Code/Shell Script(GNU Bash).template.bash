@@ -122,6 +122,20 @@ set -o nounset
 ### Traps
 ### Functions that will be triggered if certain condition met
 ### BASHDOC: Shell Builtin Commands » Bourne Shell Builtins(trap)
+meta_setup_traps(){
+	# Variable is expanded when trap triggered, not now
+	# shellcheck disable=SC2016
+	declare -gr TRAP_ERREXIT_ARG='meta_trap_err ${LINENO} "${BASH_COMMAND}" ${?} ${FUNCNAME[0]}'
+	# We separate the arguments to TRAP_ERREXIT_ARG, so it should be expand here
+	# shellcheck disable=SC2064
+	trap "${TRAP_ERREXIT_ARG}" ERR
+
+	trap 'meta_trap_exit' EXIT
+
+	# setup run guard
+	declare -gr meta_setup_traps_called="yes"
+}; declare -fr meta_setup_traps
+
 #### Collect all information useful for debugging
 meta_trap_err_print_debugging_info(){
 	if [ ${#} -ne 4 ]; then
@@ -185,13 +199,6 @@ meta_trap_err(){
 
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_err
-
-# Variable is expanded when trap triggered, not now
-# shellcheck disable=SC2016
-declare -r TRAP_ERREXIT_ARG='meta_trap_err ${LINENO} "${BASH_COMMAND}" ${?} ${FUNCNAME[0]}'
-# We separate the arguments to TRAP_ERREXIT_ARG, so it should be expand here
-# shellcheck disable=SC2064
-trap "${TRAP_ERREXIT_ARG}" ERR
 
 # NOTE: Associative arrays are NOT supported by this function
 meta_util_is_array_set_and_not_null(){
@@ -313,11 +320,16 @@ meta_trap_exit(){
 	meta_trap_exit_print_application_information
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_exit
-trap 'meta_trap_exit' EXIT
 
 ### Workarounds
 #### Temporarily disable errexit
 meta_workaround_errexit_setup() {
+	if [ ! -v meta_setup_traps_called ]; then
+		printf "%s: %s: Error: This function requires meta_setup_traps to be called beforehand.\n"\
+			"${GBSS_NAME}"\
+			"${FUNCNAME[0]}"
+		exit "${COMMON_RESULT_FAILURE}"
+	fi
 	if [ ${#} -ne 1 ]; then
 		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
@@ -742,6 +754,8 @@ meta_printHelpMessage(){
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_printHelpMessage
+
+meta_setup_traps
 
 ### Unset all null META_PROGRAM_* parameters and readonly all others
 ### META_APPLICATION_IDENTIFIER also as it can't be determined in runtime
