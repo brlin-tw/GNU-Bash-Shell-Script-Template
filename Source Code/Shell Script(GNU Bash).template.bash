@@ -315,17 +315,6 @@ meta_trap_exit(){
 }; declare -fr meta_trap_exit
 trap 'meta_trap_exit' EXIT
 
-### Unset all null META_PROGRAM_* parameters and readonly all others
-### META_APPLICATION_IDENTIFIER also as it can't be determined in runtime
-meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
-	META_PROGRAM_NAME_OVERRIDE\
-	META_PROGRAM_IDENTIFIER\
-	META_PROGRAM_DESCRIPTION\
-	META_PROGRAM_LICENSE\
-	META_PROGRAM_PAUSE_BEFORE_EXIT\
-	META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE\
-	META_APPLICATION_IDENTIFIER
-
 ### Workarounds
 #### Temporarily disable errexit
 meta_workaround_errexit_setup() {
@@ -753,6 +742,17 @@ meta_printHelpMessage(){
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_printHelpMessage
+
+### Unset all null META_PROGRAM_* parameters and readonly all others
+### META_APPLICATION_IDENTIFIER also as it can't be determined in runtime
+meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
+	META_PROGRAM_NAME_OVERRIDE\
+	META_PROGRAM_IDENTIFIER\
+	META_PROGRAM_DESCRIPTION\
+	META_PROGRAM_LICENSE\
+	META_PROGRAM_PAUSE_BEFORE_EXIT\
+	META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE\
+	META_APPLICATION_IDENTIFIER
 
 if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES_CRITICAL; then
 	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
