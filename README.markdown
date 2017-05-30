@@ -35,6 +35,11 @@
   Flexible Software Installation Specification  
   <https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification>
 
+## 參考資料<br>Referenced Data
+本專案參考了下列資料用以改善腳本品質
+
+* [BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki](http://mywiki.wooledge.org/BashFAQ/028)
+
 ## 軟體依賴資訊<br>Software Dependency Information
 ### 執行時期依賴軟體<br>Runtime Dependencies
 #### [GNU Core Utilities(Coreutils)](http://www.gnu.org/software/coreutils/coreutils.html)

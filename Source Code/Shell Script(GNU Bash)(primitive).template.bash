@@ -19,17 +19,18 @@ set -o nounset
 set -o pipefail
 
 ## Non-overridable Primitive Variables
-##
-## BashFAQ/How do I determine the location of my script? I want to read some config files from the same place. - Greg's Wiki
-## http://mywiki.wooledge.org/BashFAQ/028
-RUNTIME_EXECUTABLE_FILENAME="$(basename "${BASH_SOURCE[0]}")"
-declare -r RUNTIME_EXECUTABLE_FILENAME
-declare -r RUNTIME_EXECUTABLE_NAME="${RUNTIME_EXECUTABLE_FILENAME%.*}"
-RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "$(realpath --strip "${0}")")"
-declare -r RUNTIME_EXECUTABLE_DIRECTORY
-declare -r RUNTIME_EXECUTABLE_PATH_ABSOLUTE="${RUNTIME_EXECUTABLE_DIRECTORY}/${RUNTIME_EXECUTABLE_FILENAME}"
-declare -r RUNTIME_EXECUTABLE_PATH_RELATIVE="${0}"
-declare -r RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
+if [ -v "BASH_SOURCE[0]" ]; then
+	RUNTIME_EXECUTABLE_PATH="$(realpath --strip "${BASH_SOURCE[0]}")"
+	RUNTIME_EXECUTABLE_FILENAME="$(basename "${RUNTIME_EXECUTABLE_PATH}")"
+	RUNTIME_EXECUTABLE_NAME="${RUNTIME_EXECUTABLE_FILENAME%.*}"
+	RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "${RUNTIME_EXECUTABLE_PATH}")"
+	RUNTIME_COMMANDLINE_BASECOMMAND="${0}"
+	declare -r\
+		RUNTIME_EXECUTABLE_FILENAME\
+		RUNTIME_EXECUTABLE_DIRECTORY\
+		RUNTIME_EXECUTABLE_PATHABSOLUTE\
+		RUNTIME_COMMANDLINE_BASECOMMAND
+fi
 declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
 
 ## init function: entrypoint of main program
