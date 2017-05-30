@@ -200,6 +200,16 @@ meta_trap_err(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_err
 
+meta_trap_return(){
+	if [ ${#} -ne 1 ]; then
+		printf "%s: %s: ERROR: Wrong function argument quantity!\n" "${GBSS_NAME}" "${FUNCNAME[0]}" 1>&2
+		return "${COMMON_RESULT_FAILURE}"
+	fi
+	local returning_function="${1}"
+
+	printf "DEBUG: %s: returning from %s\n" "${FUNCNAME[0]}" "${returning_function}" 1>&2
+}; declare -fr meta_trap_return
+
 # NOTE: Associative arrays are NOT supported by this function
 meta_util_is_array_set_and_not_null(){
 	if [ "${#}" -ne 1 ]; then
@@ -702,6 +712,7 @@ meta_processCommandlineArguments() {
 		done
 	fi
 	if [ "${enable_debug}" = "Y" ]; then
+		trap 'meta_trap_return "${FUNCNAME[0]}"' RETURN
 		set -o xtrace
 	fi
 	return "${COMMON_RESULT_SUCCESS}"
