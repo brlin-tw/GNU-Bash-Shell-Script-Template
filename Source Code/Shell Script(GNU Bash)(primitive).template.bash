@@ -52,6 +52,12 @@ trap_exit(){
 	return 0
 }; declare -fr trap_exit; trap trap_exit EXIT
 
+trap_return(){
+	local returning_function="${1}"
+
+	printf "DEBUG: %s: returning from %s\n" "${FUNCNAME[0]}" "${returning_function}" 1>&2
+}; declare -fr trap_return
+
 print_help(){
 	printf "Currently no help messages are available for this program\n" 1>&2
 	return 0
@@ -96,6 +102,7 @@ process_commandline_parameters() {
 	done
 
 	if [ "${enable_debug}" = "Y" ]; then
+		trap 'trap_return "${FUNCNAME[0]}"' RETURN
 		set -o xtrace
 	fi
 	return 0
