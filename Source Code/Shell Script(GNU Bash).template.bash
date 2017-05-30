@@ -80,7 +80,7 @@ declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION="Enable debug mode"
 ## This function is called from the end of this file,
 ## with the command-line parameters as it's arguments
 init() {
-	if ! meta_processCommandlineArguments; then
+	if ! meta_processCommandlineParameters; then
 		meta_printHelpMessage
 		exit 1
 	fi
@@ -684,22 +684,22 @@ meta_util_array_shift(){
 }; declare -fr meta_util_array_shift
 
 ### Understand what argument is in the command, and set the global variables accordingly.
-meta_processCommandlineArguments() {
+meta_processCommandlineParameters() {
 	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -eq 0 ]; then
 		return "${COMMON_RESULT_SUCCESS}"
 	else
 		# modifyable parameters for parsing by consuming
-		local -a arguments=("${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}")
+		local -a parameters=("${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}")
 
 		# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
 		local enable_debug="N"
 
 		while :; do
-			# BREAK if no arguments left
-			if [ ! -v arguments ]; then
+			# BREAK if no parameters left
+			if [ ! -v parameters ]; then
 				break
 			else
-				case "${arguments[0]}" in
+				case "${parameters[0]}" in
 					"${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}"\
 					|"${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}")
 						meta_printHelpMessage
@@ -710,11 +710,11 @@ meta_processCommandlineArguments() {
 						enable_debug="Y"
 						;;
 					*)
-						printf "ERROR: Unknown command-line argument \"%s\"\n" "${arguments[0]}" >&2
+						printf "ERROR: Unknown command-line parameter \"%s\"\n" "${parameters[0]}" >&2
 						return ${COMMON_RESULT_FAILURE}
 						;;
 				esac
-				meta_util_array_shift arguments
+				meta_util_array_shift parameters
 			fi
 		done
 	fi
@@ -723,7 +723,7 @@ meta_processCommandlineArguments() {
 		set -o xtrace
 	fi
 	return "${COMMON_RESULT_SUCCESS}"
-}; declare -fr meta_processCommandlineArguments
+}; declare -fr meta_processCommandlineParameters
 
 ### Print single segment of commandline option help
 meta_util_printSingleCommandlineOptionHelp(){
