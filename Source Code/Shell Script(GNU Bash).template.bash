@@ -67,6 +67,15 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 declare -Ar META_RUNTIME_DEPENDENCIES=()
 ## #################### End of META_RUNTIME_DEPENDENCIES ######################
 
+### Program's Commandline Options Definitions
+declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG="--help"
+declare -r COMMANDLINE_OPTION_DISPLAY_HELP_SHORT="-h"
+declare -r COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION="Display help message"
+
+declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG="--debug"
+declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT="-d"
+declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION="Enable debug mode"
+
 ## init function: the main program's entry point
 ## This function is called from the end of this file,
 ## with the command-line parameters as it's arguments
@@ -630,15 +639,6 @@ meta_fsis_setup_application_metadata(){
 		META_APPLICATION_ISSUE_TRACKER_URL\
 		META_APPLICATION_SEEKING_HELP_OPTION
 }; declare -fr meta_fsis_setup_application_metadata
-
-### Program's Commandline Options Definitions
-declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG="--help"
-declare -r COMMANDLINE_OPTION_DISPLAY_HELP_SHORT="-h"
-declare -r COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION="Display help message"
-
-declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG="--debug"
-declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT="-d"
-declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION="Enable debug mode"
 
 ### Drop first element from array and shift remaining elements to replace the first one
 ### FIXME: command error in this function doesn't not trigger ERR trap for some reason
