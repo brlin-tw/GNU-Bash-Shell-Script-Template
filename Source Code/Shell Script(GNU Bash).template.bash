@@ -84,7 +84,7 @@ init() {
 		meta_printHelpMessage
 		exit 1
 	fi
-aa
+
 	exit 0
 }; declare -fr init
 
