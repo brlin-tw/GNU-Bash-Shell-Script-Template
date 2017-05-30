@@ -187,10 +187,10 @@ meta_trap_err(){
 }; declare -fr meta_trap_err
 
 # Variable is expanded when trap triggered, not now
-#shellcheck disable=SC2016
+# shellcheck disable=SC2016
 declare -r TRAP_ERREXIT_ARG='meta_trap_err ${LINENO} "${BASH_COMMAND}" ${?} ${FUNCNAME[0]}'
 # We separate the arguments to TRAP_ERREXIT_ARG, so it should be expand here
-#shellcheck disable=SC2064
+# shellcheck disable=SC2064
 trap "${TRAP_ERREXIT_ARG}" ERR
 
 # NOTE: Associative arrays are NOT supported by this function
