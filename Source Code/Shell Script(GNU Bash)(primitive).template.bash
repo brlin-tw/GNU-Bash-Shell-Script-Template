@@ -58,6 +58,11 @@ trap_return(){
 	printf "DEBUG: %s: returning from %s\n" "${FUNCNAME[0]}" "${returning_function}" 1>&2
 }; declare -fr trap_return
 
+trap_interrupt(){
+	printf "Recieved SIGINT, script is interrupted.\n" 1>&2
+	return 0
+}; declare -fr trap_interrupt; trap trap_interrupt INT
+
 print_help(){
 	printf "Currently no help messages are available for this program\n" 1>&2
 	return 0

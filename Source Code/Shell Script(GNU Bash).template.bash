@@ -132,6 +132,8 @@ meta_setup_traps(){
 
 	trap 'meta_trap_exit' EXIT
 
+	trap meta_trap_int INT
+
 	# setup run guard
 	declare -gr meta_setup_traps_called="yes"
 }; declare -fr meta_setup_traps
@@ -199,6 +201,11 @@ meta_trap_err(){
 
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_err
+
+meta_trap_int(){
+	printf "%s: Recieved SIGINT, script is interrupted.\n" "${FUNCNAME[0]}" 1>&2
+	return "${COMMON_RESULT_SUCCESS}"
+}; declare -fr meta_trap_int
 
 meta_trap_return(){
 	if [ ${#} -ne 1 ]; then
