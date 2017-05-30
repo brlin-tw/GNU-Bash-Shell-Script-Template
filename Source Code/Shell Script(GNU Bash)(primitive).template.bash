@@ -1,24 +1,16 @@
 #!/usr/bin/env bash
 #shellcheck disable=SC2034
-# Comments prefixed by BASHDOC: are hints to specific GNU Bash Manual's section:
-# https://www.gnu.org/software/bash/manual/
 
 ## Makes debuggers' life easier - Unofficial Bash Strict Mode
-## http://redsymbol.net/articles/unofficial-bash-strict-mode/
 ## BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
-### Exit prematurely if a command's return value is not 0(with some exceptions), triggers ERR trap if available.
 set -o errexit
-
-### Trap on `ERR' is inherited by shell functions, command substitutions, and subshell environment as well
 set -o errtrace
-
-### Exit prematurely if an unset variable is expanded, causing parameter expansion failure.
 set -o nounset
-
-### Let the return value of a pipeline be the value of the last (rightmost) command to exit with a non-zero status
 set -o pipefail
 
 ## Non-overridable Primitive Variables
+## BASHDOC: Shell Variables » Bash Variables
+## BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
 if [ -v "BASH_SOURCE[0]" ]; then
 	RUNTIME_EXECUTABLE_PATH="$(realpath --strip "${BASH_SOURCE[0]}")"
 	RUNTIME_EXECUTABLE_FILENAME="$(basename "${RUNTIME_EXECUTABLE_PATH}")"
@@ -49,6 +41,8 @@ init(){
 	exit 0
 }; declare -fr init
 
+## Traps: Functions that are triggered when certain condition occurred
+## Shell Builtin Commands » Bourne Shell Builtins » trap
 trap_errexit(){
 	printf "An error occurred and the script is prematurely aborted\n" 1>&2
 	return 0
