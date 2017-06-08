@@ -60,7 +60,7 @@ trap_return(){
 
 trap_interrupt(){
 	printf "Recieved SIGINT, script is interrupted.\n" 1>&2
-	return 0
+	return 1
 }; declare -fr trap_interrupt; trap trap_interrupt INT
 
 print_help(){
