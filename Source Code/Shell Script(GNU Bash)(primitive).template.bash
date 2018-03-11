@@ -21,9 +21,9 @@ for required_command in \
 		runtime_dependency_checking_result='fail'
 
 		case "${required_command}" in
-			realpath\
-			|basename\
-			|dirname)
+			basename\
+			|dirname\
+			|realpath)
 				required_software='GNU Coreutils'
 				;;
 			*)
