@@ -14,9 +14,9 @@ declare\
 	required_software
 
 for required_command in \
-	realpath\
 	basename\
-	dirname; do
+	dirname\
+	realpath; do
 	if ! command -v "${required_command}" &>/dev/null; then
 		runtime_dependency_checking_result='fail'
 
