@@ -8,6 +8,42 @@ set -o errtrace
 set -o nounset
 set -o pipefail
 
+## Runtime Dependencies Checking
+declare\
+	runtime_dependency_checking_result='still-pass' \
+	required_software
+
+for required_command in \
+	realpath\
+	basename\
+	dirname; do
+	if ! command -v "${required_command}" &>/dev/null; then
+		runtime_dependency_checking_result='fail'
+
+		case "${required_command}" in
+			realpath\
+			|basename\
+			|dirname)
+				required_software='GNU Coreutils'
+				;;
+			*)
+				required_software="${required_command}"
+				;;
+		esac
+
+		printf --\
+			"Error: This program requires \"%s\" to be installed and it's executables in the executable searching paths.\n"\
+			"${required_software}" 1>&2
+		unset required_software
+	fi
+done; unset required_command required_software
+
+if [ "${runtime_dependency_checking_result}" = 'fail' ]; then
+	printf --\
+		"Error: Runtime dependency checking fail, the progrom cannot continue.\n" 1>&2
+	exit 1
+fi; unset runtime_dependency_checking_result
+
 ## Non-overridable Primitive Variables
 ## BASHDOC: Shell Variables » Bash Variables
 ## BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
