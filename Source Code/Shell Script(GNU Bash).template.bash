@@ -797,11 +797,11 @@ meta_fsis_setup_runtime_parameters "${@}"
 meta_fsis_setup_software_directories_configuration
 meta_fsis_setup_application_metadata
 
-### This script is based on the GNU Bash Shell Script Template project
-### https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
-### and is based on the following version:
-declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="v1.26.0-15-g935eb02-dirty"
-### You may rebase your script to incorporate new features and fixes from the template
+## This script is based on the GNU Bash Shell Script Template project
+## https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
+## and is based on the following version: 
+## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=@@GBSST_VERSION@@
+## You may rebase your script to incorporate new features and fixes from the template
 
 ### This script is comforming to Flexible Software Installation Specification
 ### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification

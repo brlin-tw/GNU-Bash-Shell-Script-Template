@@ -69,7 +69,10 @@ init(){
 	cat >"${temp_file}"
 
 	# undo version injection
-	sed --in-place 's/^declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=.*$/declare -r META_BASED_ON_GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@TEMPLATE_VERSION@@"/' "${temp_file}"
+	sed\
+		--in-place\
+		's/^## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=.*$/## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@GBSST_VERSION@@"/'\
+		"${temp_file}"
 
 	# enforce coding style
 	# Scope of "Flexible Software Installation Specification" project
