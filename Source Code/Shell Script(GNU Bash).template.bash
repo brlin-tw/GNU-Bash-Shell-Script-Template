@@ -5,62 +5,62 @@
 ## Fill in metadata about this program for reusing in the script and documenting purposes
 ## You may safely remove this entire section if you don't need it
 ### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_EXECUTABLE_NAME}(optional)
-declare META_PROGRAM_NAME_OVERRIDE=""
+declare META_PROGRAM_NAME_OVERRIDE=''
 
 ### Program's identifier, program's name with character limitation exposed by platform(optional)
-declare META_PROGRAM_IDENTIFIER=""
+declare META_PROGRAM_IDENTIFIER=''
 
 ### Program's description, default(optional)
-declare META_PROGRAM_DESCRIPTION=""
+declare META_PROGRAM_DESCRIPTION=''
 
 ### Intellectual property license applied to this program(optional)
-declare META_PROGRAM_LICENSE=""
+declare META_PROGRAM_LICENSE=''
 
 ### Years since any fraction of copyright material is activated, indicates the year when copyright protection will be outdated(optional)
-declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=""
+declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE=''
 
 ### Whether program should pause and expect user pressing enter when program ended, which is useful when launching scripts in GUI, which may undesirebly close the terminal emulator window when the script is exited and leaving user no chance to check execution result
 ### 0: Don't pause(default)
 ### 1: Pause
 ### This parameter is overridable, in case of command-line options like --interactive and --no-interactive
-declare -i META_PROGRAM_PAUSE_BEFORE_EXIT="0"
+declare -i META_PROGRAM_PAUSE_BEFORE_EXIT=0
 ## ######################## End of META_PROGRAM_* #############################
 
 ## META_APPLICATION_*: Metadata about the application this program belongs to
 ## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#meta_application_
 ## You may safely remove this entire section if you don't need it
 ### Human-readable name of application(optional)
-declare META_APPLICATION_NAME=""
+declare META_APPLICATION_NAME=''
 
 ### Application's identifier, application's name with limitation posed by other software, default(not implemented): unnamed-application
-declare META_APPLICATION_IDENTIFIER=""
+declare META_APPLICATION_IDENTIFIER=''
 
 ### Developers' name of application(optional)
-declare META_APPLICATION_DEVELOPER_NAME=""
+declare META_APPLICATION_DEVELOPER_NAME=''
 
 ### Application's official site URL(optional)
-declare META_APPLICATION_SITE_URL=""
+declare META_APPLICATION_SITE_URL=''
 
 ### Application's issue tracker, if there's any(optional)
-declare META_APPLICATION_ISSUE_TRACKER_URL=""
+declare META_APPLICATION_ISSUE_TRACKER_URL=''
 
 ### An action to let user get help from developer or other sources when error occurred
-declare META_APPLICATION_SEEKING_HELP_OPTION="contact developer"
+declare META_APPLICATION_SEEKING_HELP_OPTION='contact developer'
 
 ### The Software Directory Configuration this application uses, refer below section for more info
-declare META_APPLICATION_INSTALL_STYLE="STANDALONE"
+declare META_APPLICATION_INSTALL_STYLE=STANDALONE
 ## ####################### End of META_APPLICATION_* ##########################
 
 ## META_RUNTIME_DEPENDENCIES: Runtime dependencies information for dependency checking
 ## You may safely remove this entire section if you don't need it
 ### Human-friendly runtime dependency name definition
-declare -r META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS="GNU Coreutils"
+declare -r META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS='GNU Coreutils'
 
 ### These are the dependencies that the script foundation needs, and needs to be checked IMMEDIATELY
 ### BASHDOC: Bash Features - Arrays(associative array)
 declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
-	["basename"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
-	["realpath"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
+	[basename]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
+	[realpath]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
 )
 
 ### These are the dependencies that are used later and also checked later
@@ -68,13 +68,13 @@ declare -Ar META_RUNTIME_DEPENDENCIES=()
 ## #################### End of META_RUNTIME_DEPENDENCIES ######################
 
 ### Program's Commandline Options Definitions
-declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG="--help"
-declare -r COMMANDLINE_OPTION_DISPLAY_HELP_SHORT="-h"
-declare -r COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION="Display help message"
+declare -r COMMANDLINE_OPTION_DISPLAY_HELP_LONG=--help
+declare -r COMMANDLINE_OPTION_DISPLAY_HELP_SHORT=-h
+declare -r COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION='Display help message'
 
-declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG="--debug"
-declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT="-d"
-declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION="Enable debug mode"
+declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG='--debug'
+declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT='-d'
+declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION='Enable debug mode'
 
 ## init function: the main program's entry point
 ## This function is called from the end of this file,
@@ -91,7 +91,7 @@ init() {
 ## ##################### Start of GBSST Support Code ##########################
 ## The following section are GNU Bash Shell Script's support code, you may
 ## remove the entire section if you want, just leave the last init call
-declare -r GBSS_NAME="GNU Bash Shell Script Template"
+declare -r GBSS_NAME='GNU Bash Shell Script Template'
 
 ### Common constant definitions
 declare -ir COMMON_RESULT_SUCCESS=0
@@ -130,18 +130,18 @@ meta_setup_traps(){
 	# shellcheck disable=SC2064
 	trap "${TRAP_ERREXIT_ARG}" ERR
 
-	trap 'meta_trap_exit' EXIT
+	trap meta_trap_exit EXIT
 
 	trap meta_trap_int INT
 
 	# setup run guard
-	declare -gr meta_setup_traps_called="yes"
+	declare -gr meta_setup_traps_called=yes
 }; declare -fr meta_setup_traps
 
 #### Collect all information useful for debugging
 meta_trap_err_print_debugging_info(){
 	if [ ${#} -ne 4 ]; then
-		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
+		printf 'ERROR: %s: Wrong function argument quantity!\n' "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
@@ -154,26 +154,26 @@ meta_trap_err_print_debugging_info(){
 	set +o xtrace
 
 	printf \
-		"ERROR: %s has encountered an error and is ending prematurely, %s for support.\n"\
+		'ERROR: %s has encountered an error and is ending prematurely, %s for support.\n'\
 		"${META_PROGRAM_NAME_OVERRIDE:-${RUNTIME_EXECUTABLE_NAME:-This program}}"\
 		"${META_APPLICATION_SEEKING_HELP_OPTION:-contact developer}"\
 		1>&2
 
-	printf "\n" # Separate paragraphs
+	printf '\n' # Separate paragraphs
 
-	printf "Technical information:\n"
-	printf "\n" # Separate list title and items
-	printf "* The failing command is \"%s\"\n" "${failing_command}"
-	printf "* Failing command's return status is %s\n" "${failing_command_return_status}"
-	printf "* Intepreter info: GNU Bash v%s on %s platform\n" "${BASH_VERSION}" "${MACHTYPE}"
-	printf "* Stacktrace:\n"
+	printf 'Technical information:\n'
+	printf '\n' # Separate list title and items
+	printf '* The failing command is "%s"\n' "${failing_command}"
+	printf "* Failing command's return status is %s\\n" "${failing_command_return_status}"
+	printf '* Intepreter info: GNU Bash v%s on %s platform\n' "${BASH_VERSION}" "${MACHTYPE}"
+	printf '* Stacktrace:\n'
 
 	# Skip the trap functions in stack
 	declare -i level=0; while [ "${failing_function}" != "${FUNCNAME[$level]}" ];do
 		((level = level +1))
 	done
 	declare -i counter=0; while [ "${level}" -lt "${#FUNCNAME[@]}" ]; do
-		printf "	%u. %s(%s:%u)\n"\
+		printf '	%u. %s(%s:%u)\n'\
 			"${counter}"\
 			"${FUNCNAME[${level}]}"\
 			"${BASH_SOURCE[${level}]}"\
@@ -181,14 +181,14 @@ meta_trap_err_print_debugging_info(){
 		((level = level + 1))
 		((counter = counter +1))
 	done; unset level counter
-	printf "\n" # Separate list and further content
+	printf '\n' # Separate list and further content
 
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -rf meta_trap_err_print_debugging_info
 
 meta_trap_err(){
 	if [ ${#} -ne 4 ]; then
-		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
+		printf 'ERROR: %s: Wrong function argument quantity!\n' "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
@@ -203,24 +203,24 @@ meta_trap_err(){
 }; declare -fr meta_trap_err
 
 meta_trap_int(){
-	printf "%s: Recieved SIGINT, script is interrupted.\n" "${FUNCNAME[0]}" 1>&2
+	printf '%s: Recieved SIGINT, script is interrupted.\n' "${FUNCNAME[0]}" 1>&2
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_int
 
 meta_trap_return(){
 	if [ ${#} -ne 1 ]; then
-		printf "%s: %s: ERROR: Wrong function argument quantity!\n" "${GBSS_NAME}" "${FUNCNAME[0]}" 1>&2
+		printf '%s: %s: ERROR: Wrong function argument quantity!\n' "${GBSS_NAME}" "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 	local returning_function="${1}"
 
-	printf "DEBUG: %s: returning from %s\n" "${FUNCNAME[0]}" "${returning_function}" 1>&2
+	printf 'DEBUG: %s: returning from %s\n' "${FUNCNAME[0]}" "${returning_function}" 1>&2
 }; declare -fr meta_trap_return
 
 # NOTE: Associative arrays are NOT supported by this function
 meta_util_is_array_set_and_not_null(){
 	if [ "${#}" -ne 1 ]; then
-		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		printf '%s: Error: argument quantity illegal\n' "${FUNCNAME[0]}" 1>&2
 		exit "${COMMON_RESULT_FAILURE}"
 	fi
 
@@ -235,7 +235,7 @@ meta_util_is_array_set_and_not_null(){
 # NOTE: Array and nameref are NOT supported by this function
 meta_util_is_parameter_set_and_not_null(){
 	if [ "${#}" -ne 1 ]; then
-		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		printf '%s: Error: argument quantity illegal\n' "${FUNCNAME[0]}" 1>&2
 		exit "${COMMON_RESULT_FAILURE}"
 	fi
 
@@ -255,7 +255,7 @@ meta_util_is_parameter_set_and_not_null(){
 
 meta_util_make_parameter_readonly_if_not_null_otherwise_unset(){
 	if [ "${#}" -eq 0 ]; then
-		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		printf '%s: Error: argument quantity illegal\n' "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
@@ -296,38 +296,38 @@ meta_trap_exit_print_application_information(){
 			meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
 			&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ] \
 		); then
-		printf -- "------------------------------------\n"
+		printf -- '------------------------------------\n'
 	fi
 	if meta_util_is_parameter_set_and_not_null META_APPLICATION_NAME; then
-		printf "%s\n" "${META_APPLICATION_NAME}"
+		printf '%s\n' "${META_APPLICATION_NAME}"
 	fi
 	if meta_util_is_parameter_set_and_not_null META_APPLICATION_DEVELOPER_NAME; then
-		printf "%s et. al." "${META_APPLICATION_DEVELOPER_NAME}"
+		printf '%s et. al.' "${META_APPLICATION_DEVELOPER_NAME}"
 		if meta_util_is_parameter_set_and_not_null META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE; then
 			printf " " # Separator with ${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}
 		else
-			printf "\n"
+			printf '\n'
 		fi
 	fi
 	if meta_util_is_parameter_set_and_not_null META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE; then
-		printf "© %s\n" "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}"
+		printf '© %s\n' "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}"
 	fi
 	if meta_util_is_parameter_set_and_not_null META_PROGRAM_LICENSE; then
-		printf "Intellectual Property License: %s\n" "${META_PROGRAM_LICENSE}"
+		printf 'Intellectual Property License: %s\n' "${META_PROGRAM_LICENSE}"
 	elif meta_util_is_parameter_set_and_not_null META_APPLICATION_LICENSE; then
-		printf "Intellectual Property License: %s\n" "${META_APPLICATION_LICENSE}"
+		printf 'Intellectual Property License: %s\n' "${META_APPLICATION_LICENSE}"
 	fi
 	if meta_util_is_parameter_set_and_not_null META_APPLICATION_SITE_URL; then
-		printf "Official Website: %s\n" "${META_APPLICATION_SITE_URL}"
+		printf 'Official Website: %s\n' "${META_APPLICATION_SITE_URL}"
 	fi
 	if meta_util_is_parameter_set_and_not_null META_APPLICATION_ISSUE_TRACKER_URL; then
-		printf "Issue Tracker: %s\n" "${META_APPLICATION_ISSUE_TRACKER_URL}"
+		printf 'Issue Tracker: %s\n' "${META_APPLICATION_ISSUE_TRACKER_URL}"
 	fi
 	if meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
 		&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
 		local enter_holder
 
-		printf "Press ENTER to quit the program.\n"
+		printf 'Press ENTER to quit the program.\n'
 		read -r enter_holder
 	fi
 	return "${COMMON_RESULT_SUCCESS}"
@@ -342,27 +342,27 @@ meta_trap_exit(){
 #### Temporarily disable errexit
 meta_workaround_errexit_setup() {
 	if [ ! -v meta_setup_traps_called ]; then
-		printf "%s: %s: Error: This function requires meta_setup_traps to be called beforehand.\n"\
+		printf '%s: %s: Error: This function requires meta_setup_traps to be called beforehand.\n'\
 			"${GBSS_NAME}"\
 			"${FUNCNAME[0]}"
 		exit "${COMMON_RESULT_FAILURE}"
 	fi
 	if [ ${#} -ne 1 ]; then
-		printf "ERROR: %s: Wrong function argument quantity!\n" "${FUNCNAME[0]}" 1>&2
+		printf 'ERROR: %s: Wrong function argument quantity!\n' "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 	local option=${1} # on: enable errexit; off: disable errexit
 
-	if [ "${option}" == "on" ]; then
+	if [ "${option}" == on ]; then
 		set -o errexit
 		# We separate the arguments to TRAP_ERREXIT_ARG, so it should be expand here
 		#shellcheck disable=SC2064
 		trap "${TRAP_ERREXIT_ARG}" ERR
-	elif [ "${option}" == "off" ]; then
+	elif [ "${option}" == off ]; then
 		set +o errexit
 		trap - ERR
 	else
-		printf "ERROR: %s: Wrong function argument format!\n" "${FUNCNAME[0]}" 1>&2
+		printf 'ERROR: %s: Wrong function argument format!\n' "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 	return "${COMMON_RESULT_SUCCESS}"
@@ -370,7 +370,7 @@ meta_workaround_errexit_setup() {
 
 meta_util_declare_global_parameters(){
 	if [ "${#}" -eq 0 ]; then
-		printf "%s: Error: Function parameter quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		printf '%s: Error: Function parameter quantity illegal\n' "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
@@ -382,7 +382,7 @@ meta_util_declare_global_parameters(){
 
 meta_util_unset_global_parameters_if_null(){
 	if [ "${#}" -eq 0 ]; then
-		printf "%s: Error: Function parameter quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		printf '%s: Error: Function parameter quantity illegal\n' "${FUNCNAME[0]}" 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
@@ -410,9 +410,9 @@ meta_checkRuntimeDependencies() {
 			exit_status="${?}"
 			meta_workaround_errexit_setup on
 			if [ ${exit_status} -ne 0 ]; then
-				printf "ERROR: Command \"%s\" not found, program cannot continue like this.\n" "${a_command}" 1>&2
-				printf "ERROR: Please make sure %s is installed and it's executable path is in your operating system's executable search path.\n" "${array_ref["${a_command}"]}" >&2
-				printf "Goodbye.\n"
+				printf 'ERROR: Command "%s" not found, program cannot continue like this.\n' "${a_command}" 1>&2
+				printf "ERROR: Please make sure %s is installed and it's executable path is in your operating system's executable search path.\\n" "${array_ref["${a_command}"]}" >&2
+				printf 'Goodbye.\n'
 				exit "${COMMON_RESULT_FAILURE}"
 			fi
 		done; unset a_command exit_status
@@ -442,8 +442,8 @@ meta_fsis_setup_runtime_parameters(){
 
 	if [ ! -v BASH_SOURCE ]; then
 		if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE\
-			&& [ "${META_APPLICATION_INSTALL_STYLE}" == "SHC" ]; then
-			printf "GNU Bash Shell Script Template: Error: META_APPLICATION_INSTALL_STYLE set to SHC, but is not possible due to unknown script location, make sure the program is not run as intepreter's standard input stream.\n" 1>&2
+			&& [ "${META_APPLICATION_INSTALL_STYLE}" == SHC ]; then
+			printf "GNU Bash Shell Script Template: Error: META_APPLICATION_INSTALL_STYLE set to SHC, but is not possible due to unknown script location, make sure the program is not run as intepreter's standard input stream.\\n" 1>&2
 			exit "${COMMON_RESULT_FAILURE}"
 		fi
 	else
@@ -490,7 +490,7 @@ meta_fsis_setup_runtime_parameters(){
 	fi
 
 	# Set run guard
-	declare -gr meta_fsis_setup_runtime_parameters_called="yes"
+	declare -gr meta_fsis_setup_runtime_parameters_called=yes
 }; declare -fr meta_fsis_setup_runtime_parameters
 
 ### Flexible Software Installation Specification - Software Directories Configuration(S.D.C.)
@@ -499,7 +499,7 @@ meta_fsis_setup_runtime_parameters(){
 meta_fsis_setup_software_directories_configuration(){
 	# Run guard
 	if [ ! -v meta_fsis_setup_runtime_parameters_called ]; then
-		printf "%s: %s: %u: Error: This function cannot be called before meta_fsis_setup_runtime_parameters, please contact developer.\n"\
+		printf '%s: %s: %u: Error: This function cannot be called before meta_fsis_setup_runtime_parameters, please contact developer.\n'\
 			"${GBSS_NAME}"\
 			"${FUNCNAME[0]}"\
 			"${LINENO}"\
@@ -548,14 +548,14 @@ meta_fsis_setup_software_directories_configuration(){
 					SHC_PREFIX_DIR="${RUNTIME_EXECUTABLE_DIRECTORY}"
 				else
 					if [ ! -f "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source" ]; then
-						printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source not exist, can't setup Self-contained Hierarchy Configuration.\n" 1>&2
+						printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source not exist, can't setup Self-contained Hierarchy Configuration.\\n" 1>&2
 						exit 1
 					fi
 					# Scope of Flexible Software Installation Specification
 					# shellcheck disable=SC1090,SC1091
 					source "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source"
 					if ! meta_util_is_parameter_set_and_not_null PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY; then
-						printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY not defined, can't setup Self-contained Hierarchy Configuration.\n" 1>&2
+						printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY not defined, can't setup Self-contained Hierarchy Configuration.\\n" 1>&2
 						exit 1
 					fi
 					SHC_PREFIX_DIR="$(realpath --strip "${RUNTIME_EXECUTABLE_DIRECTORY}/${PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY}")"
@@ -581,7 +581,7 @@ meta_fsis_setup_software_directories_configuration(){
 				unset SDC_EXECUTABLES_DIR SDC_LIBRARIES_DIR SDC_SHARED_RES_DIR SDC_I18N_DATA_DIR SDC_SETTINGS_DIR SDC_TEMP_DIR
 				;;
 			*)
-				printf "Error: Unknown software directories configuration, program can not continue.\n" 1>&2
+				printf 'Error: Unknown software directories configuration, program can not continue.\n' 1>&2
 				exit 1
 				;;
 		esac
@@ -596,7 +596,7 @@ meta_fsis_setup_software_directories_configuration(){
 		SDC_TEMP_DIR
 
 	# Set run guard
-	declare -gr meta_fsis_setup_software_directories_configuration_called="yes"
+	declare -gr meta_fsis_setup_software_directories_configuration_called=yes
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_fsis_setup_software_directories_configuration
 
@@ -606,7 +606,7 @@ meta_fsis_setup_software_directories_configuration(){
 meta_fsis_setup_application_metadata(){
 	# Run guard
 	if [ ! -v meta_fsis_setup_software_directories_configuration_called ]; then
-		printf "%s: %s: %u: Error: This function cannot be called before meta_fsis_setup_software_directories_configuration_called, please contact developer.\n"\
+		printf '%s: %s: %u: Error: This function cannot be called before meta_fsis_setup_software_directories_configuration_called, please contact developer.\n'\
 			"${GBSS_NAME}"\
 			"${FUNCNAME[0]}"\
 			"${LINENO}"\
@@ -642,7 +642,7 @@ meta_fsis_setup_application_metadata(){
 				: # metadata can only be set from header
 				;;
 			*)
-				printf "Error: Unknown META_APPLICATION_INSTALL_STYLE, program can not continue.\n" 1>&2
+				printf 'Error: Unknown META_APPLICATION_INSTALL_STYLE, program can not continue.\n' 1>&2
 				exit 1
 				;;
 		esac
@@ -662,18 +662,18 @@ meta_fsis_setup_application_metadata(){
 ### FIXME: command error in this function doesn't not trigger ERR trap for some reason
 meta_util_array_shift(){
 	if [ "${#}" -ne 1 ]; then
-		printf "%s: Error: argument quantity illegal\n" "${FUNCNAME[0]}" 1>&2
+		printf '%s: Error: argument quantity illegal\n' "${FUNCNAME[0]}" 1>&2
 		exit "${COMMON_RESULT_FAILURE}"
 	fi
 
 	local -n array_ref="${1}"
 	if [ "${#array_ref[@]}" -eq 0 ]; then
-		printf "ERROR: array is empty!\n" 1>&2
+		printf 'ERROR: array is empty!\n' 1>&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
 	# Unset the 1st element
-	unset "array_ref[0]"
+	unset 'array_ref[0]'
 
 	# Repack array if element still available in array
 	if [ "${#array_ref[@]}" -ne 0 ]; then
@@ -692,7 +692,7 @@ meta_processCommandlineParameters() {
 		local -a parameters=("${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}")
 
 		# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
-		local enable_debug="N"
+		local enable_debug=N
 
 		while :; do
 			# BREAK if no parameters left
@@ -707,10 +707,10 @@ meta_processCommandlineParameters() {
 						;;
 					"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}"\
 					|"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}")
-						enable_debug="Y"
+						enable_debug=Y
 						;;
 					*)
-						printf "ERROR: Unknown command-line parameter \"%s\"\n" "${parameters[0]}" >&2
+						printf 'ERROR: Unknown command-line parameter "%s"\n' "${parameters[0]}" >&2
 						return ${COMMON_RESULT_FAILURE}
 						;;
 				esac
@@ -718,7 +718,7 @@ meta_processCommandlineParameters() {
 			fi
 		done
 	fi
-	if [ "${enable_debug}" = "Y" ]; then
+	if [ "${enable_debug}" = Y ]; then
 		trap 'meta_trap_return "${FUNCNAME[0]}"' RETURN
 		set -o xtrace
 	fi
@@ -728,7 +728,7 @@ meta_processCommandlineParameters() {
 ### Print single segment of commandline option help
 meta_util_printSingleCommandlineOptionHelp(){
 	if [ "${#}" -ne 3 ] && [ "${#}" -ne 4 ]; then
-		printf "ERROR: %s: Wrong parameter quantity!\n" "${FUNCNAME[0]}" >&2
+		printf 'ERROR: %s: Wrong parameter quantity!\n' "${FUNCNAME[0]}" >&2
 		return "${COMMON_RESULT_FAILURE}"
 	fi
 
@@ -742,14 +742,14 @@ meta_util_printSingleCommandlineOptionHelp(){
 		declare -r current_value
 	fi
 
-	printf "### %s / %s ###\n" "${long_option}" "${short_option}"
-	printf "%s\n" "${description}"
+	printf '### %s / %s ###\n' "${long_option}" "${short_option}"
+	printf '%s\n' "${description}"
 
 	if [ -v current_value ]; then
-		printf "Current value: %s\n" "${current_value}"
+		printf 'Current value: %s\n' "${current_value}"
 	fi
 
-	printf "\n" # Separate with next option(or next heading)
+	printf '\n' # Separate with next option(or next heading)
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_printSingleCommandlineOptionHelp
 
@@ -757,17 +757,17 @@ meta_util_printSingleCommandlineOptionHelp(){
 ###   * User requests it
 ###   * An command syntax error has detected
 meta_printHelpMessage(){
-	printf "# %s #\n" "${RUNTIME_EXECUTABLE_NAME}"
+	printf '# %s #\n' "${RUNTIME_EXECUTABLE_NAME}"
 
 	if meta_util_is_parameter_set_and_not_null META_PROGRAM_DESCRIPTION; then
-		printf "%s\n" "${META_PROGRAM_DESCRIPTION}"
-		printf "\n"
+		printf '%s\n' "${META_PROGRAM_DESCRIPTION}"
+		printf '\n'
 	fi
 
-	printf "## Usage ##\n"
-	printf "\t%s (command-line options and parameters)\n" "${RUNTIME_COMMAND_BASE}"
-	printf "\n"
-	printf "## Command-line Options ##\n"
+	printf '## Usage ##\n'
+	printf '\t%s (command-line options and parameters)\n' "${RUNTIME_COMMAND_BASE}"
+	printf '\n'
+	printf '## Command-line Options ##\n'
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" "${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" "${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
 	return "${COMMON_RESULT_SUCCESS}"
