@@ -10,7 +10,7 @@ set -o pipefail
 
 ## Runtime Dependencies Checking
 declare\
-	runtime_dependency_checking_result='still-pass' \
+	runtime_dependency_checking_result=still-pass\
 	required_software
 
 for required_command in \
@@ -18,7 +18,7 @@ for required_command in \
 	dirname\
 	realpath; do
 	if ! command -v "${required_command}" &>/dev/null; then
-		runtime_dependency_checking_result='fail'
+		runtime_dependency_checking_result=fail
 
 		case "${required_command}" in
 			basename\
@@ -38,7 +38,7 @@ for required_command in \
 	fi
 done; unset required_command required_software
 
-if [ "${runtime_dependency_checking_result}" = 'fail' ]; then
+if [ "${runtime_dependency_checking_result}" = fail ]; then
 	printf --\
 		'Error: Runtime dependency checking fail, the progrom cannot continue.\n' 1>&2
 	exit 1
@@ -121,14 +121,14 @@ process_commandline_parameters() {
 			break
 		else
 			case "${parameters[0]}" in
-				"--help"\
-				|"-h")
+				--help\
+				|-h)
 					print_help;
 					exit 0
 					;;
-				"--debug"\
-				|"-d")
-					enable_debug="Y"
+				--debug\
+				|-d)
+					enable_debug=Y
 					;;
 				*)
 					printf 'ERROR: Unknown command-line argument "%s"\n' "${parameters[0]}" >&2
@@ -143,7 +143,7 @@ process_commandline_parameters() {
 		fi
 	done
 
-	if [ "${enable_debug}" = "Y" ]; then
+	if [ "${enable_debug}" = Y ]; then
 		trap 'trap_return "${FUNCNAME[0]}"' RETURN
 		set -o xtrace
 	fi
