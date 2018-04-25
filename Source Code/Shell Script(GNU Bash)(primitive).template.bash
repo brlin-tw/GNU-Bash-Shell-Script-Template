@@ -32,7 +32,7 @@ for required_command in \
 		esac
 
 		printf --\
-			"Error: This program requires \"%s\" to be installed and it's executables in the executable searching paths.\n"\
+			'Error: This program requires "%s" to be installed and its executables in the executable searching paths.\n'\
 			"${required_software}" 1>&2
 		unset required_software
 	fi
@@ -40,7 +40,7 @@ done; unset required_command required_software
 
 if [ "${runtime_dependency_checking_result}" = 'fail' ]; then
 	printf --\
-		"Error: Runtime dependency checking fail, the progrom cannot continue.\n" 1>&2
+		'Error: Runtime dependency checking fail, the progrom cannot continue.\n' 1>&2
 	exit 1
 fi; unset runtime_dependency_checking_result
 
@@ -66,8 +66,8 @@ declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
 ## with the script's command-line parameters as arguments
 init(){
 	if ! process_commandline_parameters; then
-		printf\
-			"Error: %s: Invalid command-line parameters.\n"\
+		printf --\
+			'Error: %s: Invalid command-line parameters.\n'\
 			"${FUNCNAME[0]}"\
 			1>&2
 		print_help
@@ -80,7 +80,7 @@ init(){
 ## Traps: Functions that are triggered when certain condition occurred
 ## Shell Builtin Commands » Bourne Shell Builtins » trap
 trap_errexit(){
-	printf "An error occurred and the script is prematurely aborted\n" 1>&2
+	printf 'An error occurred and the script is prematurely aborted\n' 1>&2
 	return 0
 }; declare -fr trap_errexit; trap trap_errexit ERR
 
@@ -91,17 +91,17 @@ trap_exit(){
 trap_return(){
 	local returning_function="${1}"
 
-	printf "DEBUG: %s: returning from %s\n" "${FUNCNAME[0]}" "${returning_function}" 1>&2
+	printf 'DEBUG: %s: returning from %s\n' "${FUNCNAME[0]}" "${returning_function}" 1>&2
 }; declare -fr trap_return
 
 trap_interrupt(){
-	printf "\n" # Separate previous output
-	printf "Recieved SIGINT, script is interrupted." 1>&2
+	printf '\n' # Separate previous output
+	printf 'Recieved SIGINT, script is interrupted.' 1>&2
 	return 1
 }; declare -fr trap_interrupt; trap trap_interrupt INT
 
 print_help(){
-	printf "Currently no help messages are available for this program\n" 1>&2
+	printf 'Currently no help messages are available for this program\n' 1>&2
 	return 0
 }; declare -fr print_help;
 
@@ -131,7 +131,7 @@ process_commandline_parameters() {
 					enable_debug="Y"
 					;;
 				*)
-					printf "ERROR: Unknown command-line argument \"%s\"\n" "${parameters[0]}" >&2
+					printf 'ERROR: Unknown command-line argument "%s"\n' "${parameters[0]}" >&2
 					return 1
 					;;
 			esac
