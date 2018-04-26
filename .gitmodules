@@ -1,7 +1,7 @@
 [submodule "Git Hooks/Git Pre-commit Hook for GNU Bash Projects"]
 	path = Git Hooks/Git Pre-commit Hook for GNU Bash Projects
 	url = https://github.com/Lin-Buo-Ren/Git_Pre-commit_Hook_for_GNU_Bash_Projects.git
-	fetchRecurseSubmodules = false
+	fetchRecurseSubmodules = no
 	ignore = untracked
 [submodule "Git Clean and Smudge Filters/Clean Filter for GNU Bash Scripts"]
 	path = Git Clean and Smudge Filters/Clean Filter for GNU Bash Scripts
@@ -10,5 +10,5 @@
 [submodule "GNU Bash Automatic Checking Program for Git Projects"]
 	path = GNU Bash Automatic Checking Program for Git Projects
 	url = https://github.com/Lin-Buo-Ren/GNU-Bash-Automatic-Checking-Program-for-Git-Projects
-	fetchRecurseSubmodules = false
+	fetchRecurseSubmodules = no
 	ignore = untracked
