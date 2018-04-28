@@ -136,7 +136,7 @@ process_commandline_parameters() {
 					;;
 			esac
 			# shift array by 1 = unset 1st then repack
-			unset "parameters[0]"
+			unset 'parameters[0]'
 			if [ "${#parameters[@]}" -ne 0 ]; then
 				parameters=("${parameters[@]}")
 			fi
