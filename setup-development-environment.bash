@@ -96,7 +96,7 @@ init() {
 
 	printf 'Fetching submodules..'
 	source "${SDC_GIT_HOOKS_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
-	source "${SDC_CLEAN_FILTER_FOR_BASH_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
+	source "${SDC_GIT_FILTERS_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
 	git submodule init
 	git submodule update\
 		"${SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR}"\
