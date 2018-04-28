@@ -12,10 +12,10 @@ declare META_PROGRAM_NAME_OVERRIDE=''
 declare META_PROGRAM_IDENTIFIER=''
 
 ### Program's description, default(optional)
-declare -r META_PROGRAM_DESCRIPTION='設定開發本軟體的環境，只有要進行本軟體的開發的人需要用到'
+declare META_PROGRAM_DESCRIPTION='設定開發本軟體的環境，只有要進行本軟體的開發的人需要用到'
 
 ### Intellectual property license applied to this program(optional)
-declare -r META_PROGRAM_LICENSE='GPLv3+'
+declare META_PROGRAM_LICENSE='GPLv3+'
 
 ### Years since any fraction of copyright material is activated, indicates the year when copyright protection will be outdated(optional)
 declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE='2017'
@@ -31,22 +31,22 @@ declare -i META_PROGRAM_PAUSE_BEFORE_EXIT=0
 ## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#meta_application_
 ## You may safely remove this entire section if you don't need it
 ### Human-readable name of application(optional)
-declare -r META_APPLICATION_NAME='GNU Bash Shell Script Template'
+declare META_APPLICATION_NAME='GNU Bash Shell Script Template'
 
 ### Application's identifier, application's name with limitation posed by other software, default(not implemented): unnamed-application
-declare -r META_APPLICATION_IDENTIFIER=gnu-bash-shell-script-template
+declare META_APPLICATION_IDENTIFIER=gnu-bash-shell-script-template
 
 ### Developers' name of application(optional)
-declare -r META_APPLICATION_DEVELOPER_NAME='林博仁(Buo-ren, Lin)'
+declare META_APPLICATION_DEVELOPER_NAME='林博仁(Buo-ren, Lin)'
 
 ### Application's official site URL(optional)
-declare -r META_APPLICATION_SITE_URL=https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
+declare META_APPLICATION_SITE_URL=https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
 
 ### Application's issue tracker, if there's any(optional)
-declare -r META_APPLICATION_ISSUE_TRACKER_URL=https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template/issues
+declare META_APPLICATION_ISSUE_TRACKER_URL=https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template/issues
 
 ### An action to let user get help from developer or other sources when error occurred
-declare -r META_APPLICATION_SEEKING_HELP_OPTION="check out the issue tracker"
+declare META_APPLICATION_SEEKING_HELP_OPTION="check out the issue tracker"
 
 ### The Software Directory Configuration this application uses, refer below section for more info
 declare META_APPLICATION_INSTALL_STYLE=SHC
@@ -86,25 +86,12 @@ init() {
 		exit 1
 	fi
 
-	# Secure configuration variables by marking them readonly
-	readonly \
-		global_just_show_help\
-		global_enable_debugging
-
-	if [ "${global_enable_debugging}" -eq "${COMMON_BOOLEAN_TRUE}" ]; then
-		set -o xtrace
-	fi
-	if [ "${global_just_show_help}" -eq "${COMMON_BOOLEAN_TRUE}" ]; then
-		meta_printHelpMessage
-		exit "${COMMON_RESULT_SUCCESS}"
-	fi
-
-	if [ ! -d "${RUNTIME_SCRIPT_DIRECTORY}/.git" ]; then
+	if [ ! -d "${RUNTIME_EXECUTABLE_DIRECTORY}/.git" ]; then
 		printf "ERROR: git repository doesn't exist, you must initialize a git repository before running this script\\n" 1>&2
 		exit "${COMMON_RESULT_FAILURE}"
 	fi
 
-	cd "${RUNTIME_SCRIPT_DIRECTORY}"
+	cd "${RUNTIME_EXECUTABLE_DIRECTORY}"
 
 	printf 'Fetching submodules..'
 	git submodule update --init --recursive\
@@ -317,9 +304,9 @@ meta_util_make_parameter_readonly_if_not_null_otherwise_unset(){
 
 	for parameter_name in "${@}"; do
 		declare -n parameter_reference="${parameter_name}"
-		if [ -v "${parameter_name}" ]; then
+		if [ -v parameter_reference ]; then
 			if [ -z "${parameter_reference}" ]; then
-				unset "${parameter_name}"
+				unset parameter_reference
 			else
 				declare -r "${parameter_name}"
 			fi
