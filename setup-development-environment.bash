@@ -12,13 +12,13 @@ declare META_PROGRAM_NAME_OVERRIDE=''
 declare META_PROGRAM_IDENTIFIER=''
 
 ### Program's description, default(optional)
-declare META_PROGRAM_DESCRIPTION='設定開發本軟體的環境，只有要進行本軟體的開發的人需要用到'
+declare META_PROGRAM_DESCRIPTION='Setup environment for developing GBSST.'
 
 ### Intellectual property license applied to this program(optional)
 declare META_PROGRAM_LICENSE='GPLv3+'
 
 ### Years since any fraction of copyright material is activated, indicates the year when copyright protection will be outdated(optional)
-declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE='2017'
+declare META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE='2017, 2018'
 
 ### Whether program should pause and expect user pressing enter when program ended, which is useful when launching scripts in GUI, which may undesirebly close the terminal emulator window when the script is exited and leaving user no chance to check execution result
 ### 0: Don't pause(default)
