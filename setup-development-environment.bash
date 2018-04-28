@@ -95,8 +95,14 @@ init() {
 	fi
 
 	printf 'Fetching submodules..'
-	git submodule update --init --recursive\
-		&& printf 'done\n'
+	source "${SDC_GIT_HOOKS_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
+	source "${SDC_CLEAN_FILTER_FOR_BASH_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
+	git submodule init
+	git submodule update\
+		"${SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR}"\
+		"${SDC_BASH_AUTOMATIC_CHECKING_FOR_GIT}"\
+		"${SDC_CLEAN_FILTER_FOR_BASH_DIR}"
+	printf 'done\n'
 
 	printf 'Setting pre-commit hook...'
 	if ! [ -v SDC_GIT_HOOKS_DIR ]; then
