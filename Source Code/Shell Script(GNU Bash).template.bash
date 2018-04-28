@@ -261,9 +261,9 @@ meta_util_make_parameter_readonly_if_not_null_otherwise_unset(){
 
 	for parameter_name in "${@}"; do
 		declare -n parameter_reference="${parameter_name}"
-		if [ -v "${parameter_name}" ]; then
+		if [ -v parameter_reference ]; then
 			if [ -z "${parameter_reference}" ]; then
-				unset "${parameter_name}"
+				unset parameter_reference
 			else
 				declare -r "${parameter_name}"
 			fi
