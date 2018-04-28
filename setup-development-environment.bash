@@ -102,6 +102,17 @@ init() {
 		"${SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR}"\
 		"${SDC_BASH_AUTOMATIC_CHECKING_FOR_GIT}"\
 		"${SDC_CLEAN_FILTER_FOR_BASH_DIR}"
+	local GIT_DIR_OLD="${GIT_DIR}"
+	local GIT_WORK_TREE_OLD="${GIT_WORK_TREE}"
+	GIT_DIR="${SDC_CLEAN_FILTER_FOR_BASH_DIR}/.git"
+	GIT_WORK_TREE="${SDC_CLEAN_FILTER_FOR_BASH_DIR}"
+	pushd "${SDC_CLEAN_FILTER_FOR_BASH_DIR}" >/dev/null
+	git submodule init
+	# FIXME: Should be specifying this in the submodule
+	git submodule update 'Code Formatters and Beautifiers/the Bash Script Beautifier'
+	GIT_DIR="${GIT_DIR_OLD}"; unset GIT_DIR_OLD
+	GIT_WORK_TREE="${GIT_WORK_TREE_OLD}"; unset GIT_WORK_TREE_OLD
+	popd >/dev/null
 	printf 'done\n'
 
 	printf 'Setting pre-commit hook...'
