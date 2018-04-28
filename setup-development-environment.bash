@@ -86,12 +86,13 @@ init() {
 		exit 1
 	fi
 
-	if [ ! -d "${RUNTIME_EXECUTABLE_DIRECTORY}/.git" ]; then
+	export GIT_DIR="${SHC_PREFIX_DIR}/.git"
+	export GIT_WORK_TREE="${SHC_PREFIX_DIR}"
+
+	if [ ! -d "${GIT_DIR}" ]; then
 		printf "ERROR: git repository doesn't exist, you must initialize a git repository before running this script\\n" 1>&2
 		exit "${COMMON_RESULT_FAILURE}"
 	fi
-
-	cd "${RUNTIME_EXECUTABLE_DIRECTORY}"
 
 	printf 'Fetching submodules..'
 	git submodule update --init --recursive\
