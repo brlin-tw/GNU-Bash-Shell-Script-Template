@@ -31,13 +31,13 @@ declare -i META_PROGRAM_PAUSE_BEFORE_EXIT=0
 ## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#meta_application_
 ## You may safely remove this entire section if you don't need it
 ### Human-readable name of application(optional)
-declare META_APPLICATION_NAME=''
+declare META_APPLICATION_NAME=
 
 ### Application's identifier, application's name with limitation posed by other software, default(not implemented): unnamed-application
 declare META_APPLICATION_IDENTIFIER=gnu-bash-shell-script-template
 
 ### Developers' name of application(optional)
-declare META_APPLICATION_DEVELOPER_NAME=''
+declare META_APPLICATION_DEVELOPER_NAME=
 
 ### Application's official site URL(optional)
 declare META_APPLICATION_SITE_URL=
@@ -46,7 +46,7 @@ declare META_APPLICATION_SITE_URL=
 declare META_APPLICATION_ISSUE_TRACKER_URL=
 
 ### An action to let user get help from developer or other sources when error occurred
-declare META_APPLICATION_SEEKING_HELP_OPTION="check out the issue tracker"
+declare META_APPLICATION_SEEKING_HELP_OPTION=
 
 ### The Software Directory Configuration this application uses, refer below section for more info
 declare META_APPLICATION_INSTALL_STYLE=SHC
