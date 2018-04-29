@@ -617,7 +617,8 @@ init() {
 				break
 			else
 				printf "正在設定適用於 KDE 的範本……\n"
-				cp --force --verbose "${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${XDG_TEMPLATES_DIR}"
+				cp --force --verbose "${SDC_SOURCE_CODE_DIR}"/*.bash "${HOME}/.local/share/templates"
+				cp --force --verbose "${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop "${HOME}/.local/share/templates"
 				break
 			fi
 		fi
