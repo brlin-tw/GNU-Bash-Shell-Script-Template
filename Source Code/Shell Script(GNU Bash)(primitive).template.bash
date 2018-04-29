@@ -47,7 +47,7 @@ fi; unset runtime_dependency_checking_result
 ## Non-overridable Primitive Variables
 ## BASHDOC: Shell Variables » Bash Variables
 ## BASHDOC: Basic Shell Features » Shell Parameters » Special Parameters
-if [ -v "BASH_SOURCE[0]" ]; then
+if [ -v 'BASH_SOURCE[0]' ]; then
 	RUNTIME_EXECUTABLE_PATH="$(realpath --strip "${BASH_SOURCE[0]}")"
 	RUNTIME_EXECUTABLE_FILENAME="$(basename "${RUNTIME_EXECUTABLE_PATH}")"
 	RUNTIME_EXECUTABLE_NAME="${RUNTIME_EXECUTABLE_FILENAME%.*}"
