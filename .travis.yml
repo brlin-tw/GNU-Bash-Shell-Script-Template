@@ -3,19 +3,17 @@
 # This file is based on
 # TravisCI · koalaman/shellcheck Wiki
 # https://github.com/koalaman/shellcheck/wiki/TravisCI
+
+language: bash
+
 ## Use container-based infrastructure for quicker build start-up
 sudo: false
-
-addons:
-  apt:
-    sources:
-    packages:
-    - realpath      # Merged to GNU Coreutils in Ubuntu 16.04
 
 ## We only support Ubuntu 14.04 and newer
 dist: trusty
 
-language: bash
+matrix:
+  fast_finish: true
 
 git:
   ## EXPERIMENTAL
@@ -31,6 +29,12 @@ cache:
 
 ## The Build Lifecycle
 ## https://docs.travis-ci.com/user/customizing-the-build/#The-Build-Lifecycle
+addons:
+  apt:
+    sources:
+    packages:
+    - realpath      # Merged to GNU Coreutils in Ubuntu 16.04
+
 before_install:
 - git submodule init 'Continuous Integration/Utilities for Travis CI' 'Linters/GNU Bash Automatic Checking Program for Git Projects'
 - git submodule update --depth=1
@@ -48,9 +52,6 @@ before_script:
 script:
 - ./'Linters/GNU Bash Automatic Checking Program for Git Projects/GNU Bash Automatic Checking Program for Git Projects.bash'
 - ./setup-development-environment.bash
-
-matrix:
-  fast_finish: true
 
 before-deploy:
 - ./distribute.bash
