@@ -140,26 +140,6 @@ init() {
 	printf 'Setting project-specific git configurations...'
 	git config include.path ../.gitconfig && printf 'done.\n'
 
-	printf 'Activating Git smudge filter...\n'
-	# Determine if Git working directory is clean from a script - Unix & Linux Stack Exchange
-	# https://unix.stackexchange.com/questions/155046/determine-if-git-working-directory-is-clean-from-a-script
-	local stash_is_needed=false
-	if ! output=$(git status --porcelain) && [ -z "${output}" ]; then
-		stash_is_needed=true
-	fi
-	if test "${stash_is_needed}" = true; then
-		git stash save &>/dev/null
-	fi
-
-	# FIXME: Anyway to avoid directly meddling with the files?
-	rm "${GIT_DIR}/index"
-	git checkout HEAD -- "$(git rev-parse --show-toplevel)" >/dev/null
-
-	if test "${stash_is_needed}" = true; then
-		git stash pop &>/dev/null
-	fi; unset stash_is_needed
-	printf 'done.\n'
-
 	exit "${COMMON_RESULT_SUCCESS}"
 }; declare -fr init
 
