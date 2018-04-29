@@ -65,7 +65,9 @@ declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
 ## This function is called near the end of the file,
 ## with the script's command-line parameters as arguments
 init(){
-	if ! process_commandline_parameters; then
+	local target_file=''
+
+	if ! process_commandline_parameters target_file; then
 		printf --\
 			'Error: %s: Invalid command-line parameters.\n'\
 			"${FUNCNAME[0]}"\
@@ -80,13 +82,6 @@ init(){
 
 	global_temp_directory="$(mktemp --tmpdir --directory "${RUNTIME_EXECUTABLE_NAME}.XXXX")"
 	declare -gr global_temp_directory
-
-	if [ "${#}" -ne 1 ]; then
-		printf 'ERROR: Wrong command-line argument quantity.\n' 1>&2
-		exit 1
-	fi
-
-	target_file="${1}"
 
 	declare -r temp_file_name=stdout.bash
 
@@ -136,14 +131,25 @@ print_help(){
 }; declare -fr print_help;
 
 process_commandline_parameters() {
+	if [ $# -ne 1 ]; then
+		printf -- \
+			'%s: FATAL: Wrong function augument count.\n' \
+			"${FUNCNAME[0]}" \
+			>&2
+		exit 1
+	fi
+
+	local -n target_file_ref="${1}"; shift 1
+
 	if [ "${#RUNTIME_COMMANDLINE_PARAMETERS[@]}" -eq 0 ]; then
-		return 0
+		print_help
+		exit 0
 	fi
 
 	# modifyable parameters for parsing by consuming
 	local -a parameters=("${RUNTIME_COMMANDLINE_PARAMETERS[@]}")
 
-	# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
+	# Normally we won't want debug traces to appear during parameter parsing, so we add this flag and defer it activation till returning(Y: Do debug)
 	local enable_debug=N
 
 	while true; do
@@ -160,9 +166,19 @@ process_commandline_parameters() {
 				|-d)
 					enable_debug=Y
 					;;
-				*)
-					printf 'ERROR: Unknown command-line argument "%s"\n' "${parameters[0]}" >&2
+				--*)
+					printf 'ERROR: Unknown command-line option "--%s"\n' "${parameters[0]}" >&2
 					return 1
+					;;
+				*)
+					if [ -n "${target_file_ref}" ]; then
+						printf -- \
+							'%s: Error: Only one file can be cleaned at once.\n' \
+							"${FUNCNAME[0]}" \
+							>&2
+						return 1
+					fi
+					target_file_ref="${parameters[0]}"
 					;;
 			esac
 			# shift array by 1 = unset 1st then repack
