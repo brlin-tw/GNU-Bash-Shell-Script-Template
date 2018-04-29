@@ -9,9 +9,7 @@ sudo: false
 addons:
   apt:
     sources:
-    - debian-sid    # Grab shellcheck from the Debian repo (o_O)
     packages:
-    - shellcheck
     - realpath      # Merged to GNU Coreutils in Ubuntu 16.04
 
 ## We only support Ubuntu 14.04 and newer
@@ -19,25 +17,39 @@ dist: trusty
 
 language: bash
 
-## EXPERIMENTAL
-## Customizing the Build - Travis CI
-## https://docs.travis-ci.com/user/customizing-the-build/#Git-Clone-Depth
-## > Please note that if you use a depth of 1 and have a queue of jobs, Travis CI won’t build commits that are in the queue when you push a new commit.
 git:
+  ## EXPERIMENTAL
+  ## Customizing the Build - Travis CI
+  ## https://docs.travis-ci.com/user/customizing-the-build/#Git-Clone-Depth
+  ## > Please note that if you use a depth of 1 and have a queue of jobs, Travis CI won’t build commits that are in the queue when you push a new commit.
   depth: 30
+  ## We have recursive submodules, don't fetch it automatically
+  submodules: false
+
+cache:
+- $HOME/Software
+
+## The Build Lifecycle
+## https://docs.travis-ci.com/user/customizing-the-build/#The-Build-Lifecycle
+before_install:
+- git submodule init 'Continuous Integration/Utilities for Travis CI' 'Linters/GNU Bash Automatic Checking Program for Git Projects'
+- git submodule update --depth=1
 
 install:
-- ./Utilities\ for\ Travis\ CI/Install\ Git\ LFS\ in\ Travis\ CI\ Container\ Environment.bash
+- ./'Continuous Integration/Utilities for Travis CI/Install Git LFS in Travis CI Container Environment.bash'
 - PATH="$(printf "${HOME}"/git-lfs-*):${PATH}"
+- which -a git-lfs
+- ./"Continuous Integration/Utilities for Travis CI/Setup ShellCheck's Latest Release without Re-building.bash"
+- PATH="${HOME}/Software/shellcheck-stable:${PATH}"
+- which -a shellcheck
+- shellcheck --version
 
 before_script:
 - git lfs install # Install Git LFS config, which makes LFS files not making Git considered as "dirty"
 - git lfs pull
 
 script:
-#- git ls-files -z \*.bash | xargs --max-args=1 --verbose --null -- shellcheck
-# The following command will be dropped in favor with the above one after Travis CI environment contains ShellCheck >=0.4.5, which fixes the bug that triggers SC2148 even when `shell` directive is used
-- git ls-files -z \*.bash | xargs --max-args=1 --verbose --null -- shellcheck --shell=bash
+- ./'Linters/GNU Bash Automatic Checking Program for Git Projects/GNU Bash Automatic Checking Program for Git Projects.bash'
 - ./setup-development-environment.bash
 - ./build.bash
 
