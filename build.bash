@@ -81,11 +81,6 @@ init(){
 	#shellcheck disable=SC1090,SC1091
 	source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
 
-	# Workaround: git tag always dirty even when it's isn't, manually fixing it
-	# Make Git don't consider tree is dirty even when it shouldn't because of the existing clean filter
-	find "${SDC_SOURCE_CODE_DIR}" -name "*.bash" -print0 | xargs --null --max-args=1 --verbose "${SDC_GIT_FILTERS_DIR}/clean-bash.manual-apply.bash"
-	"${SDC_GIT_FILTERS_DIR}/smudge-bash.manual-apply.bash" "${SDC_SOURCE_CODE_DIR}/"*.bash
-
 	if [ ! -d "${SDC_RELEASE_DIR}" ]; then
 		mkdir --parents "${SDC_RELEASE_DIR}"
 	fi
