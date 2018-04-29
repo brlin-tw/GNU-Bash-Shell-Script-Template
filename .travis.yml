@@ -36,9 +36,6 @@ before_install:
 - git submodule update --depth=1
 
 install:
-- ./'Continuous Integration/Utilities for Travis CI/Install Git LFS in Travis CI Container Environment.bash'
-- PATH="$(printf "${HOME}"/git-lfs-*):${PATH}"
-- which -a git-lfs
 - ./"Continuous Integration/Utilities for Travis CI/Setup ShellCheck's Latest Release without Re-building.bash"
 - PATH="${HOME}/Software/shellcheck-stable:${PATH}"
 - which -a shellcheck
