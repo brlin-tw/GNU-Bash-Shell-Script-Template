@@ -87,8 +87,23 @@ init(){
 		"${RUNTIME_EXECUTABLE_NAME}"\
 		"${version}" \
 		1>&2
+
+	declare -g temp_file
+	temp_file="$(mktemp --tmpdir "${RUNTIME_EXECUTABLE_FILENAME}.tmp.XXXXXX")"
+
+	# dump current stdin to temp_file
+	cat >"${temp_file}"
+
+	# Do version injection
 	sed\
-		"s/^## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=\"@@GBSST_VERSION@@\"$/## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=\"${version}\"/"
+		--in-place \
+		"s/^## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=\"@@GBSST_VERSION@@\"$/## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=\"${version}\"/" \
+		"${temp_file}"
+	unset version
+
+	# dump temp_file to stdout
+	cat "${temp_file}"
+
 	printf -- \
 		'DEBUG: %s is done\n'\
 		"${RUNTIME_EXECUTABLE_NAME}"\
@@ -119,6 +134,15 @@ trap_errexit(){
 }; declare -fr trap_errexit; trap trap_errexit ERR
 
 trap_exit(){
+	printf 'DEBUG: %s is leaving\n' "${RUNTIME_EXECUTABLE_FILENAME}" 1>&2
+	if ! rm "${temp_file}"; then
+		printf --\
+			'%s: %s: Error: Unable to remove temporary file\n'\
+			"${RUNTIME_EXECUTABLE_FILENAME}"\
+			"${FUNCNAME[0]}"\
+			1>&2
+		exit 1
+	fi; unset temp_file
 	return 0
 }; declare -fr trap_exit; trap trap_exit EXIT
 
