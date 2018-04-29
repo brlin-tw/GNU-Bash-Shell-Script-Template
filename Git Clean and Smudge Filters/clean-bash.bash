@@ -176,20 +176,20 @@ init(){
 		exit 1
 	fi
 
-	SDC_GIT_FILTERS_DIR="${RUNTIME_EXECUTABLE_DIRECTORY}"
-	# Scope of "Flexible Software Installation Specification" project
-	# shellcheck disable=SC1090
-	if ! source "${SDC_GIT_FILTERS_DIR}"/SOFTWARE_DIRECTORY_CONFIGURATION.source 2>/dev/null\
-		|| [ ! -v SDC_CLEAN_FILTER_FOR_BASH_DIR ]; then
-		printf -- \
-			'%s: Error: Unable to acquire Clean Filter for GNU Bash Scripts directory\n' \
-			"${RUNTIME_EXECUTABLE_FILENAME}" \
-			1>&2
-		exit 1
-	fi
-	unset exit_status
-
-	"${SDC_CLEAN_FILTER_FOR_BASH_DIR}/Clean Filter for GNU Bash Scripts.manual-apply.bash" "${temp_file}"
+# 	SDC_GIT_FILTERS_DIR="${RUNTIME_EXECUTABLE_DIRECTORY}"
+# 	# Scope of "Flexible Software Installation Specification" project
+# 	# shellcheck disable=SC1090
+# 	if ! source "${SDC_GIT_FILTERS_DIR}"/SOFTWARE_DIRECTORY_CONFIGURATION.source 2>/dev/null\
+# 		|| [ ! -v SDC_CLEAN_FILTER_FOR_BASH_DIR ]; then
+# 		printf -- \
+# 			'%s: Error: Unable to acquire Clean Filter for GNU Bash Scripts directory\n' \
+# 			"${RUNTIME_EXECUTABLE_FILENAME}" \
+# 			1>&2
+# 		exit 1
+# 	fi
+# 	unset exit_status
+# 
+# 	"${SDC_CLEAN_FILTER_FOR_BASH_DIR}/Clean Filter for GNU Bash Scripts.manual-apply.bash" "${temp_file}"
 
 	# dump temp_file to stdout
 	cat "${temp_file}"
