@@ -65,7 +65,7 @@ declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
 ## This function is called near the end of the file,
 ## with the script's command-line parameters as arguments
 init(){
-	if ! process_commandline_parameters; then
+	if ! process_commandline_arguments; then
 		printf --\
 			'Error: %s: Invalid command-line parameters.\n'\
 			"${FUNCNAME[0]}"\
@@ -82,7 +82,7 @@ print_help(){
 	return 0
 }; declare -fr print_help;
 
-process_commandline_parameters() {
+process_commandline_arguments() {
 	if [ "${#RUNTIME_COMMANDLINE_PARAMETERS[@]}" -eq 0 ]; then
 		return 0
 	fi
@@ -125,7 +125,7 @@ process_commandline_parameters() {
 		set -o xtrace
 	fi
 	return 0
-}; declare -fr process_commandline_parameters;
+}; declare -fr process_commandline_arguments;
 
 ## Traps: Functions that are triggered when certain condition occurred
 ## Shell Builtin Commands » Bourne Shell Builtins » trap
