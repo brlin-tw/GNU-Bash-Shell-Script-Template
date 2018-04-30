@@ -160,7 +160,7 @@ init() {
 ## Attempt to remove old installation files
 remove_old_installation(){
 	printf 'Removing previously installed templates(if available)...\n'
-	rm --verbose --force "${XDG_TEMPLATES_DIR}"/*.bash* || true
+	rm --verbose --force "${XDG_TEMPLATES_DIR}"/*.bash*
 	rm --verbose --force "${HOME}/.local/share/templates"/*.bash*
 	printf 'Finished.\n'
 
