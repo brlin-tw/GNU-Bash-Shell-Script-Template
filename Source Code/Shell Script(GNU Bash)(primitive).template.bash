@@ -125,7 +125,7 @@ process_commandline_arguments() {
 		set -o xtrace
 	fi
 	return 0
-}; declare -fr process_commandline_arguments;
+}; declare -fr process_commandline_arguments
 
 ## Traps: Functions that are triggered when certain condition occurred
 ## Shell Builtin Commands » Bourne Shell Builtins » trap
