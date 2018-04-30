@@ -80,13 +80,74 @@ declare -r COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION='Enable debug mode'
 ## This function is called from the end of this file,
 ## with the command-line parameters as it's arguments
 init() {
-	if ! meta_processCommandlineParameters; then
-		meta_printHelpMessage
+	if ! process_commandline_arguments; then
+		print_help_message
 		exit 1
 	fi
 
 	exit 0
 }; declare -fr init
+
+### Print help message whenever:
+###   * User requests it
+###   * An command syntax error has detected
+print_help_message(){
+	printf '# %s #\n' "${RUNTIME_EXECUTABLE_NAME}"
+
+	if meta_util_is_parameter_set_and_not_null META_PROGRAM_DESCRIPTION; then
+		printf '%s\n' "${META_PROGRAM_DESCRIPTION}"
+		printf '\n'
+	fi
+
+	printf '## Usage ##\n'
+	printf '\t%s (command-line options and parameters)\n' "${RUNTIME_COMMAND_BASE}"
+	printf '\n'
+	printf '## Command-line Options ##\n'
+	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" "${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" "${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
+	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
+	return "${COMMON_RESULT_SUCCESS}"
+}; declare -fr print_help_message
+
+process_commandline_arguments() {
+	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -eq 0 ]; then
+		return "${COMMON_RESULT_SUCCESS}"
+	else
+		# modifyable parameters for parsing by consuming
+		local -a parameters=("${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}")
+
+		# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
+		local enable_debug=N
+
+		while :; do
+			# BREAK if no parameters left
+			if [ ! -v parameters ]; then
+				break
+			else
+				case "${parameters[0]}" in
+					"${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}"\
+					|"${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}")
+						print_help_message
+						exit 0
+						;;
+					"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}"\
+					|"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}")
+						enable_debug=Y
+						;;
+					*)
+						printf 'ERROR: Unknown command-line parameter "%s"\n' "${parameters[0]}" >&2
+						return "${COMMON_RESULT_FAILURE}"
+						;;
+				esac
+				meta_util_array_shift parameters
+			fi
+		done
+	fi
+	if [ "${enable_debug}" = Y ]; then
+		trap 'meta_trap_return "${FUNCNAME[0]}"' RETURN
+		set -o xtrace
+	fi
+	return "${COMMON_RESULT_SUCCESS}"
+}; declare -fr process_commandline_arguments
 
 ## ##################### Start of GBSST Support Code ##########################
 ## The following section are GNU Bash Shell Script's support code, you may
@@ -683,47 +744,6 @@ meta_util_array_shift(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_array_shift
 
-meta_processCommandlineParameters() {
-	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -eq 0 ]; then
-		return "${COMMON_RESULT_SUCCESS}"
-	else
-		# modifyable parameters for parsing by consuming
-		local -a parameters=("${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}")
-
-		# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
-		local enable_debug=N
-
-		while :; do
-			# BREAK if no parameters left
-			if [ ! -v parameters ]; then
-				break
-			else
-				case "${parameters[0]}" in
-					"${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}"\
-					|"${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}")
-						meta_printHelpMessage
-						exit 0
-						;;
-					"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}"\
-					|"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}")
-						enable_debug=Y
-						;;
-					*)
-						printf 'ERROR: Unknown command-line parameter "%s"\n' "${parameters[0]}" >&2
-						return ${COMMON_RESULT_FAILURE}
-						;;
-				esac
-				meta_util_array_shift parameters
-			fi
-		done
-	fi
-	if [ "${enable_debug}" = Y ]; then
-		trap 'meta_trap_return "${FUNCNAME[0]}"' RETURN
-		set -o xtrace
-	fi
-	return "${COMMON_RESULT_SUCCESS}"
-}; declare -fr meta_processCommandlineParameters
-
 ### Print single segment of commandline option help
 meta_util_printSingleCommandlineOptionHelp(){
 	if [ "${#}" -ne 3 ] && [ "${#}" -ne 4 ]; then
@@ -751,26 +771,6 @@ meta_util_printSingleCommandlineOptionHelp(){
 	printf '\n' # Separate with next option(or next heading)
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_printSingleCommandlineOptionHelp
-
-### Print help message whenever:
-###   * User requests it
-###   * An command syntax error has detected
-meta_printHelpMessage(){
-	printf '# %s #\n' "${RUNTIME_EXECUTABLE_NAME}"
-
-	if meta_util_is_parameter_set_and_not_null META_PROGRAM_DESCRIPTION; then
-		printf '%s\n' "${META_PROGRAM_DESCRIPTION}"
-		printf '\n'
-	fi
-
-	printf '## Usage ##\n'
-	printf '\t%s (command-line options and parameters)\n' "${RUNTIME_COMMAND_BASE}"
-	printf '\n'
-	printf '## Command-line Options ##\n'
-	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" "${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" "${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
-	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
-	return "${COMMON_RESULT_SUCCESS}"
-}; declare -fr meta_printHelpMessage
 
 meta_setup_traps
 
