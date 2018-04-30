@@ -669,7 +669,6 @@ meta_fsis_setup_application_metadata(){
 		esac
 	fi
 
-	# FIXME: META_APPLICATION_LICENSE isn't unset by this call
 	meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
 		META_APPLICATION_NAME\
 		META_APPLICATION_DEVELOPER_NAME\
