@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
+# Program to build the software distribution package
+# 林博仁 © 2018
 
 ## Makes debuggers' life easier - Unofficial Bash Strict Mode
 ## BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
