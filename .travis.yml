@@ -54,9 +54,8 @@ before_script:
 script:
 - ./build.bash
 
-before-deploy:
+before_deploy:
 - ./distribute.bash
-- ls 'Software Release'
 
 deploy:
   provider: releases
