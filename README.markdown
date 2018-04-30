@@ -64,6 +64,7 @@ Supports:
 
 * Dolphin
 * GNOME Files
+* Thunar
 * and more...(as long as they are compliant)
 
 ### Need More or Less?  You're Covered
@@ -83,7 +84,7 @@ The following variants are provided:
 * **VANILLA.BASH ** 
   [Vanilla.bash* is a fast, lightweight, backward compatible template for building incredible, powerful GNU Bash applications.](https://github.com/Lin-Buo-Ren/Vanilla.bash)
 
-### Verified
+### Verified, as Always
 
 The code is continuously verified by [ShellCheck](https://www.shellcheck.net/) to not containing any potential pitfalls.
 
