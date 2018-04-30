@@ -683,7 +683,6 @@ meta_util_array_shift(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_array_shift
 
-### Understand what argument is in the command, and set the global variables accordingly.
 meta_processCommandlineParameters() {
 	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -eq 0 ]; then
 		return "${COMMON_RESULT_SUCCESS}"
