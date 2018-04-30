@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#shellcheck disable=SC2034
+# shellcheck disable=SC2034
 # The above line will be obselute after Ubuntu's provided version of ShellCheck <0.4.6 EoL'd, refer https://github.com/koalaman/shellcheck/wiki/Ignore for more info.
 
 ## ############ META_PROGRAM_*: Metadata about This Program ###################
