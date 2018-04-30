@@ -106,7 +106,7 @@ init(){
 		templates+=("${template}")
 	done < <(find \
 		"${SDC_SOURCE_CODE_DIR}" \
-		-name '*.bash' \
+		-name '*.template.*bash' \
 		-print0); unset template
 
 	declare -i i; for (( i=0; i<"${#templates[@]}"; i+=1 )) ; do
