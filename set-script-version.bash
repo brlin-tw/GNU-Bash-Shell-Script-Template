@@ -98,7 +98,6 @@ init(){
 	# shellcheck source=/dev/null
 	source "${SHC_PREFIX_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
 	
-	declare -a 
 	# Read lines seperated by '\0'
 	# NOTE: 
 	# - The '<()' part is a process substutution, its output is converted into a vertual file to be read via the '<' beforehand
