@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
+# <Source Description>
+# <Copyright Holder Name> © <Copyright Activation Latest Year, for determining year of end of copyright protection>
+
 ## Makes debuggers' life easier - Unofficial Bash Strict Mode
 ## BASHDOC: Shell Builtin Commands - Modifying Shell Behavior - The Set Builtin
 set -o errexit
