@@ -16,7 +16,9 @@ declare\
 for required_command in \
 	basename\
 	dirname\
-	realpath; do
+	git\
+	realpath\
+	sed; do
 	if ! command -v "${required_command}" &>/dev/null; then
 		runtime_dependency_checking_result=fail
 
@@ -25,6 +27,12 @@ for required_command in \
 			|dirname\
 			|realpath)
 				required_software='GNU Coreutils'
+				;;
+			git)
+				required_software='Git'
+				;;
+			sed)
+				required_software='GNU Sed'
 				;;
 			*)
 				required_software="${required_command}"
