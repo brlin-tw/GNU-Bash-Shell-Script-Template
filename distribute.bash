@@ -111,11 +111,11 @@ init(){
 		--file "${SDC_RELEASE_DIR}/${META_APPLICATION_NAME}-${package_version}.tar.bz2"\
 		--\
 		*.source\
-		"install.bash"\
-		"README.markdown"\
-		"Source Code"\
-		"Template Setup for KDE"\
-		"Pictures"
+		install.bash\
+		README.markdown\
+		'Source Code'\
+		'Template Setup for KDE'\
+		Pictures
 
 	exit 0
 }; declare -fr init
