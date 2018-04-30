@@ -79,9 +79,9 @@ The following variants are provided:
   * Multiple installation configuration support: Standalone/SHC/FHS, conforming to the [Flexible Software Installation Specification](https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification)
   * Utility functions like `meta_util_array_shift`
   * ...and more
-* **SOURCE'D ** 
+* **SOURCE'D **  
   Template for source'd code, with include guard support
-* **VANILLA.BASH ** 
+* **VANILLA.BASH **  
   [Vanilla.bash* is a fast, lightweight, backward compatible template for building incredible, powerful GNU Bash applications.](https://github.com/Lin-Buo-Ren/Vanilla.bash)
 
 ### Verified, as Always
