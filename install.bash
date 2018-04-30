@@ -88,12 +88,12 @@ init() {
 
 	if ! determine_install_directory; then
 		printf -- \
-			'錯誤：無法判斷安裝目錄。安裝程式無法繼續運行\n' \
+			'Error: Unable to determine install directory, installer cannot continue.\n' \
 			1>&2
 		exit "${COMMON_RESULT_FAILURE}"
 	else
 		printf -- \
-			'將會安裝到：%s\n' \
+			'Will be installed to: %s\n' \
 			"${global_install_directory}"
 		printf '\n'
 	fi
@@ -101,12 +101,12 @@ init() {
 	remove_old_installation
 	if [ "${just_uninstall}" -eq "${COMMON_BOOLEAN_TRUE}" ]; then
 		printf -- \
-			'已解除安裝軟體\n'
+			'Software uninstalled successfully.\n'
 		exit "${COMMON_RESULT_SUCCESS}"
 	fi
 
 	printf -- \
-		'正在安裝範本檔案……\n'
+		'Installing template files...\n'
 	cp \
 		--force \
 		--verbose \
@@ -116,7 +116,7 @@ init() {
 
 	while :; do
 		printf -- \
-			'請問是否安裝 KDE 所需的範本設定（警告：會造成 GNOME Files 等應用軟體中出現非預期的範本項目）(y/N)？'
+			'Do you want to install files to enable KDE support(y/N)?'
 		read -r answer
 
 		if [ -z "${answer}" ]; then
@@ -136,7 +136,7 @@ init() {
 			elif [ "${answer}" == n ]; then
 				break
 			else
-				printf '正在設定適用於 KDE 的範本……\n'
+				printf 'Configuring templates for KDE...\n'
 				cp \
 					--force \
 					--verbose \
@@ -152,16 +152,16 @@ init() {
 		fi
 	done; unset answer
 
-	printf '已完成安裝。\n'
+	printf 'Installation completed.\n'
 
 	exit "${COMMON_RESULT_SUCCESS}"
 }; declare -fr init
 
 ## Attempt to remove old installation files
 remove_old_installation(){
-	printf '正在清除過去安裝範本（如果有的話）……\n'
+	printf 'Removing previously installed templates(if available)...\n'
 	rm --verbose --force "${XDG_TEMPLATES_DIR}"/*.bash* || true
-	printf '完成\n'
+	printf 'Finished.\n'
 
 	printf '\n' # Additional blank line for separating output
 	return "${COMMON_RESULT_SUCCESS}"
@@ -182,8 +182,9 @@ determine_install_directory(){
 	fi
 
 	printf -- \
-		'%s - 警告 - 安裝程式找不到 user-dirs 設定，汰退到預設目錄\n' \
-		"${FUNCNAME[0]}"
+		"%s: Warning: Installer can't locate user-dirs configuration, will fallback to unlocalized directories\\n" \
+		"${FUNCNAME[0]}" \
+		1>&2
 
 	if [ ! -d "${HOME}"/Templates ]; then
 		return "${COMMON_RESULT_FAILURE}"
