@@ -77,29 +77,6 @@ init(){
 	exit 0
 }; declare -fr init
 
-## Traps: Functions that are triggered when certain condition occurred
-## Shell Builtin Commands » Bourne Shell Builtins » trap
-trap_errexit(){
-	printf 'An error occurred and the script is prematurely aborted\n' 1>&2
-	return 0
-}; declare -fr trap_errexit; trap trap_errexit ERR
-
-trap_exit(){
-	return 0
-}; declare -fr trap_exit; trap trap_exit EXIT
-
-trap_return(){
-	local returning_function="${1}"
-
-	printf 'DEBUG: %s: returning from %s\n' "${FUNCNAME[0]}" "${returning_function}" 1>&2
-}; declare -fr trap_return
-
-trap_interrupt(){
-	printf '\n' # Separate previous output
-	printf 'Recieved SIGINT, script is interrupted.' 1>&2
-	return 1
-}; declare -fr trap_interrupt; trap trap_interrupt INT
-
 print_help(){
 	printf 'Currently no help messages are available for this program\n' 1>&2
 	return 0
@@ -149,6 +126,29 @@ process_commandline_parameters() {
 	fi
 	return 0
 }; declare -fr process_commandline_parameters;
+
+## Traps: Functions that are triggered when certain condition occurred
+## Shell Builtin Commands » Bourne Shell Builtins » trap
+trap_errexit(){
+	printf 'An error occurred and the script is prematurely aborted\n' 1>&2
+	return 0
+}; declare -fr trap_errexit; trap trap_errexit ERR
+
+trap_exit(){
+	return 0
+}; declare -fr trap_exit; trap trap_exit EXIT
+
+trap_return(){
+	local returning_function="${1}"
+
+	printf 'DEBUG: %s: returning from %s\n' "${FUNCNAME[0]}" "${returning_function}" 1>&2
+}; declare -fr trap_return
+
+trap_interrupt(){
+	printf '\n' # Separate previous output
+	printf 'Recieved SIGINT, script is interrupted.' 1>&2
+	return 1
+}; declare -fr trap_interrupt; trap trap_interrupt INT
 
 init "${@}"
 
