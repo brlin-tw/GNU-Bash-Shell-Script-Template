@@ -143,8 +143,8 @@ init() {
 	git config include.path ../.gitconfig && printf 'done.\n'
 
 	printf -- \
-		'Setting product version string...' \
-		"${SHC_PREFIX_DIR}"/set-script-version.bash && printf 'done.\n'
+		'Setting product version string...'
+	"${SHC_PREFIX_DIR}"/set-script-version.bash && printf 'done.\n'
 
 	exit "${COMMON_RESULT_SUCCESS}"
 }; declare -fr init
