@@ -62,7 +62,7 @@ deploy:
   api_key:
     secure: tWizez4E4bVIXFZ80ZmdlA/pwezMJUf5wfPXNeZDE2rTffTJmAkCUb0t9ILf7h11IxuyRf8ElmRUx/jXay9UbY2SLI21QxwDLQkJefCKAG5rVwWOsGnmIHiyjbT96O5n24XSa53d6tkfKs0eL8wGtZ1R4P3rjTW5YTs5nc8kSTkEI5Hx0qr4y5nhbYOcRzyLhNRKsZIBBIZVpwF0IsneR1nMfnTA2XhlDyk1WQNcFsO8XVmPyaMv/4h/od68j1Lnq0bZBV6KbFJaWJguSAh89Xyz2FwEmPFlNZqYXBEHfr1aOLbfE54OUgFUmyZ8jpOutqPl5vKtGYxBlL2XvkvtUNxojFoPKy4HGEr87SUITTDh/RQDWTT8/jSMY5MsKQqjWYNy6f6cH7PPphLUXZblBTIG/h/jyQBndqfiiXaoIw/xmKYUF50fo6oQYwHBwp/XhnKhGfvZW5dmhDSjnrzbZ/RgnuNNp6iGphiWwdIRXplUjF2cGvSa1RvXNeusZ+HTAVCafqwK6CA5cVWQUm0dLqRZ7oby6F5TYKUcSY6nYKpow6eXphNIWgLd/vRKTqfTTFcc5hTv0H6C0cvVAHcExqypXy+mUWLqT2jRLSp4chvYd6hxSrZpQvJjNqyAtt21vskGrVCLOErrVJxFV9ppIVyMgBl2Wnaj1dhMxloGYbg=
   file_glob: true
-  file: "Software Release/*.tar.bz2"
+  file: 'Software Release'/*.tar.bz2
   skip_cleanup: true
   on:
     tags: true
