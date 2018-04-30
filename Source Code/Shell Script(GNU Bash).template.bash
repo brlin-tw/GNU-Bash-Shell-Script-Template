@@ -399,36 +399,6 @@ meta_trap_exit(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_exit
 
-### Workarounds
-#### Temporarily disable errexit
-meta_workaround_errexit_setup() {
-	if [ ! -v meta_setup_traps_called ]; then
-		printf '%s: %s: Error: This function requires meta_setup_traps to be called beforehand.\n'\
-			"${GBSS_NAME}"\
-			"${FUNCNAME[0]}"
-		exit "${COMMON_RESULT_FAILURE}"
-	fi
-	if [ ${#} -ne 1 ]; then
-		printf 'ERROR: %s: Wrong function argument quantity!\n' "${FUNCNAME[0]}" 1>&2
-		return "${COMMON_RESULT_FAILURE}"
-	fi
-	local option=${1} # on: enable errexit; off: disable errexit
-
-	if [ "${option}" == on ]; then
-		set -o errexit
-		# We separate the arguments to TRAP_ERREXIT_ARG, so it should be expand here
-		#shellcheck disable=SC2064
-		trap "${TRAP_ERREXIT_ARG}" ERR
-	elif [ "${option}" == off ]; then
-		set +o errexit
-		trap - ERR
-	else
-		printf 'ERROR: %s: Wrong function argument format!\n' "${FUNCNAME[0]}" 1>&2
-		return "${COMMON_RESULT_FAILURE}"
-	fi
-	return "${COMMON_RESULT_SUCCESS}"
-}; declare -fr meta_workaround_errexit_setup
-
 meta_util_declare_global_parameters(){
 	if [ "${#}" -eq 0 ]; then
 		printf '%s: Error: Function parameter quantity illegal\n' "${FUNCNAME[0]}" 1>&2
@@ -455,31 +425,26 @@ meta_util_unset_global_parameters_if_null(){
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_util_unset_global_parameters_if_null
 
-### Runtime Dependencies Checking
-### shell - Check if a program exists from a Bash script - Stack Overflow
-### http://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script
-meta_checkRuntimeDependencies() {
+## Runtime Dependencies Checking
+## shell - Check if a program exists from a Bash script - Stack Overflow
+## http://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script
+meta_check_runtime_dependencies() {
 	local -n array_ref="${1}"
 
 	if [ "${#array_ref[@]}" -eq 0 ]; then
 		return "${COMMON_RESULT_SUCCESS}"
 	else
-		declare -i exit_status; for a_command in "${!array_ref[@]}"; do
-
-			meta_workaround_errexit_setup off
-			command -v "${a_command}" >/dev/null 2>&1
-			exit_status="${?}"
-			meta_workaround_errexit_setup on
-			if [ ${exit_status} -ne 0 ]; then
+		for a_command in "${!array_ref[@]}"; do
+			if ! command -v "${a_command}" >/dev/null 2>&1; then
 				printf 'ERROR: Command "%s" not found, program cannot continue like this.\n' "${a_command}" 1>&2
 				printf "ERROR: Please make sure %s is installed and it's executable path is in your operating system's executable search path.\\n" "${array_ref["${a_command}"]}" >&2
 				printf 'Goodbye.\n'
 				exit "${COMMON_RESULT_FAILURE}"
 			fi
-		done; unset a_command exit_status
+		done; unset a_command
 		return "${COMMON_RESULT_SUCCESS}"
 	fi
-}; declare -fr meta_checkRuntimeDependencies
+}; declare -fr meta_check_runtime_dependencies
 
 ### RUNTIME_*: Info acquired from runtime environment
 ### https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#runtime-determined-settings
@@ -786,10 +751,10 @@ meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
 	META_APPLICATION_IDENTIFIER
 
 if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES_CRITICAL; then
-	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES_CRITICAL
+	meta_check_runtime_dependencies META_RUNTIME_DEPENDENCIES_CRITICAL
 fi
 if meta_util_is_array_set_and_not_null META_RUNTIME_DEPENDENCIES; then
-	meta_checkRuntimeDependencies META_RUNTIME_DEPENDENCIES
+	meta_check_runtime_dependencies META_RUNTIME_DEPENDENCIES
 fi
 
 meta_fsis_setup_runtime_parameters "${@}"
