@@ -31,19 +31,19 @@ We have incorporated the following features into the templates, so that user don
 * Command-line argument parsing with GNU long variant option support
 * `--help` message printing
 * Frequently used primitive variables
-  * RUNTIME_EXECUTABLE_PATH
+  * RUNTIME_EXECUTABLE_PATH  
     `/home/username/somewhere/My Awesome Script.bash`
-  * RUNTIME_EXECUTABLE_FILENAME
+  * RUNTIME_EXECUTABLE_FILENAME  
     `My Awesome Script.bash`
-  * RUNTIME_EXECUTABLE_NAME
+  * RUNTIME_EXECUTABLE_NAME  
     `My Awesome Script`
-  * RUNTIME_EXECUTABLE_DIRECTORY
+  * RUNTIME_EXECUTABLE_DIRECTORY  
     `/home/username/somewhere`
-  * RUNTIME_COMMANDLINE_BASECOMMAND
+  * RUNTIME_COMMANDLINE_BASECOMMAND  
     A guessed command string that user used to run the script
     * `My Awesome Script.bash` if the script is in the executable search `PATH`s (only in full variant)
     * `${0}`otherwises.
-  * RUNTIME_COMMANDLINE_PARAMETERS
+  * RUNTIME_COMMANDLINE_PARAMETERS  
     An array of command-line parameters
 
 ![Demonstration - Runtime Dependency Checking.png](Pictures/Demonstration%20-%20Runtime%20Dependency%20Checking.png)
@@ -79,9 +79,9 @@ The following variants are provided:
   * Multiple installation configuration support: Standalone/SHC/FHS, conforming to the [Flexible Software Installation Specification](https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification)
   * Utility functions like `meta_util_array_shift`
   * ...and more
-* **SOURCE'D **  
+* **SOURCE'D**  
   Template for source'd code, with include guard support
-* **VANILLA.BASH **  
+* **VANILLA.BASH**  
   [Vanilla.bash* is a fast, lightweight, backward compatible template for building incredible, powerful GNU Bash applications.](https://github.com/Lin-Buo-Ren/Vanilla.bash)
 
 ### Verified, as Always
