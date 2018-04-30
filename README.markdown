@@ -66,7 +66,7 @@ Supports:
 * GNOME Files
 * and more...(as long as they are compliant)
 
-### Need More or Less, You are Covered
+### Need More or Less?  You're Covered
 
 The following variants are provided:
 
@@ -85,7 +85,7 @@ The following variants are provided:
 
 ### Verified
 
-The code is continuously verified by [ShellCheck](https://www.shellcheck.net/) to no contain any potential pitfalls.
+The code is continuously verified by [ShellCheck](https://www.shellcheck.net/) to not containing any potential pitfalls.
 
 ## Conforming Specifications
 * Use the Unofficial Bash Strict Mode (Unless You Looove Debugging)  
