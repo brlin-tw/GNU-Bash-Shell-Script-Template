@@ -20,7 +20,7 @@ git:
   ## Customizing the Build - Travis CI
   ## https://docs.travis-ci.com/user/customizing-the-build/#Git-Clone-Depth
   ## > Please note that if you use a depth of 1 and have a queue of jobs, Travis CI won’t build commits that are in the queue when you push a new commit.
-  depth: 30
+  depth: 3
   ## We have recursive submodules, don't fetch it automatically
   submodules: false
 
