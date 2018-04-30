@@ -315,7 +315,7 @@ meta_trap_int(){
 	# Separate from output messages
 	printf '\n\n' 1>&2
 
-	printf '中斷程式運行\n' 1>&2
+	printf 'Program interrupted by SIGINT.\n' 1>&2
 	exit "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_int
 
