@@ -55,14 +55,14 @@ if [ -v 'BASH_SOURCE[0]' ]; then
 	RUNTIME_EXECUTABLE_FILENAME="$(basename "${RUNTIME_EXECUTABLE_PATH}")"
 	RUNTIME_EXECUTABLE_NAME="${RUNTIME_EXECUTABLE_FILENAME%.*}"
 	RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "${RUNTIME_EXECUTABLE_PATH}")"
-	RUNTIME_COMMAND_BASE="${0}"
+	RUNTIME_COMMANDLINE_BASECOMMAND="${0}"
 	declare -r\
 		RUNTIME_EXECUTABLE_FILENAME\
 		RUNTIME_EXECUTABLE_DIRECTORY\
 		RUNTIME_EXECUTABLE_PATHABSOLUTE\
-		RUNTIME_COMMAND_BASE
+		RUNTIME_COMMANDLINE_BASECOMMAND
 fi
-declare -ar RUNTIME_COMMANDLINE_PARAMETERS=("${@}")
+declare -ar RUNTIME_COMMANDLINE_ARGUMENTS=("${@}")
 
 ## init function: entrypoint of main program
 ## This function is called near the end of the file,
@@ -86,12 +86,12 @@ print_help(){
 }; declare -fr print_help;
 
 process_commandline_arguments() {
-	if [ "${#RUNTIME_COMMANDLINE_PARAMETERS[@]}" -eq 0 ]; then
+	if [ "${#RUNTIME_COMMANDLINE_ARGUMENTS[@]}" -eq 0 ]; then
 		return 0
 	fi
 
 	# modifyable parameters for parsing by consuming
-	local -a parameters=("${RUNTIME_COMMANDLINE_PARAMETERS[@]}")
+	local -a parameters=("${RUNTIME_COMMANDLINE_ARGUMENTS[@]}")
 
 	# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
 	local enable_debug=N

@@ -100,7 +100,7 @@ print_help_message(){
 	fi
 
 	printf '## Usage ##\n'
-	printf '\t%s (command-line options and parameters)\n' "${RUNTIME_COMMAND_BASE}"
+	printf '\t%s (command-line options and parameters)\n' "${RUNTIME_COMMANDLINE_BASECOMMAND}"
 	printf '\n'
 	printf '## Command-line Options ##\n'
 	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" "${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" "${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
@@ -109,11 +109,11 @@ print_help_message(){
 }; declare -fr print_help_message
 
 process_commandline_arguments() {
-	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -eq 0 ]; then
+	if [ "${#RUNTIME_COMMANDLINE_ARGUMENTS[@]}" -eq 0 ]; then
 		return "${COMMON_RESULT_SUCCESS}"
 	else
 		# modifyable parameters for parsing by consuming
-		local -a parameters=("${RUNTIME_COMMANDLINE_ARGUMENT_LIST[@]}")
+		local -a parameters=("${RUNTIME_COMMANDLINE_ARGUMENTS[@]}")
 
 		# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
 		local enable_debug=N
@@ -457,7 +457,7 @@ meta_fsis_setup_runtime_parameters(){
 		RUNTIME_EXECUTABLE_DIRECTORY\
 		RUNTIME_EXECUTABLE_PATH_ABSOLUTE\
 		RUNTIME_EXECUTABLE_PATH_RELATIVE\
-		RUNTIME_COMMAND_BASE
+		RUNTIME_COMMANDLINE_BASECOMMAND
 
 	# Runtime environment's executable search path priority array
 	declare -a RUNTIME_PATH_DIRECTORIES
@@ -493,11 +493,11 @@ meta_fsis_setup_runtime_parameters(){
 
 			if [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${pathdir}" ]\
 				|| [ "${RUNTIME_EXECUTABLE_DIRECTORY}" == "${resolved_pathdir}" ]; then
-				RUNTIME_COMMAND_BASE="${RUNTIME_EXECUTABLE_FILENAME}"
+				RUNTIME_COMMANDLINE_BASECOMMAND="${RUNTIME_EXECUTABLE_FILENAME}"
 				break
 			fi
 		done; unset pathdir resolved_pathdir
-		RUNTIME_COMMAND_BASE="${RUNTIME_COMMAND_BASE:-${0}}"
+		RUNTIME_COMMANDLINE_BASECOMMAND="${RUNTIME_COMMANDLINE_BASECOMMAND:-${0}}"
 	fi
 	meta_util_make_parameter_readonly_if_not_null_otherwise_unset\
 		RUNTIME_EXECUTABLE_FILENAME\
@@ -505,15 +505,10 @@ meta_fsis_setup_runtime_parameters(){
 		RUNTIME_EXECUTABLE_DIRECTORY\
 		RUNTIME_EXECUTABLE_PATH_ABSOLUTE\
 		RUNTIME_EXECUTABLE_PATH_RELATIVE\
-		RUNTIME_COMMAND_BASE
+		RUNTIME_COMMANDLINE_BASECOMMAND
 
-	# Collect command-line parameters
-	declare -igr RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY="${#}"
-	if [ "${RUNTIME_COMMANDLINE_ARGUMENT_QUANTITY}" -ne 0 ]; then
-		declare -ag RUNTIME_COMMANDLINE_ARGUMENT_LIST
-		RUNTIME_COMMANDLINE_ARGUMENT_LIST=("${@}")
-		declare -agr RUNTIME_COMMANDLINE_ARGUMENT_LIST
-	fi
+	# Collect command-line arguments
+	declare -agr RUNTIME_COMMANDLINE_ARGUMENTS=("${@}")
 
 	# Set run guard
 	declare -gr meta_fsis_setup_runtime_parameters_called=yes
