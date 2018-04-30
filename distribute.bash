@@ -108,7 +108,7 @@ init(){
 		--verbose\
 		--bzip2\
 		--directory "${SHC_PREFIX_DIR}"\
-		--file "${SDC_RELEASE_DIR}/${META_APPLICATION_NAME}-${package_version}.tar.bz2"\
+		--file "${SDC_RELEASE_DIR}/${META_APPLICATION_IDENTIFIER}-${package_version}.tar.bz2"\
 		--\
 		*.source\
 		install.bash\

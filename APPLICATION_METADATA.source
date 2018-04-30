@@ -4,6 +4,7 @@
 #
 # https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#application_metadatasource
 META_APPLICATION_NAME="GNU Bash Shell Script Template"
+META_APPLICATION_IDENTIFIER=gnu-bash-shell-script-template
 META_APPLICATION_DEVELOPER_NAME="林博仁"
 META_APPLICATION_LICENSE="GNU GPLv3+ with non-template-use exception"
 META_APPLICATION_SITE_URL="https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template"
