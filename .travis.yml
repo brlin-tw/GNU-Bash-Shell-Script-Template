@@ -48,10 +48,11 @@ install:
 before_script:
 - git lfs install # Install Git LFS config, which makes LFS files not making Git considered as "dirty"
 - git lfs pull
+- ./setup-development-environment.bash
+- ./'Linters/GNU Bash Automatic Checking Program for Git Projects/GNU Bash Automatic Checking Program for Git Projects.bash'
 
 script:
-- ./'Linters/GNU Bash Automatic Checking Program for Git Projects/GNU Bash Automatic Checking Program for Git Projects.bash'
-- ./setup-development-environment.bash
+- ./build.bash
 
 before-deploy:
 - ./distribute.bash
