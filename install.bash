@@ -581,6 +581,11 @@ init() {
 		exit "${COMMON_RESULT_SUCCESS}"
 	fi
 
+	# NOTE: We've done it in build script, but let's just do it again anyway to avoid forgetting to run build before install
+	printf -- \
+		'Setting product version string...' \
+		"${SHC_PREFIX_DIR}"/set-script-version.bash && printf 'done.\n'
+
 	if ! determine_install_directory; then
 		printf "錯誤：無法判斷安裝目錄。安裝程式無法繼續運行\n" 1>&2
 		exit "${COMMON_RESULT_FAILURE}"
