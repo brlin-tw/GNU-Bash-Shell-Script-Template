@@ -30,7 +30,7 @@ declare -i META_PROGRAM_PAUSE_BEFORE_EXIT=0
 ## https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification#meta_application_
 ## You may safely remove this entire section if you don't need it
 ### Application's identifier, application's name with limitation posed by other software, default(not implemented): unnamed-application
-declare -r META_APPLICATION_IDENTIFIER="gnu-bash-shell-script-template"
+declare META_APPLICATION_IDENTIFIER="gnu-bash-shell-script-template"
 
 ### The Software Directory Configuration this application uses, refer below section for more info
 declare META_APPLICATION_INSTALL_STYLE=SHC
