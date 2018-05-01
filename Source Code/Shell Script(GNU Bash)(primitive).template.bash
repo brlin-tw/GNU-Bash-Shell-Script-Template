@@ -90,10 +90,10 @@ process_commandline_arguments() {
 		return 0
 	fi
 
-	# modifyable parameters for parsing by consuming
+	# Modifyable parameters for parsing by consuming
 	local -a parameters=("${RUNTIME_COMMANDLINE_ARGUMENTS[@]}")
 
-	# Normally we won't want debug traces to appear during parameter parsing, so we  add this flag and defer it activation till returning(Y: Do debug)
+	# Normally we won't want debug traces to appear during parameter parsing, so we add this flag and defer its activation till returning(Y: Do debug)
 	local enable_debug=N
 
 	while true; do
