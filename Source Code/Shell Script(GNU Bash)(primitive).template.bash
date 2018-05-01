@@ -72,6 +72,8 @@ init(){
 		printf --\
 			'Error: Invalid command-line parameters.\n'\
 			1>&2
+
+		printf '\n' # separate error message and help message
 		print_help
 		exit 1
 	fi
