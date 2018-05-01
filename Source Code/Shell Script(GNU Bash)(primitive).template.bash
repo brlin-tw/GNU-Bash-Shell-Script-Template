@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2034
-
 # <Source Description>
 # <Copyright Holder Name> © <Copyright Activation Latest Year, for determining year of end of copyright protection>
 
@@ -57,9 +55,12 @@ if [ -v 'BASH_SOURCE[0]' ]; then
 	RUNTIME_EXECUTABLE_NAME="${RUNTIME_EXECUTABLE_FILENAME%.*}"
 	RUNTIME_EXECUTABLE_DIRECTORY="$(dirname "${RUNTIME_EXECUTABLE_PATH}")"
 	RUNTIME_COMMANDLINE_BASECOMMAND="${0}"
+	# We intentionally leaves these variables for script developers
+	# shellcheck disable=SC2034
 	declare -r \
 		RUNTIME_EXECUTABLE_PATH \
 		RUNTIME_EXECUTABLE_FILENAME \
+		RUNTIME_EXECUTABLE_NAME \
 		RUNTIME_EXECUTABLE_DIRECTORY \
 		RUNTIME_COMMANDLINE_BASECOMMAND
 fi
