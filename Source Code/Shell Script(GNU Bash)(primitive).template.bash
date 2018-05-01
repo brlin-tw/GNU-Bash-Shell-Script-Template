@@ -70,8 +70,7 @@ declare -ar RUNTIME_COMMANDLINE_ARGUMENTS=("${@}")
 init(){
 	if ! process_commandline_arguments; then
 		printf --\
-			'Error: %s: Invalid command-line parameters.\n'\
-			"${FUNCNAME[0]}"\
+			'Error: Invalid command-line parameters.\n'\
 			1>&2
 		print_help
 		exit 1
