@@ -37,6 +37,7 @@ addons:
 
 before_install:
 - git submodule init 'Continuous Integration/Utilities for Travis CI' 'Linters/GNU Bash Automatic Checking Program for Git Projects'
+# Don't fetch too less history as it will trigger "Server does not allow request for unadvertised object" error
 - git submodule update --depth=30
 
 install:
