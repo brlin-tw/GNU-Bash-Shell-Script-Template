@@ -189,7 +189,7 @@ init(){
 # 	fi
 # 	unset exit_status
 # 
-# 	"${SDC_CLEAN_FILTER_FOR_BASH_DIR}/Clean Filter for GNU Bash Scripts.manual-apply.bash" "${temp_file}"
+# 	"${SDC_CLEAN_FILTER_FOR_BASH_DIR}/filter.bash" --converter "${temp_file}"
 
 	# dump temp_file to stdout
 	cat "${temp_file}"
