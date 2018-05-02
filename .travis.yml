@@ -49,10 +49,14 @@ before_script:
 - ./setup-development-environment.bash
 - ./'Linters/GNU Bash Automatic Checking Program for Git Projects/GNU Bash Automatic Checking Program for Git Projects.bash'
 
+- pip install --user pre-commit
+- git diff-tree -z --no-commit-id --name-only -r HEAD | xargs --null pre-commit run --files
+
 script:
 - ./build.bash
 
 cache:
+  pip: true
   directories:
   - $HOME/Software
 
