@@ -24,9 +24,6 @@ git:
   ## We have recursive submodules, don't fetch it automatically
   submodules: false
 
-cache:
-- $HOME/Software
-
 ## The Build Lifecycle
 ## https://docs.travis-ci.com/user/customizing-the-build/#The-Build-Lifecycle
 addons:
@@ -54,6 +51,10 @@ before_script:
 
 script:
 - ./build.bash
+
+cache:
+  directories:
+  - $HOME/Software
 
 before_deploy:
 - ./distribute.bash
