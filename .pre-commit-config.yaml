@@ -1,0 +1,17 @@
+# Configuration for pre-commit: A framework for managing and maintaining multi-language pre-commit hooks.
+# https://pre-commit.com/
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v1.2.3
+  hooks:
+  - id: check-yaml
+  - id: check-executables-have-shebangs
+  - id: check-byte-order-marker
+- repo: https://github.com/jumanjihouse/pre-commit-hooks
+  rev: 1.6.0
+  hooks:
+  - id: shellcheck
+- repo: https://github.com/adrienverge/yamllint
+  rev: master
+  hooks:
+  - id: yamllint
