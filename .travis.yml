@@ -33,7 +33,7 @@ addons:
     - realpath      # Merged to GNU Coreutils in Ubuntu 16.04
 
 before_install:
-- git submodule init 'Continuous Integration/Utilities for Travis CI' 'Linters/GNU Bash Automatic Checking Program for Git Projects'
+- git submodule init 'Continuous Integration/Utilities for Travis CI'
 # Don't fetch too less history as it will trigger "Server does not allow request for unadvertised object" error
 - git submodule update --depth=30
 
@@ -47,7 +47,6 @@ before_script:
 - git lfs install # Install Git LFS config, which makes LFS files not making Git considered as "dirty"
 - git lfs pull
 - ./setup-development-environment.bash
-- ./'Linters/GNU Bash Automatic Checking Program for Git Projects/GNU Bash Automatic Checking Program for Git Projects.bash'
 
 - pip install --user pre-commit
 - git diff-tree -z --no-commit-id --name-only -r HEAD | xargs --null pre-commit run --files
