@@ -2,11 +2,6 @@
 	path = Git Clean and Smudge Filters/Clean Filter for GNU Bash Scripts
 	url = https://github.com/Lin-Buo-Ren/Clean-Filter-for-GNU-Bash-Scripts.git
 	ignore = all
-[submodule "Linters/GNU Bash Automatic Checking Program for Git Projects"]
-	path = Linters/GNU Bash Automatic Checking Program for Git Projects
-	url = https://github.com/Lin-Buo-Ren/GNU-Bash-Automatic-Checking-Program-for-Git-Projects
-	fetchRecurseSubmodules = no
-	ignore = all
 [submodule "Continuous Integration/Utilities for Travis CI"]
 	path = Continuous Integration/Utilities for Travis CI
 	url = https://github.com/Lin-Buo-Ren/Utilities-for-Travis-CI.git

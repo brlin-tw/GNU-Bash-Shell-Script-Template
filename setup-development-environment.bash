@@ -65,7 +65,9 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 )
 
 ### These are the dependencies that are used later and also checked later
-declare -Ar META_RUNTIME_DEPENDENCIES=()
+declare -Ar META_RUNTIME_DEPENDENCIES=(
+	[pre-commit]="pre-commit - A framework for managing and maintaining multi-language pre-commit hooks"
+)
 ## #################### End of META_RUNTIME_DEPENDENCIES ######################
 
 ### Program's Commandline Options Definitions
@@ -96,16 +98,10 @@ init() {
 
 	printf 'Fetching submodules..'
 	# shellcheck disable=SC1090
-	source "${SDC_GIT_HOOKS_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
-	# shellcheck disable=SC1090
 	source "${SDC_GIT_FILTERS_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
-	# shellcheck disable=SC1090
-	source "${SDC_LINTERS_DIR}/SOFTWARE_DIRECTORY_CONFIGURATION.source"
 	git submodule init\
-		"${SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR}"\
-		"${SDC_BASH_AUTOMATIC_CHECKING_FOR_GIT}"\
 		"${SDC_CLEAN_FILTER_FOR_BASH_DIR}"
-	git submodule update
+	git submodule update --depth=30
 	local GIT_DIR_OLD="${GIT_DIR}"
 	local GIT_WORK_TREE_OLD="${GIT_WORK_TREE}"
 	GIT_DIR="${SDC_CLEAN_FILTER_FOR_BASH_DIR}/.git"
@@ -120,24 +116,7 @@ init() {
 	printf 'done\n'
 
 	printf 'Setting pre-commit hook...'
-	if ! [ -v SDC_GIT_HOOKS_DIR ]; then
-		printf '%s: Error: Unable to locate Git Hooks directory' "${RUNTIME_SCRIPT_FILENAME}" 1>&2
-		exit 1
-	fi
-	# SOFTWARE_DIRECTORY_CONFIGURATION.source is scope of Flexible Software Installation Specification
-	# shellcheck disable=SC1090
-	if ! [ -v SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR ]\
-		|| [ -z "${SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR}" ]; then
-		printf '%s: Error: Unable to locate Git Precommit Hooks for Bash directory' "${RUNTIME_SCRIPT_FILENAME}" 1>&2
-		exit 1
-	fi
-	ln\
-		--symbolic\
-		--relative\
-		--force\
-		"${SDC_GIT_PRECOMMIT_HOOK_FOR_BASH_DIR}/Git Pre-commit Hook for GNU Bash Projects.bash"\
-		"${SHC_PREFIX_DIR}"/.git/hooks/pre-commit\
-		&& printf 'done\n'
+	pre-commit install
 
 	printf 'Setting project-specific git configurations...'
 	git config include.path ../.gitconfig && printf 'done.\n'
@@ -860,7 +839,7 @@ meta_fsis_setup_application_metadata
 
 ## This script is based on the GNU Bash Shell Script Template project
 ## https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
-## and is based on the following version: 
+## and is based on the following version:
 ## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION=@@GBSST_VERSION@@
 ## You may rebase your script to incorporate new features and fixes from the template
 
