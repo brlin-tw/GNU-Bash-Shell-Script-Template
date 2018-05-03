@@ -88,10 +88,11 @@ init() {
 		exit 1
 	fi
 
-	export GIT_DIR="${SHC_PREFIX_DIR}/.git"
-	export GIT_WORK_TREE="${SHC_PREFIX_DIR}"
+	unset GIT_DIR GIT_WORK_TREE
 
-	if [ ! -d "${GIT_DIR}" ]; then
+	cd "${RUNTIME_EXECUTABLE_DIRECTORY}"
+
+	if [ ! -d "${RUNTIME_EXECUTABLE_DIRECTORY}/.git" ]; then
 		printf "ERROR: git repository doesn't exist, you must initialize a git repository before running this script\\n" 1>&2
 		exit "${COMMON_RESULT_FAILURE}"
 	fi
@@ -102,16 +103,11 @@ init() {
 	git submodule init\
 		"${SDC_CLEAN_FILTER_FOR_BASH_DIR}"
 	git submodule update --depth=30
-	local GIT_DIR_OLD="${GIT_DIR}"
-	local GIT_WORK_TREE_OLD="${GIT_WORK_TREE}"
-	GIT_DIR="${SDC_CLEAN_FILTER_FOR_BASH_DIR}/.git"
-	GIT_WORK_TREE="${SDC_CLEAN_FILTER_FOR_BASH_DIR}"
+
 	pushd "${SDC_CLEAN_FILTER_FOR_BASH_DIR}" >/dev/null
 	git submodule init
 	# FIXME: Should be specifying this in the submodule
 	git submodule update 'Code Formatters and Beautifiers/the Bash Script Beautifier'
-	GIT_DIR="${GIT_DIR_OLD}"; unset GIT_DIR_OLD
-	GIT_WORK_TREE="${GIT_WORK_TREE_OLD}"; unset GIT_WORK_TREE_OLD
 	popd >/dev/null
 	printf 'done\n'
 
