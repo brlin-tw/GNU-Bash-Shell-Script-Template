@@ -120,14 +120,14 @@ process_commandline_arguments() {
 			break
 		else
 			case "${parameters[0]}" in
+				--debug \
+				|-d)
+					enable_debug=Y
+					;;
 				--help \
 				|-h)
 					print_help;
 					exit 0
-					;;
-				--debug \
-				|-d)
-					enable_debug=Y
 					;;
 				*)
 					printf -- \
