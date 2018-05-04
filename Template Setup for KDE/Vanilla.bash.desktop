@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Shell Script(GNU Bash)(Vanilla).bash
-Name[zh_TW]=Shell Script(GNU Bash)（Vanilla 版）.bash
+Name=Vanilla.bash
+Name[zh_TW]=香草風味.bash
 Type=Link
 Icon=text-x-script
 URL=Vanilla.bash

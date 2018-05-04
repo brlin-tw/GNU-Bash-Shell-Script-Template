@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=GNU Bash Shell Script(Source'd).source.bash
+Name[zh_TW]=GNU Bash殼層腳本(Source'd).bash
+Type=Link
+Icon=text-x-script
+URL=GNU Bash Shell Script(source'd).template.source.bash
+# Comment=
