@@ -95,11 +95,11 @@ print_help(){
 			"${RUNTIME_COMMANDLINE_BASECOMMAND}"
 
 		printf '## COMMAND-LINE OPTIONS ##\n'
-		printf '### `-h` / `--help` ###\n'
-		printf 'Print this message\n\n'
-
 		printf '### `-d` / `--debug` ###\n'
 		printf 'Enable script debugging\n\n'
+
+		printf '### `-h` / `--help` ###\n'
+		printf 'Print this message\n\n'
 	}
 	return 0
 }; declare -fr print_help;
