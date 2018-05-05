@@ -94,7 +94,7 @@ init() {
 print_help_message(){
 	printf '# %s #\n' "${RUNTIME_EXECUTABLE_NAME}"
 
-	if meta_util_is_parameter_set_and_not_null META_PROGRAM_DESCRIPTION; then
+	if [ -n "${META_PROGRAM_DESCRIPTION-}" ]; then
 		printf '%s\n' "${META_PROGRAM_DESCRIPTION}"
 		printf '\n'
 	fi
@@ -346,45 +346,45 @@ meta_trap_exit_print_application_information(){
 	# * Pausing program is desired(META_PROGRAM_PAUSE_BEFORE_EXIT=1)
 	#
 	# ...cause it's kinda stupid for a trailing line at end-of-program-output
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_NAME\
-		|| meta_util_is_parameter_set_and_not_null META_APPLICATION_DEVELOPER_NAME\
-		|| meta_util_is_parameter_set_and_not_null META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE\
-		|| meta_util_is_parameter_set_and_not_null META_PROGRAM_LICENSE\
-		|| meta_util_is_parameter_set_and_not_null META_APPLICATION_LICENSE\
-		|| meta_util_is_parameter_set_and_not_null META_APPLICATION_SITE_URL\
-		|| meta_util_is_parameter_set_and_not_null META_APPLICATION_ISSUE_TRACKER_URL\
+	if [ -n "${META_APPLICATION_NAME-}" ]\
+		|| [ -n "${META_APPLICATION_DEVELOPER_NAME-}" ]\
+		|| [ -n "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE-}" ]\
+		|| [ -n "${META_PROGRAM_LICENSE-}" ]\
+		|| [ -n "${META_APPLICATION_LICENSE-}" ]\
+		|| [ -n "${META_APPLICATION_SITE_URL-}" ]\
+		|| [ -n "${META_APPLICATION_ISSUE_TRACKER_URL-}" ]\
 		|| (\
-			meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
+			[ -n "${META_PROGRAM_PAUSE_BEFORE_EXIT-}" ]\
 			&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ] \
 		); then
 		printf -- '------------------------------------\n'
 	fi
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_NAME; then
+	if [ -n "${META_APPLICATION_NAME-}" ]; then
 		printf '%s\n' "${META_APPLICATION_NAME}"
 	fi
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_DEVELOPER_NAME; then
+	if [ -n "${META_APPLICATION_DEVELOPER_NAME-}" ]; then
 		printf '%s et. al.' "${META_APPLICATION_DEVELOPER_NAME}"
-		if meta_util_is_parameter_set_and_not_null META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE; then
+		if [ -n "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE-}" ]; then
 			printf " " # Separator with ${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}
 		else
 			printf '\n'
 		fi
 	fi
-	if meta_util_is_parameter_set_and_not_null META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE; then
+	if [ -n "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE-}" ]; then
 		printf '© %s\n' "${META_PROGRAM_COPYRIGHT_ACTIVATED_SINCE}"
 	fi
-	if meta_util_is_parameter_set_and_not_null META_PROGRAM_LICENSE; then
+	if [ -n "${META_PROGRAM_LICENSE-}" ]; then
 		printf 'Intellectual Property License: %s\n' "${META_PROGRAM_LICENSE}"
-	elif meta_util_is_parameter_set_and_not_null META_APPLICATION_LICENSE; then
+	elif [ -n "${META_APPLICATION_LICENSE-}" ]; then
 		printf 'Intellectual Property License: %s\n' "${META_APPLICATION_LICENSE}"
 	fi
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_SITE_URL; then
+	if [ -n "${META_APPLICATION_SITE_URL-}" ]; then
 		printf 'Official Website: %s\n' "${META_APPLICATION_SITE_URL}"
 	fi
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_ISSUE_TRACKER_URL; then
+	if [ -n "${META_APPLICATION_ISSUE_TRACKER_URL-}" ]; then
 		printf 'Issue Tracker: %s\n' "${META_APPLICATION_ISSUE_TRACKER_URL}"
 	fi
-	if meta_util_is_parameter_set_and_not_null META_PROGRAM_PAUSE_BEFORE_EXIT\
+	if [ -n "${META_PROGRAM_PAUSE_BEFORE_EXIT-}" ]\
 		&& [ "${META_PROGRAM_PAUSE_BEFORE_EXIT}" -eq 1 ]; then
 		local enter_holder
 
@@ -467,7 +467,7 @@ meta_fsis_setup_runtime_parameters(){
 	declare -r RUNTIME_PATH_DIRECTORIES
 
 	if [ ! -v BASH_SOURCE ]; then
-		if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE\
+		if [ -n "${META_APPLICATION_INSTALL_STYLE-}" ]\
 			&& [ "${META_APPLICATION_INSTALL_STYLE}" == SHC ]; then
 			printf "GNU Bash Shell Script Template: Error: META_APPLICATION_INSTALL_STYLE set to SHC, but is not possible due to unknown script location, make sure the program is not run as intepreter's standard input stream.\\n" 1>&2
 			exit "${COMMON_RESULT_FAILURE}"
@@ -536,7 +536,7 @@ meta_fsis_setup_software_directories_configuration(){
 		SDC_SETTINGS_DIR\
 		SDC_TEMP_DIR
 
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE; then
+	if [ -n "${META_APPLICATION_INSTALL_STYLE-}" ]; then
 		case "${META_APPLICATION_INSTALL_STYLE}" in
 			FHS)
 				# Filesystem Hierarchy Standard(F.H.S.) configuration paths
@@ -548,7 +548,7 @@ meta_fsis_setup_software_directories_configuration(){
 				declare -r SDC_EXECUTABLES_DIR="${FHS_PREFIX_DIR}/bin"
 				declare -r SDC_LIBRARIES_DIR="${FHS_PREFIX_DIR}/lib"
 				declare -r SDC_I18N_DATA_DIR="${FHS_PREFIX_DIR}/share/locale"
-				if meta_util_is_parameter_set_and_not_null META_APPLICATION_IDENTIFIER; then
+				if [ -n "${META_APPLICATION_IDENTIFIER-}" ]; then
 					declare -r SDC_SHARED_RES_DIR="${FHS_PREFIX_DIR}/share/${META_APPLICATION_IDENTIFIER}"
 					declare -r SDC_SETTINGS_DIR="/etc/${META_APPLICATION_IDENTIFIER}"
 					declare -r SDC_TEMP_DIR="/tmp/${META_APPLICATION_IDENTIFIER}"
@@ -575,7 +575,7 @@ meta_fsis_setup_software_directories_configuration(){
 					# Scope of Flexible Software Installation Specification
 					# shellcheck disable=SC1090,SC1091
 					source "${RUNTIME_EXECUTABLE_DIRECTORY}/PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY.source"
-					if ! meta_util_is_parameter_set_and_not_null PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY; then
+					if ! [ -n "${PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY-}" ]; then
 						printf "GNU Bash Script Template: Error: PATH_TO_SOFTWARE_INSTALLATION_PREFIX_DIRECTORY not defined, can't setup Self-contained Hierarchy Configuration.\\n" 1>&2
 						exit 1
 					fi
@@ -643,7 +643,7 @@ meta_fsis_setup_application_metadata(){
 		META_APPLICATION_ISSUE_TRACKER_URL\
 		META_APPLICATION_SEEKING_HELP_OPTION
 
-	if meta_util_is_parameter_set_and_not_null META_APPLICATION_INSTALL_STYLE; then
+	if [ -n "${META_APPLICATION_INSTALL_STYLE-}" ]; then
 		case "${META_APPLICATION_INSTALL_STYLE}" in
 			FHS)
 				if [ -v "${SDC_SHARED_RES_DIR}" ] && [ -n "${SDC_SHARED_RES_DIR}" ]; then
