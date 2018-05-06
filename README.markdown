@@ -119,6 +119,9 @@ For implementing script version injection
 #### [Git](https://git-scm.com/)
 For revision management etc.
 
+#### [pre-commit - A framework for managing and maintaining multi-language pre-commit hooks](https://pre-commit.com/)
+For various pre-commit hooks checking many aspects in the project and commit verification during continuous integration.
+
 #### [ShellCheck – shell script analysis tool](http://www.shellcheck.net/)
 To check any potential problems in the script
 
