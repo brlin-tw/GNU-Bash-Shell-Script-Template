@@ -109,14 +109,14 @@ Some information used to improve the project:
 For fetching script names and paths
 
 ### Development Dependencies
-#### [ShellCheck – shell script analysis tool](http://www.shellcheck.net/)
-To check any potential problems in the script
-
 #### [GNU Sed](https://www.gnu.org/software/sed/)
 For implementing script version injection
 
 #### [Git](https://git-scm.com/)
 For revision management etc.
+
+#### [ShellCheck – shell script analysis tool](http://www.shellcheck.net/)
+To check any potential problems in the script
 
 ## Download Software
 Please refer the [releases page](https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template/releases) for ready to use software.
