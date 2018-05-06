@@ -105,10 +105,14 @@ Some information used to improve the project:
 
 ## Software Dependencies
 ### Runtime Dependencies
+Software required to run the product:
+
 #### [GNU Core Utilities(Coreutils)](http://www.gnu.org/software/coreutils/coreutils.html)
 For fetching script names and paths
 
 ### Development Dependencies
+Software required to develop the product:
+
 #### [GNU Sed](https://www.gnu.org/software/sed/)
 For implementing script version injection
 
