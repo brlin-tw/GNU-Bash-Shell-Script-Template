@@ -116,7 +116,6 @@ To check any potential problems in the script
 For implementing script version injection
 
 #### [Git](https://git-scm.com/)
-
 For revision management etc.
 
 ## Download Software
