@@ -258,7 +258,11 @@ meta_trap_err(){
 	local -ir failing_command_return_status=${1}; shift # The failing command's return value
 	local -r failing_function="${1}"
 
-	meta_trap_err_print_debugging_info "${line_error_location}" "${failing_command}" "${failing_command_return_status}" "${failing_function}"
+	meta_trap_err_print_debugging_info \
+		"${line_error_location}" \
+		"${failing_command}" \
+		"${failing_command_return_status}" \
+		"${failing_function}"
 
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_err
