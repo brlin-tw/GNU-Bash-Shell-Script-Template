@@ -757,7 +757,7 @@ meta_fsis_setup_application_metadata
 
 ## This script is based on the GNU Bash Shell Script Template project
 ## https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template
-## and is based on the following version: 
+## and is based on the following version:
 ## GNU_BASH_SHELL_SCRIPT_TEMPLATE_VERSION="@@GBSST_VERSION@@"
 ## You may rebase your script to incorporate new features and fixes from the template
 
