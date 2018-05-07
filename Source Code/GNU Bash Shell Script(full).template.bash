@@ -103,8 +103,14 @@ print_help_message(){
 	printf '\t%s (command-line options and parameters)\n' "${RUNTIME_COMMANDLINE_BASECOMMAND}"
 	printf '\n'
 	printf '## Command-line Options ##\n'
-	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" "${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" "${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
-	meta_util_printSingleCommandlineOptionHelp "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" "${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
+	meta_util_printSingleCommandlineOptionHelp \
+		"${COMMANDLINE_OPTION_DISPLAY_HELP_DESCRIPTION}" \
+		"${COMMANDLINE_OPTION_DISPLAY_HELP_LONG}" \
+		"${COMMANDLINE_OPTION_DISPLAY_HELP_SHORT}"
+	meta_util_printSingleCommandlineOptionHelp \
+		"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_DESCRIPTION}" \
+		"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_LONG}" \
+		"${COMMANDLINE_OPTION_ENABLE_DEBUGGING_SHORT}"
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr print_help_message
 
