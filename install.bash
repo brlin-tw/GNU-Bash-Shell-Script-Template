@@ -51,6 +51,7 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 ### These are the dependencies that are used later and also checked later
 declare -Ar META_RUNTIME_DEPENDENCIES=(
 	["cp"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
+	["install"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
 	["tr"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
 )
 
@@ -107,6 +108,9 @@ init() {
 
 	printf -- \
 		'Installing template files...\n'
+	install \
+		--directory \
+		"${XDG_TEMPLATES_DIR}"
 	cp \
 		--force \
 		--verbose \
@@ -136,17 +140,21 @@ init() {
 			elif [ "${answer}" == n ]; then
 				break
 			else
+				local kde_template_install_dir="${HOME}/.local/share/templates"
 				printf 'Configuring templates for KDE...\n'
+				install \
+					--directory \
+					"${kde_template_install_dir}"
 				cp \
 					--force \
 					--verbose \
 					"${SDC_SOURCE_CODE_DIR}"/*.bash \
-					"${HOME}/.local/share/templates"
+					"${kde_template_install_dir}"
 				cp \
 					--force \
 					--verbose \
 					"${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop \
-					"${HOME}/.local/share/templates"
+					"${kde_template_install_dir}"
 				break
 			fi
 		fi

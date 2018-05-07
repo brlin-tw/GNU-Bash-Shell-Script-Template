@@ -70,13 +70,19 @@ trap_errexit(){
 
 trap_exit(){
 	printf 'DEBUG: %s is leaving\n' "${RUNTIME_EXECUTABLE_FILENAME}" 1>&2
-	if ! rm "${temp_file}"; then
-		printf --\
-			'%s: %s: Error: Unable to remove temporary file\n'\
-			"${RUNTIME_EXECUTABLE_FILENAME}"\
-			"${FUNCNAME[0]}"\
-			1>&2
-		exit 1
+
+	# It is possible that temp_file isn't set when exit trap is triggered
+	# (i.e. runtime dependency not met), verify it before referencing.
+	if [ -v temp_file ] \
+		&& [ -n "${temp_file}" ]; then
+		if ! rm "${temp_file}"; then
+			printf --\
+				'%s: %s: Error: Unable to remove temporary file\n'\
+				"${RUNTIME_EXECUTABLE_FILENAME}"\
+				"${FUNCNAME[0]}"\
+				1>&2
+			exit 1
+		fi
 	fi
 }; declare -fr trap_exit; trap trap_exit EXIT
 

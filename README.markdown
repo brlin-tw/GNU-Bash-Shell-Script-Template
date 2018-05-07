@@ -105,19 +105,25 @@ Some information used to improve the project:
 
 ## Software Dependencies
 ### Runtime Dependencies
+Software required to run the product:
+
 #### [GNU Core Utilities(Coreutils)](http://www.gnu.org/software/coreutils/coreutils.html)
 For fetching script names and paths
 
 ### Development Dependencies
-#### [ShellCheck – shell script analysis tool](http://www.shellcheck.net/)
-To check any potential problems in the script
+Software required to develop the product:
 
 #### [GNU Sed](https://www.gnu.org/software/sed/)
 For implementing script version injection
 
 #### [Git](https://git-scm.com/)
-
 For revision management etc.
+
+#### [pre-commit - A framework for managing and maintaining multi-language pre-commit hooks](https://pre-commit.com/)
+For various pre-commit hooks checking many aspects in the project and commit verification during continuous integration.
+
+#### [ShellCheck – shell script analysis tool](http://www.shellcheck.net/)
+To check any potential problems in the script
 
 ## Download Software
 Please refer the [releases page](https://github.com/Lin-Buo-Ren/GNU-Bash-Shell-Script-Template/releases) for ready to use software.
