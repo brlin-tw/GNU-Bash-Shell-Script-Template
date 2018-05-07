@@ -50,7 +50,6 @@ declare -Ar META_RUNTIME_DEPENDENCIES_CRITICAL=(
 
 ### These are the dependencies that are used later and also checked later
 declare -Ar META_RUNTIME_DEPENDENCIES=(
-	["cp"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
 	["install"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
 	["tr"]="${META_RUNTIME_DEPENDENCIES_DESCRIPTION_GNU_COREUTILS}"
 )
@@ -113,8 +112,8 @@ init() {
 	install \
 		--directory \
 		"${XDG_TEMPLATES_DIR}"
-	cp \
-		--force \
+	install \
+		--mode='u=rw,go=r' \
 		--verbose \
 		"${SDC_SOURCE_CODE_DIR}"/*.bash \
 		"${XDG_TEMPLATES_DIR}"
@@ -147,13 +146,13 @@ init() {
 				install \
 					--directory \
 					"${kde_template_install_dir}"
-				cp \
-					--force \
+				install \
+					--mode='u=rw,go=r' \
 					--verbose \
 					"${SDC_SOURCE_CODE_DIR}"/*.bash \
 					"${kde_template_install_dir}"
-				cp \
-					--force \
+				install \
+					--mode='u=rw,go=r' \
 					--verbose \
 					"${SDC_KDE_TEMPLATE_SETUP_DIR}"/*.desktop \
 					"${kde_template_install_dir}"
