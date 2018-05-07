@@ -264,7 +264,7 @@ meta_trap_err(){
 }; declare -fr meta_trap_err
 
 meta_trap_int(){
-	printf '%s: Recieved SIGINT, script is interrupted.\n' "${FUNCNAME[0]}" 1>&2
+	printf '%s: Received SIGINT, script is interrupted.\n' "${FUNCNAME[0]}" 1>&2
 	return "${COMMON_RESULT_SUCCESS}"
 }; declare -fr meta_trap_int
 
