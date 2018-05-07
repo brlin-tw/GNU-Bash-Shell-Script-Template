@@ -8,10 +8,10 @@
 declare META_PROGRAM_NAME_OVERRIDE='"GNU Bash Shell Script Template" Installer'
 
 ### Program's identifier, program's name with character limitation exposed by platform(optional)
-declare META_PROGRAM_IDENTIFIER=''
+declare META_PROGRAM_IDENTIFIER='gbsst-installer'
 
 ### Program's description, default(optional)
-declare META_PROGRAM_DESCRIPTION=''
+declare META_PROGRAM_DESCRIPTION='This program installs GNU Bash Shell Script Template to proper locations to enable desktop integrations'
 
 ### Intellectual property license applied to this program(optional)
 declare META_PROGRAM_LICENSE='GPLv3+'
