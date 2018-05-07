@@ -120,7 +120,7 @@ init() {
 		"${XDG_TEMPLATES_DIR}"
 	printf '\n' # Seperate output from different operations
 
-	while :; do
+	while true; do
 		printf -- \
 			'Do you want to install files to enable KDE support(y/N)?'
 		read -r answer
