@@ -75,6 +75,7 @@ declare -r COMMANDLINE_OPTION_jUST_UNINSTALL_DESCRIPTION='Uninstall the software
 ## with the command-line parameters as it's arguments
 init() {
 	local -i just_uninstall="${COMMON_BOOLEAN_FALSE}"
+	local install_directory
 
 	if ! meta_processCommandlineParameters\
 			just_uninstall; then
@@ -87,7 +88,8 @@ init() {
 		'Setting product version string...'
 	"${SHC_PREFIX_DIR}"/set-script-version.bash && printf 'done.\n'
 
-	if ! determine_install_directory; then
+	if ! determine_install_directory \
+		install_directory; then
 		printf -- \
 			'Error: Unable to determine install directory, installer cannot continue.\n' \
 			1>&2
@@ -95,7 +97,7 @@ init() {
 	else
 		printf -- \
 			'Will be installed to: %s\n' \
-			"${global_install_directory}"
+			"${install_directory}"
 		printf '\n'
 	fi
 
@@ -178,6 +180,8 @@ remove_old_installation(){
 readonly -f remove_old_installation
 
 determine_install_directory(){
+	local -n install_directory_ref="${1}"; shift
+
 	# For $XDG_TEMPLATES_DIR
 	if [ -f "${HOME}"/.config/user-dirs.dirs ];then
 		# external file, disable check
@@ -185,7 +189,7 @@ determine_install_directory(){
 		source "${HOME}"/.config/user-dirs.dirs
 
 		if [ -v XDG_TEMPLATES_DIR ]; then
-			global_install_directory="${XDG_TEMPLATES_DIR}"
+			install_directory_ref="${XDG_TEMPLATES_DIR}"
 			return "${COMMON_RESULT_SUCCESS}"
 		fi
 	fi
@@ -198,7 +202,7 @@ determine_install_directory(){
 	if [ ! -d "${HOME}"/Templates ]; then
 		return "${COMMON_RESULT_FAILURE}"
 	else
-		global_install_directory="${HOME}"/Templates
+		install_directory_ref="${HOME}"/Templates
 	fi
 
 }; readonly -f determine_install_directory
