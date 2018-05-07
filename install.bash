@@ -5,7 +5,7 @@
 ## Fill in metadata about this program for reusing in the script and documenting purposes
 ## You may safely remove this entire section if you don't need it
 ### Program's name, by default it is determined in runtime according to the filename, set this variable to override the autodetection, default: ${RUNTIME_EXECUTABLE_NAME}(optional)
-declare META_PROGRAM_NAME_OVERRIDE='「GNU Bash Shell Script 範本」應用安裝程式'
+declare META_PROGRAM_NAME_OVERRIDE='"GNU Bash Shell Script Template" Installer'
 
 ### Program's identifier, program's name with character limitation exposed by platform(optional)
 declare META_PROGRAM_IDENTIFIER=''
