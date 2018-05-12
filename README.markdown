@@ -54,7 +54,7 @@ We have incorporated the following features into the templates, so that user don
 
 ### Space and non-ASCII Characters Friendly
 
-Script won't broke in a foreign environment.
+Script won't broke in an exotic environment.
 
 ![Unsafe Path Friendly](Pictures/Unsafe%20Path%20Friendly.png)
 
@@ -76,7 +76,7 @@ The following variants are provided:
 * **MILIMALISTIC**  
   If you want it more simpler and don't mind recreating a few more wheels.
 * **FULL**  
-  Hundreds of lines of support code, including additionl features like:
+  Hundreds of lines of support code, including additional features like:
   * Stacktrace printing
   * Multiple installation configuration support: Standalone/SHC/FHS, conforming to the [Flexible Software Installation Specification](https://github.com/Lin-Buo-Ren/Flexible-Software-Installation-Specification)
   * Utility functions like `meta_util_array_shift`
