@@ -73,6 +73,8 @@ The following variants are provided:
 
 * **PRIMITIVE**  
   The recommended variant for regular use, core functionalities included.
+* **MILIMALISTIC**  
+  If you want it more simpler and don't mind recreating a few more wheels.
 * **FULL**  
   Hundreds of lines of support code, including additionl features like:
   * Stacktrace printing
