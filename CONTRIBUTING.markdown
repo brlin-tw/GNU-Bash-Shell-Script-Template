@@ -5,9 +5,9 @@ This documents explains how to contribute this project in many aspects, make sur
 This project is initially a native linguo project, which means Chinese is used as the first priority language.  However I acknowlege the importance of using a much universal language(id. est. English) for a collaborative project so here's the policy:
 
 * Once a collaborator whose not familiar with Chinese starts to colab. with the project, this project will start the tranfer process to become a fully English project, which required the following to be in English or Multi-lingual which English is required as a first priority language:
-	* document contents
-	* patch info
-	* code strings and comments
+    * document contents
+    * patch info
+    * code strings and comments
 * If you have any questions about a previously used Chinese content, feel free to ask on the issue tracker
 
 ## 回報議題<br>Reporting Issues

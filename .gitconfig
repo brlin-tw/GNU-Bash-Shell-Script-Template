@@ -1,4 +1,4 @@
 # Project-specific Git Configuration
 [filter "bash"]
-	clean = \"Git Clean and Smudge Filters/clean-bash.bash\"
-#	smudge = \"Git Clean and Smudge Filters/smudge-bash.bash\"
+    clean = \"Git Clean and Smudge Filters/clean-bash.bash\"
+#    smudge = \"Git Clean and Smudge Filters/smudge-bash.bash\"

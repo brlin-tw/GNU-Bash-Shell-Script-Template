@@ -1,9 +1,9 @@
 [submodule "Git Clean and Smudge Filters/Clean Filter for GNU Bash Scripts"]
-	path = Git Clean and Smudge Filters/Clean Filter for GNU Bash Scripts
-	url = https://github.com/Lin-Buo-Ren/Clean-Filter-for-GNU-Bash-Scripts.git
-	ignore = all
+    path = Git Clean and Smudge Filters/Clean Filter for GNU Bash Scripts
+    url = https://github.com/Lin-Buo-Ren/Clean-Filter-for-GNU-Bash-Scripts.git
+    ignore = all
 [submodule "Continuous Integration/Utilities for Travis CI"]
-	path = Continuous Integration/Utilities for Travis CI
-	url = https://github.com/Lin-Buo-Ren/Utilities-for-Travis-CI.git
-	fetchRecurseSubmodules = no
-	ignore = all
+    path = Continuous Integration/Utilities for Travis CI
+    url = https://github.com/Lin-Buo-Ren/Utilities-for-Travis-CI.git
+    fetchRecurseSubmodules = no
+    ignore = all

@@ -10,7 +10,8 @@ root = true
 [*]
 ### Varation required
 end_of_line = lf
-indent_style = tab
+indent_size = 4
+indent_style = space
 
 ### No doubt
 insert_final_newline = true
