@@ -3,14 +3,14 @@
 # <Copyright Holder Name> © <Copyright Activation Latest Year, for determining year of end of copyright protection>
 
 set \
-	-o errexit \
-	-o errtrace \
-	-o nounset \
-	-o pipefail
+    -o errexit \
+    -o errtrace \
+    -o nounset \
+    -o pipefail
 
 init(){
 
-	exit 0
+    exit 0
 }
 
 init "${@}"
