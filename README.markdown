@@ -10,7 +10,7 @@ This project provides easy-to-use shell script templates for GNU Bash for users 
 
 Local debuggers need fresh livers, we made scripts more error-proof and bug-aware by bailing out whenever a potential scripting error is found.
 
-Secure programming paradigms like [Unofficial Bash Strict Mode](http://redsymbol.net/articles/unofficial-bash-strict-mode/) and [Defensive BASH Programming](http://www.kfirlavi.com/blog/2012/11/14/defensive-bash-programming/) are incorporated into the template design.
+Secure programming paradigms like [Unofficial Bash Strict Mode](http://redsymbol.net/articles/unofficial-bash-strict-mode/) and [Defensive BASH Programming](https://frippertronics.com/posts/defensive_bash_programming.html) are incorporated into the template design.
 
 ### Developer-friendly
 
